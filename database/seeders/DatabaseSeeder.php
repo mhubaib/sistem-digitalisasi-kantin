@@ -22,6 +22,22 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('12345678'),
             'role'     =>'admin',
             'active'   => true,
+        ]); 
+
+        User::create([
+            'name'     => 'Santri',
+            'email'    => 'santri@kantin.com',
+            'password' => Hash::make('87654321'),
+            'role'     =>'santri',
+            'active'   => true,
+        ]);   
+
+        User::create([
+            'name'     => 'Wali',
+            'email'    => 'wali@kantin.com',
+            'password' => Hash::make('12341234'),
+            'role'     =>'wali',
+            'active'   => true,
         ]);        
     }
 }

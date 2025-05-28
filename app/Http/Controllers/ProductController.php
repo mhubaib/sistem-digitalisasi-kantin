@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
-class ProductsController extends Controller
+class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,8 +15,7 @@ class ProductsController extends Controller
     public function index()
     {
         $products = Product::all();
-        return view('admin.products.index', compact('products'));
-
+        return view('admin.product.index', compact('products')); // Ganti ke products.index
     }
 
     /**
@@ -22,7 +23,7 @@ class ProductsController extends Controller
      */
     public function create()
     {
-        return view('admin.products.create');
+        return view('admin.product.create');
     }
 
     /**
@@ -31,60 +32,103 @@ class ProductsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'     => 'required|string|max:255',
-            'price'    => 'required|numeric|min:0',
-            'stock'    => 'required|integer|min:0',
-            'category' => 'required|string|max:100', // Tambahan validasi kategori
+            'name'        => 'required|string|max:255',
+            'price'       => 'required|numeric|min:0',
+            'stock'       => 'required|integer|min:0',
+            'category'    => 'required|string|max:100',
+            'description' => 'nullable|string|max:500',
+            'status'      => 'nullable|string|in:active,inactive',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validasi image
         ]);
 
-        Product::create($request->only('name', 'price', 'stock', 'category'));
+        $data = $request->only('name', 'price', 'stock', 'category', 'description');
 
-        return redirect()->route('products.index')->with('success', 'Produk berhasil ditambahkan.');
+        // Set default status jika tidak ada
+        $data['status'] = $request->status ?? 'active';
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+
+            // Generate unique filename
+            $filename = time() . '_' . Str::random(10) . '.' . $image->getClientOriginalExtension();
+
+            // Store image in public/storage/products
+            $imagePath = $image->storeAs('products', $filename, 'public');
+
+            $data['image'] = $imagePath;
+        }
+
+        Product::create($data);
+
+        return redirect()->route('admin.product.index')->with('success', 'Produk berhasil ditambahkan.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Product $products)
+    public function show(Product $product)
     {
-        //
+        return view('admin.product.show', compact('product'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Product $products)
+    public function edit(Product $product)
     {
-        $product = Product::findOrFail($products->id);
-        return view('admin.products.edit', compact('product'));
+        return view('admin.product.edit', compact('product'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $products)
+    public function update(Request $request, Product $product)
     {
         $request->validate([
-            'name'     => 'required|string|max:255',
-            'price'    => 'required|numeric|min:0',
-            'stock'    => 'required|integer|min:0',
-            'category' => 'required|string|max:100', // Tambahan validasi kategori
+            'name'        => 'required|string|max:255',
+            'price'       => 'required|numeric|min:0',
+            'stock'       => 'required|integer|min:0',
+            'category'    => 'required|string|max:100',
+            'description' => 'nullable|string|max:500',
+            'status'      => 'nullable|string|in:active,inactive',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $product = Product::findOrFail($products->id);
-        $product->update($request->only('name', 'price', 'stock', 'category'));
+        $data = $request->only('name', 'price', 'stock', 'category', 'description');
+        $data['status'] = $request->status ?? 'active';
 
-        return redirect()->route('products.index')->with('success', 'Produk berhasil diperbarui.');
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($product->image && Storage::disk('public')->exists($product->image)) {
+                Storage::disk('public')->delete($product->image);
+            }
+
+            $image = $request->file('image');
+            $filename = time() . '_' . Str::random(10) . '.' . $image->getClientOriginalExtension();
+            $imagePath = $image->storeAs('products', $filename, 'public');
+
+            $data['image'] = $imagePath;
+        }
+
+        $product->update($data);
+
+        return redirect()->route('admin.product.index')->with('success', 'Produk berhasil diperbarui.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $products)
+    public function destroy(Product $product)
     {
-        $product = Product::findOrFail($products->id);
+        // Delete image if exists
+        if ($product->image && Storage::disk('public')->exists($product->image)) {
+            Storage::disk('public')->delete($product->image);
+        }
+
         $product->delete();
 
-        return redirect()->route('products.index')->with('success', 'Produk berhasil dihapus.');
+        return redirect()->route('admin.product.index')->with('success', 'Produk berhasil dihapus.');
     }
 }

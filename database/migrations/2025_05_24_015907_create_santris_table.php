@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('santris', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('wali_id')->nullable()->constrained('users')->onDelete('set null');
             $table->decimal('saldo', 12, 2)->default(0);
             $table->string('wali_email')->nullable(); // Tambahkan kolom untuk menyimpan email wali

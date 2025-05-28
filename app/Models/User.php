@@ -2,45 +2,31 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Models\Santri;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+    // Field yang boleh diisi (mass assignable)
     protected $fillable = [
         'name',
         'email',
         'password',
         'role',
         'card_code',
+        'active',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
+    // Field yang disembunyikan saat serialisasi
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
+    // Casting atribut ke tipe data tertentu
     protected function casts(): array
     {
         return [
@@ -49,28 +35,48 @@ class User extends Authenticatable
         ];
     }
 
+    // Jika user ini adalah santri
     public function santri()
     {
         return $this->hasOne(Santri::class);
     }
 
-    public function waliSantri()
+    // Jika user ini adalah wali, ia memiliki banyak santri
+    public function santris()
     {
         return $this->hasMany(Santri::class, 'wali_id');
     }
 
+    // Top up yang dilakukan user
     public function topups()
     {
         return $this->hasMany(Topup::class, 'created_by');
     }
 
+    // Transaksi yang dilakukan user
     public function transactions()
     {
         return $this->hasMany(Transaction::class, 'created_by');
     }
 
+    // Riwayat dompet user
     public function walletHistories()
     {
         return $this->hasMany(WalletHistory::class, 'created_by');
-    } 
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isSantri(): bool
+    {
+        return $this->role === 'santri';
+    }
+
+    public function isWali(): bool
+    {
+        return $this->role === 'wali';
+    }
 }

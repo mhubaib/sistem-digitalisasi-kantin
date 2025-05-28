@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\SantriApprovedMail;
+use App\Mail\WaliAccountCreated;
 use App\Models\Santri;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -12,13 +14,20 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
-    // 🧾 Form Registrasi Santri
+    // Tampilkan daftar santri yang belum di-approve (admin)
+    public function index()
+    {
+        $pendingSantris = User::with('santri')->where('role', 'santri')->where('active', false)->get();
+        return view('admin.santri-approvals', compact('pendingSantris'));
+    }
+
+    // Form Registrasi Santri
     public function showRegistrationForm()
     {
         return view('auth.register');
     }
 
-    // 📝 Proses Registrasi Santri + Buat Akun Wali
+    // Proses Registrasi Santri + Buat Akun Wali
     public function register(Request $request)
     {
         $request->validate([
@@ -28,48 +37,33 @@ class AuthController extends Controller
             'wali_email'   => 'required|email|different:email',
         ]);
 
-        // Buat akun wali
-        $generatedPassword = Str::random(8);
-        $wali = User::create([
-            'name'     => 'Wali dari ' . $request->name,
-            'email'    => $request->wali_email,
-            'password' => Hash::make($generatedPassword),
-            'role'     => 'wali',
-            'active'   => true,
-        ]);
-
-        // Kirim password wali ke email
-        Mail::raw("Akun wali Anda telah dibuat. Password: {$generatedPassword}", function ($message) use ($wali) {
-            $message->to($wali->email)
-                ->subject('Akun Wali Santri - Sistem Pondok');
-        });
-
         // Buat akun santri (belum aktif, nunggu approval)
         $user = User::create([
             'name'     => $request->name,
             'email'    => $request->email,
-            'password' => hash::make($request->password),
+            'password' => Hash::make($request->password),
             'role'     => 'santri',
             'active'   => false,
         ]);
-
+    
+        // Simpan data santri dengan wali_email (tanpa membuat akun wali dulu)
         Santri::create([
             'user_id' => $user->id,
-            'wali_id' => $wali->id,
+            'wali_id' => null, // Akan diisi nanti saat approval
             'status' => 'pending',
             'wali_email' => $request->wali_email,
         ]);
-
-        return redirect()->route('login')->with('success', 'Registrasi berhasil. Tunggu persetujuan admin.');
+    
+        return redirect()->route('auth.login')->with('success', 'Registrasi berhasil. Tunggu persetujuan admin.');
     }
 
-    // 🔑 Form Login
+    // Tampilkan form Login
     public function showLoginForm()
     {
         return view('auth.login');
     }
 
-    // 🚪 Proses Login
+    // Proses Login
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -85,7 +79,7 @@ class AuthController extends Controller
                 return back()->with('error', 'Akun Anda belum disetujui admin.');
             }
 
-            // 🔥 Arahkan ke dashboard sesuai role
+            // Arahkan ke dashboard sesuai role
             if ($user->role === 'admin') {
                 return redirect()->route('admin.dashboard');
             } elseif ($user->role === 'santri') {
@@ -103,35 +97,67 @@ class AuthController extends Controller
     }
 
 
-    // 🔓 Logout
+    // Logout
     public function logout()
     {
         Auth::logout();
-        return redirect()->route('auth. login');
+        return redirect()->route('auth.login');
     }
 
-    // ✅ Tampilkan daftar santri yang belum di-approve (admin)
+    // Tampilkan daftar santri yang belum di-approve (admin)
     public function showPendingSantri()
     {
         $santris = User::where('role', 'santri')->where('active', false)->get();
         return view('admin.approval', compact('santris'));
     }
 
-    // 🟢 Approve santri oleh admin
+    // Approve santri oleh admin
     public function approveSantri($id)
     {
-        $user = User::where('id', $id)->where('role', 'santri')->firstOrFail();
-        $user->update(['active' => true]);
-
-        return back()->with('success', 'Santri berhasil di-approve.');
+        $user = User::with('santri')->where('id', $id)->where('role', 'santri')->firstOrFail();
+        $user->active = true;
+        $user->save();
+    
+        // Update status santri
+        if ($user->santri) {
+            $santri = $user->santri;
+            $santri->status = 'approved';
+            
+            // Buat akun wali jika belum ada
+            $wali = User::where('email', $santri->wali_email)->where('role', 'wali')->first();
+            
+            if (!$wali) {
+                // Buat password wali secara acak (8 karakter acak)
+                $generatedPassword = Str::random(8);
+                $wali = User::create([
+                    'name'     => 'Wali dari ' . $user->name,
+                    'email'    => $santri->wali_email,
+                    'password' => Hash::make($generatedPassword),
+                    'role'     => 'wali',
+                    'active'   => true,
+                ]);
+                
+                // Kirim password wali ke email
+                Mail::to($wali->email)->send(new WaliAccountCreated($wali, $generatedPassword, $user->name));
+            }
+            
+            // Update wali_id di santri
+            $santri->wali_id = $wali->id;
+            $santri->save();
+        }
+    
+        // Kirim email notifikasi ke santri
+        Mail::to($user->email)->send(new SantriApprovedMail($user));
+    
+        return back()->with('success', 'Santri berhasil di-approve dan akun wali telah dibuat.');
     }
 
-    // 🔴 Tolak pendaftaran santri
+    // Tolak pendaftaran santri
     public function rejectSantri($id)
     {
-        $user = User::where('id', $id)->where('role', 'santri')->where('active', false)->firstOrFail();
+        $user = User::with('santri')->where('id', $id)->where('role', 'santri')->where('active', false)->firstOrFail();
 
-        // Hapus data santri & user (otomatis juga hapus relasi santri jika onDelete cascade)
+        // Hapus data santri & user (otomatis juga hapus relasi santri )
         $user->delete();
 
         return back()->with('success', 'Pendaftaran santri berhasil ditolak.');

@@ -21,9 +21,9 @@ class WaliAccountCreated extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(User $waliUser, string $password, string $santriName)
+    public function __construct(User $waliName, string $password, string $santriName)
     {
-        $this->waliUser = $waliUser;
+        $this->waliUser = $waliName;
         $this->password = $password;
         $this->santriName = $santriName;
     }
