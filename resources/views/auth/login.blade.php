@@ -1,87 +1,203 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | Kantin PIT</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        }
+
+        .card-shadow {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        }
+
+        .input-focus:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            transform: translateY(-1px);
+        }
+    </style>
 </head>
-<body class="bg-gray-100">
+
+<body class="min-h-screen">
     <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-lg shadow-md">
-            <div>
-                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Login</h2>
-                <p class="mt-2 text-center text-sm text-gray-600">
-                    Silahkan masukkan email dan password Anda
-                </p>
+        <div class="max-w-md w-full">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="mx-auto h-12 w-12 bg-white rounded-xl flex items-center justify-center mb-4">
+                    <i class="fas fa-utensils text-blue-600 text-xl"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-white">Kantin PIT</h2>
+                <p class="mt-2 text-blue-100">Masuk ke akun Anda</p>
             </div>
 
-            @if (session('error'))
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                    <span class="block sm:inline">{{ session('error') }}</span>
-                </div>
-            @endif
-
-            @if (session('success'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-                    <span class="block sm:inline">{{ session('success') }}</span>
-                </div>
-            @endif
-
-            <form class="mt-8 space-y-6" method="POST" action="{{ route('login') }}">
-                @csrf
-
-                <div class="rounded-md shadow-sm space-y-4">
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                        <input id="email" name="email" type="email" required 
-                            class="appearance-none relative block w-full px-3 py-2 border border-gray-300 
-                            placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 
-                            focus:border-blue-500 focus:z-10 sm:text-sm @error('email') border-red-500 @enderror" 
-                            value="{{ old('email') }}" placeholder="email@example.com">
-                        @error('email')
-                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                        <input id="password" name="password" type="password" required 
-                            class="appearance-none relative block w-full px-3 py-2 border border-gray-300 
-                            placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 
-                            focus:border-blue-500 focus:z-10 sm:text-sm @error('password') border-red-500 @enderror" 
-                            placeholder="Masukkan password">
-                        @error('password')
-                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                        @enderror
+            <!-- Login Card -->
+            <div class="bg-white rounded-xl card-shadow p-8">
+                <!-- Alert Messages -->
+                <div id="error-message"
+                    class="hidden mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                    <div class="flex items-center">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        <span id="error-text"></span>
                     </div>
                 </div>
 
-                <div>
-                    <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent 
-                        text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 
-                        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        <span class="absolute left-0 inset-y-0 flex items-center pl-3">
-                            <i class="fas fa-sign-in-alt"></i>
-                        </span>
+                <div id="success-message"
+                    class="hidden mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        <span id="success-text"></span>
+                    </div>
+                </div>
+
+                <!-- Form -->
+                <form action="{{ route('login') }}" method="POST" class="space-y-6">
+                    @csrf
+                    <!-- Email Field -->
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                            Email
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-envelope text-gray-400"></i>
+                            </div>
+                            <input id="email" name="email" type="email" required
+                                class="input-focus block w-full pl-10 pr-3 py-3 border border-gray-300 
+                                rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none transition-all"
+                                placeholder="email@example.com">
+                        </div>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                            Password
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                            <input id="password" name="password" type="password" required
+                                class="input-focus block w-full pl-10 pr-10 py-3 border border-gray-300 
+                                rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none transition-all"
+                                placeholder="Masukkan password">
+                            <button type="button" onclick="togglePassword()"
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
+                                <i id="password-toggle" class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Remember & Forgot -->
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <input id="remember-me" name="remember-me" type="checkbox"
+                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="remember-me" class="ml-2 block text-sm text-gray-700">
+                                Ingat saya
+                            </label>
+                        </div>
+                        <a href="#" class="text-sm text-blue-600 hover:text-blue-500">
+                            Lupa password?
+                        </a>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit"
+                        class="btn-primary w-full flex justify-center items-center py-3 px-4 
+                        text-sm font-medium rounded-lg text-white shadow-sm">
+                        <i class="fas fa-sign-in-alt mr-2"></i>
                         Masuk
                     </button>
-                </div>
+                </form>
 
-                <div class="text-center mt-4">
+                <!-- Register Link -->
+                <div class="mt-6 text-center">
                     <p class="text-sm text-gray-600">
-                        Belum punya akun? 
-                        <a href="{{ route('auth.register') }}" class="font-medium text-blue-600 hover:text-blue-500">
+                        Belum punya akun?
+                        <a href="{{ route('register') }}" class="font-medium text-blue-600 hover:text-blue-500">
                             Daftar sebagai santri
                         </a>
                     </p>
                 </div>
-            </form>
+            </div>
+
+            <!-- Footer -->
+            <div class="mt-8 text-center">
+                <p class="text-blue-100 text-sm">
+                    &copy; <span id="current-year"></span> Kantin PIT. All rights reserved.
+                </p>
+            </div>
         </div>
     </div>
 
-    <footer class="bg-white py-4 text-center text-gray-500 text-sm">
-        <p>&copy; {{ date('Y') }} Kantin PIT. All rights reserved.</p>
-    </footer>
+    <script>
+        // Set current year
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('password-toggle');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+
+        // Show message function
+        function showMessage(type, message) {
+            const errorDiv = document.getElementById('error-message');
+            const successDiv = document.getElementById('success-message');
+            const errorText = document.getElementById('error-text');
+            const successText = document.getElementById('success-text');
+
+            errorDiv.classList.add('hidden');
+            successDiv.classList.add('hidden');
+
+            if (type === 'error') {
+                errorText.textContent = message;
+                errorDiv.classList.remove('hidden');
+            } else if (type === 'success') {
+                successText.textContent = message;
+                successDiv.classList.remove('hidden');
+            }
+
+            setTimeout(() => {
+                errorDiv.classList.add('hidden');
+                successDiv.classList.add('hidden');
+            }, 4000);
+        }
+    </script>
+    @if (session('success'))
+        <script>
+            showMessage('success', '{{ session('success') }}');
+        </script>
+    @endif
 </body>
+
 </html>

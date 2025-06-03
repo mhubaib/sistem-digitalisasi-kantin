@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
+
     // Tampilkan daftar santri yang belum di-approve (admin)
     public function index()
     {
@@ -33,7 +34,7 @@ class AuthController extends Controller
         $request->validate([
             'name'         => 'required|string|max:255',
             'email'        => 'required|email|unique:users,email',
-            'password'     =>'required|min:6|confirmed',
+            'password'     => 'required|min:6|confirmed',
             'wali_email'   => 'required|email|different:email',
         ]);
 
@@ -45,15 +46,15 @@ class AuthController extends Controller
             'role'     => 'santri',
             'active'   => false,
         ]);
-    
+
         // Simpan data santri dengan wali_email (tanpa membuat akun wali dulu)
-        Santri::create([
+        $santri = Santri::create([
             'user_id' => $user->id,
             'wali_id' => null, // Akan diisi nanti saat approval
             'status' => 'pending',
             'wali_email' => $request->wali_email,
         ]);
-    
+
         return redirect()->route('auth.login')->with('success', 'Registrasi berhasil. Tunggu persetujuan admin.');
     }
 
@@ -108,7 +109,7 @@ class AuthController extends Controller
     public function showPendingSantri()
     {
         $santris = User::where('role', 'santri')->where('active', false)->get();
-        return view('admin.approval', compact('santris'));
+        return view('<admin class="santri"></admin>approvals', compact('santris'));
     }
 
     // Approve santri oleh admin
@@ -117,15 +118,15 @@ class AuthController extends Controller
         $user = User::with('santri')->where('id', $id)->where('role', 'santri')->firstOrFail();
         $user->active = true;
         $user->save();
-    
+
         // Update status santri
         if ($user->santri) {
             $santri = $user->santri;
             $santri->status = 'approved';
-            
+
             // Buat akun wali jika belum ada
             $wali = User::where('email', $santri->wali_email)->where('role', 'wali')->first();
-            
+
             if (!$wali) {
                 // Buat password wali secara acak (8 karakter acak)
                 $generatedPassword = Str::random(8);
@@ -136,19 +137,19 @@ class AuthController extends Controller
                     'role'     => 'wali',
                     'active'   => true,
                 ]);
-                
+
                 // Kirim password wali ke email
                 Mail::to($wali->email)->send(new WaliAccountCreated($wali, $generatedPassword, $user->name));
             }
-            
+
             // Update wali_id di santri
             $santri->wali_id = $wali->id;
             $santri->save();
+
+            // Kirim email notifikasi ke santri
+            Mail::to($user->email)->send(new SantriApprovedMail($user));
         }
-    
-        // Kirim email notifikasi ke santri
-        Mail::to($user->email)->send(new SantriApprovedMail($user));
-    
+
         return back()->with('success', 'Santri berhasil di-approve dan akun wali telah dibuat.');
     }
 

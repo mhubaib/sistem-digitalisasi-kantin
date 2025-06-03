@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('santri_id')->constrained('santris')->onDelete('cascade')->nullable();
+            $table->foreignId('santri_id')->nullable()->constrained('santris')->onDelete('cascade');
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade'); // kasir/admin
             $table->decimal('total', 12, 2);
             $table->enum('payment_type', ['saldo', 'cash']);

@@ -1,6 +1,6 @@
 @extends('../layouts.admin')
 
-@section('title', 'Tambah Produk Baru')
+@section('title', 'Edit Produk')
 
 @section('content')
 <div class="container mx-auto max-w-4xl">
@@ -16,7 +16,7 @@
             <li>
                 <div class="flex items-center">
                     <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
-                    <span class="text-sm font-medium text-gray-500">Tambah Produk</span>
+                    <span class="text-sm font-medium text-gray-500">Edit Produk</span>
                 </div>
             </li>
         </ol>
@@ -27,12 +27,12 @@
         <div class="px-6 py-4 border-b border-gray-200">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
-                    <div class="bg-blue-100 p-2 rounded-lg">
-                        <i class="fas fa-plus text-blue-600 text-xl"></i>
+                    <div class="bg-orange-100 p-2 rounded-lg">
+                        <i class="fas fa-edit text-orange-600 text-xl"></i>
                     </div>
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-800">Tambah Produk Baru</h1>
-                        <p class="text-gray-600 mt-1">Lengkapi form di bawah untuk menambahkan produk baru</p>
+                        <h1 class="text-2xl font-bold text-gray-800">Edit Produk</h1>
+                        <p class="text-gray-600 mt-1">Ubah informasi produk {{ $product->name }}</p>
                     </div>
                 </div>
                 <a href="{{ route('admin.product.index') }}" 
@@ -46,8 +46,9 @@
 
     <!-- Main Form -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-        <form action="{{ route('admin.product.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+        <form action="{{ route('admin.product.update', $product->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
+            @method('PUT')
             
             <div class="px-6 py-6">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -55,27 +56,30 @@
                     <div class="lg:col-span-1">
                         <div class="sticky top-6">
                             <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                                <i class="fas fa-image mr-2 text-blue-600"></i>
+                                <i class="fas fa-image mr-2 text-orange-600"></i>
                                 Gambar Produk
                             </h3>
                             
                             <!-- Image Upload Area -->
-                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
-                                <div id="imagePreview" class="hidden">
-                                    <img id="previewImg" src="" alt="Preview" class="max-w-full h-48 object-cover rounded-lg mx-auto mb-4">
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-orange-400 transition-colors">
+                                <div id="imagePreview" class="{{ $product->image ? '' : 'hidden' }}">
+                                    <img id="previewImg" 
+                                         src="{{ $product->image ? asset('storage/' . $product->image) : '' }}" 
+                                         alt="Preview" 
+                                         class="max-w-full h-48 object-cover rounded-lg mx-auto mb-4">
                                     <button type="button" onclick="removeImage()" class="text-red-600 hover:text-red-700 text-sm">
                                         <i class="fas fa-trash mr-1"></i>
                                         Hapus Gambar
                                     </button>
                                 </div>
                                 
-                                <div id="uploadArea">
+                                <div id="uploadArea" class="{{ $product->image ? 'hidden' : '' }}">
                                     <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
                                         <i class="fas fa-cloud-upload-alt text-2xl text-gray-400"></i>
                                     </div>
                                     <h4 class="text-lg font-medium text-gray-700 mb-2">Upload Gambar Produk</h4>
                                     <p class="text-sm text-gray-500 mb-4">PNG, JPG hingga 2MB</p>
-                                    <label for="image" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg cursor-pointer transition-colors inline-block">
+                                    <label for="image" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg cursor-pointer transition-colors inline-block">
                                         <i class="fas fa-plus mr-2"></i>
                                         Pilih Gambar
                                     </label>
@@ -88,10 +92,19 @@
                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                             
+                            <!-- Current Image Info -->
+                            @if($product->image)
+                                <div class="mt-4 bg-green-50 border border-green-200 rounded-lg p-4">
+                                    <h4 class="text-sm font-medium text-green-800 mb-2">Gambar Saat Ini:</h4>
+                                    <p class="text-xs text-green-700">{{ basename($product->image) }}</p>
+                                    <p class="text-xs text-green-600 mt-1">Biarkan kosong jika tidak ingin mengubah gambar</p>
+                                </div>
+                            @endif
+                            
                             <!-- Upload Tips -->
-                            <div class="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
-                                <h4 class="text-sm font-medium text-blue-800 mb-2">Tips Upload Gambar:</h4>
-                                <ul class="text-xs text-blue-700 space-y-1">
+                            <div class="mt-4 bg-orange-50 border border-orange-200 rounded-lg p-4">
+                                <h4 class="text-sm font-medium text-orange-800 mb-2">Tips Upload Gambar:</h4>
+                                <ul class="text-xs text-orange-700 space-y-1">
                                     <li>• Gunakan gambar dengan rasio 1:1 untuk hasil terbaik</li>
                                     <li>• Ukuran minimum 300x300 pixel</li>
                                     <li>• Format yang didukung: JPG, PNG</li>
@@ -104,7 +117,7 @@
                     <!-- Right Column - Product Details -->
                     <div class="lg:col-span-2 space-y-6">
                         <h3 class="text-lg font-semibold text-gray-800 flex items-center">
-                            <i class="fas fa-info-circle mr-2 text-blue-600"></i>
+                            <i class="fas fa-info-circle mr-2 text-orange-600"></i>
                             Informasi Produk
                         </h3>
 
@@ -117,9 +130,9 @@
                                 <input type="text" 
                                        id="name" 
                                        name="name" 
-                                       value="{{ old('name') }}"
+                                       value="{{ old('name', $product->name) }}"
                                        placeholder="Masukkan nama produk..."
-                                       class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all @error('name') border-red-500 @enderror">
+                                       class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all @error('name') border-red-500 @enderror">
                                 <i class="fas fa-tag absolute left-3 top-4 text-gray-400"></i>
                             </div>
                             @error('name')
@@ -138,14 +151,14 @@
                             <div class="relative">
                                 <select id="category" 
                                         name="category" 
-                                        class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white transition-all @error('category') border-red-500 @enderror">
+                                        class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none bg-white transition-all @error('category') border-red-500 @enderror">
                                     <option value="">Pilih Kategori</option>
-                                    <option value="makanan" {{ old('category') == 'makanan' ? 'selected' : '' }}>Makanan</option>
-                                    <option value="minuman" {{ old('category') == 'minuman' ? 'selected' : '' }}>Minuman</option>
-                                    <option value="snack" {{ old('category') == 'snack' ? 'selected' : '' }}>Snack</option>
-                                    <option value="kebutuhan_harian" {{ old('category') == 'kebutuhan_harian' ? 'selected' : '' }}>Kebutuhan Harian</option>
-                                    <option value="alat_tulis" {{ old('category') == 'alat_tulis' ? 'selected' : '' }}>Alat Tulis</option>
-                                    <option value="lainnya" {{ old('category') == 'lainnya' ? 'selected' : '' }}>Lainnya</option>
+                                    <option value="makanan" {{ old('category', $product->category) == 'makanan' ? 'selected' : '' }}>Makanan</option>
+                                    <option value="minuman" {{ old('category', $product->category) == 'minuman' ? 'selected' : '' }}>Minuman</option>
+                                    <option value="snack" {{ old('category', $product->category) == 'snack' ? 'selected' : '' }}>Snack</option>
+                                    <option value="kebutuhan_harian" {{ old('category', $product->category) == 'kebutuhan_harian' ? 'selected' : '' }}>Kebutuhan Harian</option>
+                                    <option value="alat_tulis" {{ old('category', $product->category) == 'alat_tulis' ? 'selected' : '' }}>Alat Tulis</option>
+                                    <option value="lainnya" {{ old('category', $product->category) == 'lainnya' ? 'selected' : '' }}>Lainnya</option>
                                 </select>
                                 <i class="fas fa-list-alt absolute left-3 top-4 text-gray-400"></i>
                                 <i class="fas fa-chevron-down absolute right-3 top-4 text-gray-400"></i>
@@ -169,11 +182,11 @@
                                     <input type="number" 
                                            id="price" 
                                            name="price" 
-                                           value="{{ old('price') }}"
+                                           value="{{ old('price', $product->price) }}"
                                            placeholder="0"
                                            min="0"
                                            step="0.01"
-                                           class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all @error('price') border-red-500 @enderror">
+                                           class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all @error('price') border-red-500 @enderror">
                                     <span class="absolute left-3 top-3 text-gray-500 font-medium">Rp</span>
                                 </div>
                                 @error('price')
@@ -193,10 +206,10 @@
                                     <input type="number" 
                                            id="stock" 
                                            name="stock" 
-                                           value="{{ old('stock') }}"
+                                           value="{{ old('stock', $product->stock) }}"
                                            placeholder="0"
                                            min="0"
-                                           class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all @error('stock') border-red-500 @enderror">
+                                           class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all @error('stock') border-red-500 @enderror">
                                     <i class="fas fa-boxes absolute left-3 top-4 text-gray-400"></i>
                                 </div>
                                 @error('stock')
@@ -218,7 +231,7 @@
                                           name="description" 
                                           rows="4"
                                           placeholder="Masukkan deskripsi produk..."
-                                          class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none">{{ old('description') }}</textarea>
+                                          class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all resize-none">{{ old('description', $product->description) }}</textarea>
                                 <i class="fas fa-align-left absolute left-3 top-4 text-gray-400"></i>
                             </div>
                             <p class="text-xs text-gray-500">Maksimal 500 karakter</p>
@@ -229,11 +242,19 @@
                             <label class="block text-sm font-medium text-gray-700">Status Produk</label>
                             <div class="flex items-center space-x-6">
                                 <label class="flex items-center">
-                                    <input type="radio" name="status" value="active" checked class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                    <input type="radio" 
+                                           name="status" 
+                                           value="active" 
+                                           {{ old('status', $product->status) == 'active' ? 'checked' : '' }}
+                                           class="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300">
                                     <span class="ml-2 text-sm text-gray-700">Aktif</span>
                                 </label>
                                 <label class="flex items-center">
-                                    <input type="radio" name="status" value="inactive" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                    <input type="radio" 
+                                           name="status" 
+                                           value="inactive" 
+                                           {{ old('status', $product->status) == 'inactive' ? 'checked' : '' }}
+                                           class="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300">
                                     <span class="ml-2 text-sm text-gray-700">Tidak Aktif</span>
                                 </label>
                             </div>
@@ -257,9 +278,9 @@
                             Reset Form
                         </button>
                         <button type="submit" 
-                                class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg transition-colors flex items-center justify-center font-medium">
+                                class="bg-orange-600 hover:bg-orange-800 text-white px-8 py-3 rounded-lg transition-colors flex items-center justify-center font-medium">
                             <i class="fas fa-save mr-2"></i>
-                            Simpan Produk
+                            Update Produk
                         </button>
                     </div>
                 </div>
@@ -268,26 +289,26 @@
     </div>
 
     <!-- Help Section -->
-    <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-6">
-        <h4 class="text-lg font-semibold text-blue-800 mb-3 flex items-center">
+    <div class="mt-6 bg-orange-50 border border-orange-200 rounded-lg p-6">
+        <h4 class="text-lg font-semibold text-orange-800 mb-3 flex items-center">
             <i class="fas fa-lightbulb mr-2"></i>
-            Tips Menambahkan Produk
+            Tips Mengedit Produk
         </h4>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-                <h5 class="font-medium text-blue-700 mb-2">Nama Produk yang Baik:</h5>
-                <ul class="text-sm text-blue-600 space-y-1">
-                    <li>• Gunakan nama yang jelas dan mudah dipahami</li>
-                    <li>• Sertakan brand atau merek jika perlu</li>
-                    <li>• Hindari singkatan yang membingungkan</li>
+                <h5 class="font-medium text-orange-700 mb-2">Perubahan Data:</h5>
+                <ul class="text-sm text-orange-600 space-y-1">
+                    <li>• Periksa kembali data sebelum menyimpan</li>
+                    <li>• Pastikan harga dan stok sudah benar</li>
+                    <li>• Gambar lama akan diganti jika upload gambar baru</li>
                 </ul>
             </div>
             <div>
-                <h5 class="font-medium text-blue-700 mb-2">Penetapan Harga:</h5>
-                <ul class="text-sm text-blue-600 space-y-1">
-                    <li>• Pastikan harga kompetitif dan wajar</li>
-                    <li>• Pertimbangkan modal dan keuntungan</li>
-                    <li>• Cek harga pasar untuk referensi</li>
+                <h5 class="font-medium text-orange-700 mb-2">Status Produk:</h5>
+                <ul class="text-sm text-orange-600 space-y-1">
+                    <li>• Status "Tidak Aktif" akan menyembunyikan produk</li>
+                    <li>• Produk tidak aktif tidak bisa dibeli customer</li>
+                    <li>• Ubah ke "Aktif" untuk menampilkan kembali</li>
                 </ul>
             </div>
         </div>
@@ -303,7 +324,7 @@
 .form-floating input:focus + label,
 .form-floating input:not(:placeholder-shown) + label {
     transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
-    color: #3b82f6;
+    color: #ea580c;
 }
 
 /* Custom file upload styles */
@@ -318,7 +339,7 @@ input, select, textarea {
 
 input:focus, select:focus, textarea:focus {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+    box-shadow: 0 4px 12px rgba(234, 88, 12, 0.15);
 }
 
 /* Loading state for submit button */
@@ -340,6 +361,17 @@ button[type="submit"]:disabled {
 </style>
 
 <script>
+// Store original values for reset functionality
+const originalValues = {
+    name: '{{ $product->name }}',
+    category: '{{ $product->category }}',
+    price: '{{ $product->price }}',
+    stock: '{{ $product->stock }}',
+    description: '{{ $product->description ?? '' }}',
+    status: '{{ $product->status }}',
+    image: '{{ $product->image ? asset('storage/' . $product->image) : '' }}'
+};
+
 // Image preview functionality
 function previewImage(input) {
     const file = input.files[0];
@@ -389,7 +421,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (isValid) {
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan...';
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Mengupdate...';
         } else {
             e.preventDefault();
         }
@@ -470,9 +502,30 @@ function getFieldLabel(fieldName) {
 }
 
 function resetForm() {
-    if (confirm('Apakah Anda yakin ingin mereset form? Semua data yang telah diisi akan hilang.')) {
-        document.querySelector('form').reset();
-        removeImage();
+    if (confirm('Apakah Anda yakin ingin mereset form ke data asli? Semua perubahan akan hilang.')) {
+        // Reset to original values
+        document.getElementById('name').value = originalValues.name;
+        document.getElementById('category').value = originalValues.category;
+        document.getElementById('price').value = originalValues.price;
+        document.getElementById('stock').value = originalValues.stock;
+        document.getElementById('description').value = originalValues.description;
+        
+        // Reset radio buttons
+        const statusRadios = document.querySelectorAll('input[name="status"]');
+        statusRadios.forEach(radio => {
+            radio.checked = radio.value === originalValues.status;
+        });
+        
+        // Reset image
+        document.getElementById('image').value = '';
+        if (originalValues.image) {
+            document.getElementById('previewImg').src = originalValues.image;
+            document.getElementById('imagePreview').classList.remove('hidden');
+            document.getElementById('uploadArea').classList.add('hidden');
+        } else {
+            document.getElementById('imagePreview').classList.add('hidden');
+            document.getElementById('uploadArea').classList.remove('hidden');
+        }
         
         // Clear all errors
         document.querySelectorAll('.error-message').forEach(msg => msg.remove());
@@ -482,33 +535,25 @@ function resetForm() {
     }
 }
 
-// Auto-save to localStorage (optional)
-function autoSave() {
-    const formData = new FormData(document.querySelector('form'));
-    const data = {};
-    for (let [key, value] of formData.entries()) {
-        if (key !== 'image') { // Don't save file input
-            data[key] = value;
-        }
+// Warn user about unsaved changes
+let formChanged = false;
+const formInputs = document.querySelectorAll('input, select, textarea');
+formInputs.forEach(input => {
+    input.addEventListener('change', function() {
+        formChanged = true;
+    });
+});
+
+window.addEventListener('beforeunload', function(e) {
+    if (formChanged) {
+        e.preventDefault();
+        e.returnValue = '';
     }
-    localStorage.setItem('product_form_draft', JSON.stringify(data));
-}
+});
 
-// // Load draft on page load
-// window.addEventListener('load', function() {
-//     const draft = localStorage.getItem('product_form_draft');
-//     if (draft && confirm('Ditemukan draft form sebelumnya. Ingin memuat draft tersebut?')) {
-//         const data = JSON.parse(draft);
-//         Object.keys(data).forEach(key => {
-//             const field = document.querySelector(`[name="${key}"]`);
-//             if (field) {
-//                 field.value = data[key];
-//             }
-//         });
-//     }
-// });
-
-// Save draft periodically
-// setInterval(autoSave, 30000); // Save every 30 seconds
+// Reset formChanged flag on successful submit
+document.querySelector('form').addEventListener('submit', function() {
+    formChanged = false;
+});
 </script>
 @endsection

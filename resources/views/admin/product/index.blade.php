@@ -16,10 +16,6 @@
                 <i class="fas fa-plus mr-2"></i>
                 Tambah Produk
             </a>
-            <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg transition duration-200 flex items-center justify-center">
-                <i class="fas fa-filter mr-2"></i>
-                Filter
-            </button>
         </div>
     </div>
 
@@ -92,7 +88,7 @@
         </div>
     @else
         <!-- Products Grid -->
-        <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div id="productsGrid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             @foreach($products as $product)
                 <div class="product-card bg-white rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200" 
                      data-name="{{ strtolower($product->name) }}" 
@@ -101,14 +97,14 @@
                      data-stock="{{ $product->stock }}">
                     
                     <!-- Product Image -->
-                    <div class="relative overflow-hidden bg-gray-100 h-48 flex items-center justify-center">
+                    <div class="relative overflow-hidden bg-gray-100 h-36 flex items-center justify-center">
                         @if(isset($product->image) && $product->image)
                             <img src="{{ asset('storage/' . $product->image) }}" 
                                  alt="{{ $product->name }}" 
-                                 class="w-full h-full object-cover">
+                                 class="max-w-full max-h-full object-cover">
                         @else
                             <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-                                <i class="fas fa-image text-4xl text-gray-400"></i>
+                                <i class="fas fa-image text-3xl text-gray-400"></i>
                             </div>
                         @endif
                         
@@ -126,71 +122,53 @@
                         <!-- Quick Actions -->
                         <div class="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
                             <a href="{{ route('admin.product.edit', $product) }}" 
-                               class="bg-white text-gray-600 hover:text-blue-600 p-2 rounded-full shadow-md transition-colors">
-                                <i class="fas fa-edit text-sm"></i>
+                               class="bg-white text-gray-600 hover:text-blue-600 p-1.5 rounded-full shadow-md transition-colors">
+                                <i class="fas fa-edit text-xs"></i>
                             </a>
                             <form action="{{ route('admin.product.destroy', $product) }}" method="POST" class="inline">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" 
                                         onclick="return confirm('Apakah Anda yakin ingin menghapus produk ini?')"
-                                        class="bg-white text-gray-600 hover:text-red-600 p-2 rounded-full shadow-md transition-colors">
-                                    <i class="fas fa-trash text-sm"></i>
+                                        class="bg-white text-gray-600 hover:text-red-600 p-1.5 rounded-full shadow-md transition-colors">
+                                    <i class="fas fa-trash text-xs"></i>
                                 </button>
                             </form>
                         </div>
                     </div>
 
                     <!-- Product Info -->
-                    <div class="p-4">
+                    <div class="p-3">
                         <!-- Category -->
-                        <div class="mb-2">
+                        <div class="mb-1">
                             <span class="inline-block bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">
                                 {{ ucfirst($product->category) }}
                             </span>
                         </div>
 
                         <!-- Product Name -->
-                        <h3 class="font-semibold text-gray-800 mb-2 line-clamp-2 hover:text-blue-600 transition-colors">
+                        <h3 class="font-semibold text-gray-800 mb-1 line-clamp-2 hover:text-blue-600 transition-colors text-sm">
                             {{ $product->name }}
                         </h3>
 
                         <!-- Price -->
-                        <div class="mb-3">
-                            <span class="text-lg font-bold text-blue-600">
+                        <div class="mb-2">
+                            <span class="text-base font-bold text-blue-600">
                                 Rp {{ number_format($product->price, 0, ',', '.') }}
                             </span>
                         </div>
 
                         <!-- Stock Info -->
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center text-sm text-gray-500">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center text-xs text-gray-500">
                                 <i class="fas fa-box mr-1"></i>
                                 <span>Stok: {{ $product->stock }}</span>
                             </div>
                             @if($product->stock > 0)
-                                <span class="text-green-600 text-sm font-medium">Tersedia</span>
+                                <span class="text-green-600 text-xs font-medium">Tersedia</span>
                             @else
-                                <span class="text-red-600 text-sm font-medium">Habis</span>
+                                <span class="text-red-600 text-xs font-medium">Habis</span>
                             @endif
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="flex space-x-2">
-                            <button onclick="addToCart({{ $product->id }}, '{{ $product->name }}', {{ $product->price }})" 
-                                    class="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white py-2 px-3 rounded-lg transition-colors duration-200 flex items-center justify-center text-sm font-medium"
-                                    {{ $product->stock == 0 ? 'disabled' : '' }}>
-                                <i class="fas fa-shopping-cart mr-2"></i>
-                                @if($product->stock == 0)
-                                    Stok Habis
-                                @else
-                                    Keranjang
-                                @endif
-                            </button>
-                            <a href="{{ route('admin.product.show', $product) }}" 
-                               class="bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 px-3 rounded-lg transition-colors duration-200 flex items-center justify-center">
-                                <i class="fas fa-eye"></i>
-                            </a>
                         </div>
                     </div>
                 </div>
@@ -204,14 +182,6 @@
             </button>
         </div>
     @endif
-</div>
-
-<!-- Shopping Cart Toast Notification -->
-<div id="cartToast" class="fixed bottom-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full opacity-0 transition-all duration-300 z-50">
-    <div class="flex items-center">
-        <i class="fas fa-check-circle mr-2"></i>
-        <span id="cartToastMessage">Produk ditambahkan ke keranjang!</span>
-    </div>
 </div>
 
 <style>
@@ -288,56 +258,8 @@ document.addEventListener('DOMContentLoaded', function() {
     searchInput.addEventListener('input', filterProducts);
     categoryFilter.addEventListener('change', filterProducts);
     sortBy.addEventListener('change', filterProducts);
-});
 
-// Add to cart function
-function addToCart(productId, productName, productPrice) {
-    // Here you would typically make an AJAX request to add the item to cart
-    // For now, we'll just show a toast notification
-    
-    const toast = document.getElementById('cartToast');
-    const message = document.getElementById('cartToastMessage');
-    
-    message.textContent = `${productName} ditambahkan ke keranjang!`;
-    
-    // Show toast
-    toast.classList.remove('translate-x-full', 'opacity-0');
-    toast.classList.add('translate-x-0', 'opacity-100');
-    
-    // Hide toast after 3 seconds
-    setTimeout(() => {
-        toast.classList.remove('translate-x-0', 'opacity-100');
-        toast.classList.add('translate-x-full', 'opacity-0');
-    }, 3000);
-    
-    // You can add AJAX call here to actually add to cart
-    // Example:
-    /*
-    fetch('/cart/add', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        },
-        body: JSON.stringify({
-            product_id: productId,
-            quantity: 1
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Update cart counter, etc.
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-    */
-}
-
-// Auto-dismiss alerts
-document.addEventListener('DOMContentLoaded', function() {
+    // Auto-dismiss alerts
     const alerts = document.querySelectorAll('[role="alert"]');
     alerts.forEach(alert => {
         setTimeout(() => {

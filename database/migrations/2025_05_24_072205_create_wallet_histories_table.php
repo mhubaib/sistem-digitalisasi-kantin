@@ -12,13 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('wallet_histories', function (Blueprint $table) {
-            $table->id(); 
-            $table->foreignId('santri_id')->constrained('santris')->onDelete('cascade');
+            $table->id();
+            $table->foreignId('santri_id')->nullable()->constrained('santris')->onDelete('cascade');
             $table->enum('type', ['topup', 'purchase']);
             $table->enum('method', ['saldo', 'cash', 'transfer', 'manual', 'lainnya'])->nullable();
-            $table->decimal('amount', 12, 2); 
-            $table->text('description')->nullable(); 
-            $table->timestamps(); 
+            $table->decimal('amount', 12, 2);
+            $table->text('description')->nullable();
+            $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
