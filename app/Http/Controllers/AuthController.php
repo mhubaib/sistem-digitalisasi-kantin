@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use App\Models\Notification;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -53,6 +55,21 @@ class AuthController extends Controller
             'wali_id' => null, // Akan diisi nanti saat approval
             'status' => 'pending',
             'wali_email' => $request->wali_email,
+        ]);
+
+        // Tambahkan notifikasi untuk admin
+        $notification = Notification::createForAdmin(
+            'santri_registration',
+            'Pendaftaran Santri Baru',
+            "Santri baru {$user->name} telah mendaftar dan menunggu persetujuan.",
+            ['santri_id' => $user->id]
+        );
+
+        // Log notification creation
+        Log::info('Santri Registration Notification Created', [
+            'santri_name' => $user->name,
+            'santri_email' => $user->email,
+            'notification_id' => $notification ? $notification->id : 'No notification created'
         ]);
 
         return redirect()->route('auth.login')->with('success', 'Registrasi berhasil. Tunggu persetujuan admin.');

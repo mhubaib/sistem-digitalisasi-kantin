@@ -29,7 +29,8 @@
                 <div class="p-4 border-b border-gray-100">
                     <div class="flex items-center justify-between">
                         <h3 class="text-lg font-semibold text-gray-800">Notifications</h3>
-                        <button class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">Mark all read</button>
+                        <button onclick="markAllNotificationsAsRead()"
+                            class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">Mark all read</button>
                     </div>
                 </div>
 
@@ -230,6 +231,16 @@
         background: white;
         border-radius: 11px;
     }
+
+    .translate-x-full {
+        transform: translateX(100%);
+        transition: transform 0.3s, opacity 0.3s;
+    }
+
+    .opacity-0 {
+        opacity: 0 !important;
+        transition: opacity 0.3s;
+    }
 </style>
 
 <script>
@@ -306,6 +317,118 @@
         });
     }
 
+    // Make fetchNotifications globally accessible
+    window.fetchNotifications = function() {
+        const notificationsContainer = document.getElementById('notifications-container');
+        const notificationBadge = document.getElementById('notification-badge');
+        const csrfToken = document.querySelector('meta[name="csrf-token"]');
+
+        notificationsContainer.innerHTML = `
+            <div class="p-4 text-center text-gray-500">
+                <i class="fas fa-spinner fa-spin mr-2"></i>Memuat notifikasi...
+            </div>
+        `;
+
+        fetch('/admin/notifications', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    ...(csrfToken ? {
+                        'X-CSRF-TOKEN': csrfToken.getAttribute('content')
+                    } : {})
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                notificationsContainer.innerHTML = '';
+                if (!data.notifications || data.notifications.length === 0) {
+                    notificationsContainer.innerHTML = `
+                    <div class="p-4 text-center text-gray-500">
+                        Tidak ada notifikasi.
+                    </div>
+                `;
+                    notificationBadge.classList.add('hidden');
+                    notificationBadge.textContent = '0';
+                    return;
+                }
+
+                data.notifications.forEach(notification => {
+                    const item = document.createElement('div');
+                    item.className =
+                        'notification-item p-4 hover:bg-gray-50 transition-all duration-300 ease-in-out border-b border-gray-50 cursor-pointer transform';
+
+                    item.innerHTML = `
+                    <div class="flex items-start space-x-3">
+                        <div class="w-10 h-10 ${notification.bgClass} rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas ${notification.icon} ${notification.iconColor} text-sm"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-gray-800">${notification.title}</p>
+                            <p class="text-xs text-gray-500 mt-1">${notification.message}</p>
+                            <p class="text-xs text-gray-400 mt-1">${notification.created_at}</p>
+                        </div>
+                        <div class="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+                    </div>
+                `;
+
+                    item.addEventListener('click', function() {
+                        // Animasi slide out
+                        item.classList.add('translate-x-full', 'opacity-0');
+                        setTimeout(() => {
+                            fetch(`/admin/notifications/${notification.id}/read`, {
+                                method: 'PATCH',
+                                headers: {
+                                    'X-CSRF-TOKEN': csrfToken.getAttribute(
+                                        'content')
+                                }
+                            }).then(() => {
+                                item.remove();
+                                fetchNotifications();
+                            });
+                        }, 300);
+                    });
+
+                    notificationsContainer.appendChild(item);
+                });
+
+                notificationBadge.textContent = data.total_unread > 99 ? '99+' : data.total_unread;
+                notificationBadge.classList.remove('hidden');
+            })
+            .catch(error => {
+                notificationsContainer.innerHTML = `
+                <div class="p-4 text-center text-red-500">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    Gagal memuat notifikasi: ${error.message}
+                </div>`;
+            });
+    };
+
+    // Function to mark all notifications as read
+    window.markAllNotificationsAsRead = function() {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]');
+        const notificationItems = document.querySelectorAll('.notification-item');
+        notificationItems.forEach(item => {
+            item.classList.add('translate-x-full', 'opacity-0');
+        });
+
+        fetch('/admin/notifications/mark-all-read', {
+                method: 'PATCH',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken.getAttribute('content'),
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                setTimeout(() => {
+                    fetchNotifications();
+                }, 300);
+            });
+    };
+
     document.addEventListener('DOMContentLoaded', function() {
         // Notifications dropdown functionality
         const notificationToggle = document.querySelector('.notification-toggle');
@@ -315,6 +438,20 @@
         // Profile dropdown functionality
         const profileToggle = document.querySelector('.profile-toggle');
         const profileMenu = document.getElementById('profile-menu');
+
+        // Fix for "Mark all read" button
+        const markAllReadButton = Array.from(document.querySelectorAll('button')).find(
+            button => button.textContent.trim() === 'Mark all read'
+        );
+
+        if (markAllReadButton) {
+            markAllReadButton.addEventListener('click', function() {
+                document.querySelectorAll('.notification-item .w-2.h-2').forEach(dot => {
+                    dot.remove();
+                });
+                updateNotificationBadge(0);
+            });
+        }
 
         // Toggle notifications dropdown
         notificationToggle.addEventListener('click', function(e) {
@@ -384,146 +521,8 @@
             }
         }
 
-        // Mark notification as read
-        document.querySelectorAll('.notification-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const unreadDot = this.querySelector(
-                    '.w-2.h-2.bg-blue-500, .w-2.h-2.bg-green-500');
-                if (unreadDot) {
-                    unreadDot.remove();
-                    // Update badge count
-                    const currentCount = parseInt(notificationBadge.textContent);
-                    updateNotificationBadge(currentCount - 1);
-                }
-            });
-        });
-
-        // Mark all as read functionality
-        document.querySelector('button:contains("Mark all read")').addEventListener('click', function() {
-            document.querySelectorAll('.notification-item .w-2.h-2').forEach(dot => {
-                dot.remove();
-            });
-            updateNotificationBadge(0);
-        });
-
-        // Update JavaScript to fetch notifications dynamically
-        function fetchNotifications() {
-            const notificationsContainer = document.getElementById('notifications-container');
-            const notificationBadge = document.getElementById('notification-badge');
-            const csrfToken = document.querySelector('meta[name="csrf-token"]');
-
-            // Debug: Cek CSRF Token
-            console.log('CSRF Token:', csrfToken ? csrfToken.getAttribute('content') : 'CSRF Token not found');
-
-            // Tampilkan loading
-            notificationsContainer.innerHTML = `
-                <div class="p-4 text-center text-gray-500">
-                    <i class="fas fa-spinner fa-spin mr-2"></i>Memuat notifikasi...
-                </div>
-            `;
-
-            // Tambahkan header untuk autentikasi
-            fetch('/admin/notifications', {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                        ...(csrfToken ? {
-                            'X-CSRF-TOKEN': csrfToken.getAttribute('content')
-                        } : {})
-                    },
-                    credentials: 'same-origin' // Penting untuk mengirim cookie autentikasi
-                })
-                .then(response => {
-                    console.log('Response status:', response.status);
-                    console.log('Response headers:', Object.fromEntries(response.headers.entries()));
-
-                    // Debug: Cek tipe konten
-                    const contentType = response.headers.get('content-type');
-                    console.log('Content Type:', contentType);
-
-                    if (!response.ok) {
-                        // Coba ambil pesan error dari response
-                        return response.text().then(text => {
-                            console.error('Error response:', text);
-                            throw new Error('Gagal mengambil notifikasi: ' + text);
-                        });
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Notification data:', data);
-
-                    // Kosongkan kontainer notifikasi
-                    notificationsContainer.innerHTML = '';
-
-                    // Jika tidak ada notifikasi
-                    if (!data.notifications || data.notifications.length === 0) {
-                        console.log('No notifications found');
-                        notificationsContainer.innerHTML = `
-                        <div class="p-4 text-center text-gray-500">
-                            Tidak ada notifikasi.
-                        </div>
-                    `;
-                        notificationBadge.classList.add('hidden');
-                        notificationBadge.textContent = '0';
-                        return;
-                    }
-
-                    // Tampilkan notifikasi
-                    data.notifications.forEach(notification => {
-                        const item = document.createElement('div');
-                        item.className =
-                            'notification-item p-4 hover:bg-gray-50 transition-colors duration-150 border-b border-gray-50 cursor-pointer';
-
-                        item.innerHTML = `
-                        <div class="flex items-start space-x-3">
-                            <div class="w-10 h-10 ${notification.bgClass} rounded-full flex items-center justify-center flex-shrink-0">
-                                <i class="fas ${notification.icon} ${notification.iconColor} text-sm"></i>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-gray-800">${notification.title}</p>
-                                <p class="text-xs text-gray-500 mt-1">${notification.message}</p>
-                                <p class="text-xs text-gray-400 mt-1">${notification.created_at}</p>
-                            </div>
-                            <div class="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
-                        </div>
-                    `;
-
-                        // Tambahkan event listener untuk menandai notifikasi sebagai dibaca
-                        item.addEventListener('click', function() {
-                            fetch(`/notifications/${notification.id}/read`, {
-                                method: 'PATCH',
-                                headers: {
-                                    'X-CSRF-TOKEN': document.querySelector(
-                                        'meta[name="csrf-token"]').getAttribute(
-                                        'content')
-                                }
-                            }).then(() => {
-                                fetchNotifications(); // Refresh notifikasi
-                            });
-                        });
-
-                        notificationsContainer.appendChild(item);
-                    });
-
-                    // Tampilkan badge dengan jumlah notifikasi
-                    notificationBadge.textContent = data.total_unread > 99 ? '99+' : data.total_unread;
-                    notificationBadge.classList.remove('hidden');
-                })
-                .catch(error => {
-                    console.error('Error fetching notifications:', error);
-                    notificationsContainer.innerHTML = `
-                    <div class="p-4 text-center text-red-500">
-                        <i class="fas fa-exclamation-triangle mr-2"></i>
-                        Gagal memuat notifikasi: ${error.message}
-                    </div>
-                `;
-                });
-        }
-
         // Panggil fungsi saat halaman dimuat
-        document.addEventListener('DOMContentLoaded', fetchNotifications);
+        fetchNotifications();
 
         // Refresh notifikasi setiap 30 detik
         setInterval(fetchNotifications, 30000);
