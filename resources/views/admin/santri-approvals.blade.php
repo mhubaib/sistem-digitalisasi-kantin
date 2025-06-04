@@ -101,7 +101,7 @@
             
             <!-- Enhanced Table for Desktop -->
             <div class="hidden lg:block overflow-x-auto">
-                <table class="min-w-full">
+                <table class="min-w-full table-auto">
                     <thead>
                         <tr class="bg-gradient-to-r from-gray-50 to-indigo-50/30 border-b border-gray-100">
                             <th class="text-left py-4 px-6 font-semibold text-gray-700 uppercase tracking-wide text-sm">

@@ -2,19 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Santri;
-use App\Models\Transaction;
+use App\Models\Notification;
 use App\Models\Product;
+use App\Models\Santri;
 use App\Models\Topup;
+use App\Models\Transaction;
 use App\Models\TransactionItem;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function admin()
     {
+        $notifications = Notification::where('user_id', Auth::id())
+            ->where('is_read', false)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         return view('admin.dashboard', [
             'totalSantri' => Santri::count(),
             'totalSaldo' => Santri::sum('saldo'),
@@ -23,6 +29,7 @@ class DashboardController extends Controller
                 ->latest()
                 ->take(5)
                 ->get(),
+            'notifications' => $notifications,
         ]);
     }
 

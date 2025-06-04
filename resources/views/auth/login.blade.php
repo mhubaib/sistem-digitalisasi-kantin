@@ -198,6 +198,16 @@
             showMessage('success', '{{ session('success') }}');
         </script>
     @endif
+    @if (session('warning'))
+        <script>
+            showMessage('error', '{{ session('warning') }}');
+        </script>
+    @endif
+    @if (session('error'))
+        <script>
+            showMessage('error', '{{ session('error') }}');
+        </script>
+    @endif
 </body>
 
 </html>

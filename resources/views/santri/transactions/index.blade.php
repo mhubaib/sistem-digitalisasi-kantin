@@ -5,7 +5,7 @@
 @section('content')
     <div class="container mx-auto">
         <!-- Header Section with Enhanced Design -->
-        <div class="bg-gradient-to-r from-green-600 to-emerald-700 rounded-2xl p-6 mb-8 text-white shadow-xl">
+        <div class="bg-gradient-to-r from-blue-700 to-emerald-700 rounded-2xl p-6 mb-8 text-white shadow-xl">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
                 <div>
                     <div class="flex items-center space-x-3 mb-2">
@@ -57,7 +57,7 @@
 
                     <div class="flex space-x-3">
                         <button type="submit"
-                            class="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center space-x-2">
+                            class="bg-gradient-to-r from-blue-700 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center space-x-2">
                             <i class="fas fa-search"></i>
                             <span>Filter</span>
                         </button>
@@ -104,7 +104,7 @@
                     <p class="text-gray-500 mb-6">Anda belum memiliki riwayat transaksi. Mulai berbelanja untuk melihat
                         riwayat di sini.</p>
                     <a href="{{ route('santri.product.index') }}"
-                        class="inline-flex items-center space-x-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                        class="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-700 to-emerald-600 hover:from-green-700 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
                         <i class="fas fa-shopping-bag"></i>
                         <span>Mulai Belanja</span>
                     </a>

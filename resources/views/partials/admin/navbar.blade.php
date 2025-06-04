@@ -1,4 +1,4 @@
-<header class="bg-white border-b shadow-sm px-4 md:px-8 py-4 flex justify-between items-center relative">
+<header class="bg-white px-4 md:px-8 py-4 flex justify-between items-center relative">
     <div class="flex items-center">
         <!-- Hamburger menu untuk toggle sidebar -->
         <button
@@ -19,9 +19,50 @@
             <button
                 class="notification-toggle relative p-2 text-gray-500 hover:text-indigo-600 hover:bg-gray-50 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                 <i class="fas fa-bell text-lg"></i>
-                <span id="notification-badge"
-                    class="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold leading-none text-white bg-gradient-to-r from-red-500 to-pink-500 rounded-full shadow-lg animate-pulse">1</span>
+                @if (isset($notifications) && $notifications->count() > 0)
+                    <span id="notification-badge"
+                        class="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold leading-none text-white bg-gradient-to-r from-red-500 to-pink-500 rounded-full shadow-lg animate-pulse">
+                        {{ $notifications->count() }}
+                    </span>
+                @endif
             </button>
+
+            <script>
+                // Function to update notification badge
+                function updateNotificationBadge() {
+                    fetch('{{ route('admin.notifications.index') }}')
+                        .then(response => response.json())
+                        .then(data => {
+                            const badge = document.getElementById('notification-badge');
+                            if (data.total_unread > 0) {
+                                if (!badge) {
+                                    // Create badge if it doesn't exist
+                                    const newBadge = document.createElement('span');
+                                    newBadge.id = 'notification-badge';
+                                    newBadge.className =
+                                        'absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold leading-none text-white bg-gradient-to-r from-red-500 to-pink-500 rounded-full shadow-lg animate-pulse';
+                                    newBadge.textContent = data.total_unread;
+                                    document.querySelector('.notification-toggle').appendChild(newBadge);
+                                } else {
+                                    // Update existing badge
+                                    badge.textContent = data.total_unread;
+                                }
+                            } else {
+                                // Remove badge if no notifications
+                                if (badge) {
+                                    badge.remove();
+                                }
+                            }
+                        })
+                        .catch(error => console.error('Error fetching notifications:', error));
+                }
+
+                // Update notifications every 30 seconds
+                setInterval(updateNotificationBadge, 30000);
+
+                // Initial update
+                document.addEventListener('DOMContentLoaded', updateNotificationBadge);
+            </script>
 
             <!-- Notifications Dropdown Menu -->
             <div id="notifications-menu"
@@ -29,7 +70,7 @@
                 <div class="p-4 border-b border-gray-100">
                     <div class="flex items-center justify-between">
                         <h3 class="text-lg font-semibold text-gray-800">Notifications</h3>
-                        <button onclick="markAllNotificationsAsRead()"
+                        <button onclick="markAllAsRead()"
                             class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">Mark all read</button>
                     </div>
                 </div>
@@ -208,8 +249,19 @@
     }
 
     /* Hover effects for notification items */
+    .notification-item {
+        transition: all 0.3s ease-in-out;
+    }
+
     .notification-item:hover {
         transform: translateX(2px);
+    }
+
+    /* Slide out animation for notifications */
+    .notification-item.slide-out {
+        transform: translateX(100%);
+        opacity: 0;
+        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
     }
 
     /* Enhanced focus states */
@@ -329,7 +381,7 @@
             </div>
         `;
 
-        fetch('/admin/notifications', {
+        fetch('/admin/notifications?_=' + new Date().getTime(), {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
@@ -342,6 +394,7 @@
             })
             .then(response => response.json())
             .then(data => {
+                console.log('Fetched notifications:', data);
                 notificationsContainer.innerHTML = '';
                 if (!data.notifications || data.notifications.length === 0) {
                     notificationsContainer.innerHTML = `
@@ -349,15 +402,17 @@
                         Tidak ada notifikasi.
                     </div>
                 `;
-                    notificationBadge.classList.add('hidden');
-                    notificationBadge.textContent = '0';
+                    if (notificationBadge) {
+                        notificationBadge.classList.add('hidden');
+                        notificationBadge.textContent = '0';
+                    }
                     return;
                 }
 
                 data.notifications.forEach(notification => {
                     const item = document.createElement('div');
                     item.className =
-                        'notification-item p-4 hover:bg-gray-50 transition-all duration-300 ease-in-out border-b border-gray-50 cursor-pointer transform';
+                        'notification-item p-4 hover:bg-gray-50 transition-all duration-300 ease-in-out border-b border-gray-50 cursor-pointer';
 
                     item.innerHTML = `
                     <div class="flex items-start space-x-3">
@@ -374,8 +429,10 @@
                 `;
 
                     item.addEventListener('click', function() {
-                        // Animasi slide out
-                        item.classList.add('translate-x-full', 'opacity-0');
+                        // Add slide-out class for animation
+                        item.classList.add('slide-out');
+
+                        // Wait for animation to complete before removing
                         setTimeout(() => {
                             fetch(`/admin/notifications/${notification.id}/read`, {
                                 method: 'PATCH',
@@ -387,14 +444,16 @@
                                 item.remove();
                                 fetchNotifications();
                             });
-                        }, 300);
+                        }, 300); // Match this with the CSS transition duration
                     });
 
                     notificationsContainer.appendChild(item);
                 });
 
-                notificationBadge.textContent = data.total_unread > 99 ? '99+' : data.total_unread;
-                notificationBadge.classList.remove('hidden');
+                if (notificationBadge) {
+                    notificationBadge.textContent = data.total_unread > 99 ? '99+' : data.total_unread;
+                    notificationBadge.classList.remove('hidden');
+                }
             })
             .catch(error => {
                 notificationsContainer.innerHTML = `
@@ -406,11 +465,14 @@
     };
 
     // Function to mark all notifications as read
-    window.markAllNotificationsAsRead = function() {
+    window.markAllAsRead = function() {
         const csrfToken = document.querySelector('meta[name="csrf-token"]');
         const notificationItems = document.querySelectorAll('.notification-item');
+        const markAllBtn = document.querySelector('button[onclick*="markAllNotificationsAsRead"]');
+        if (markAllBtn) markAllBtn.disabled = true;
+
         notificationItems.forEach(item => {
-            item.classList.add('translate-x-full', 'opacity-0');
+            item.classList.add('slide-out');
         });
 
         fetch('/admin/notifications/mark-all-read', {
@@ -423,8 +485,10 @@
             })
             .then(response => response.json())
             .then(data => {
+                console.log('Mark all as read response:', data);
                 setTimeout(() => {
                     fetchNotifications();
+                    if (markAllBtn) markAllBtn.disabled = false;
                 }, 300);
             });
     };
@@ -514,10 +578,14 @@
         // Notification functionality
         function updateNotificationBadge(count) {
             if (count > 0) {
-                notificationBadge.textContent = count > 99 ? '99+' : count;
-                notificationBadge.classList.remove('hidden');
+                if (notificationBadge) {
+                    notificationBadge.textContent = count > 99 ? '99+' : count;
+                    notificationBadge.classList.remove('hidden');
+                }
             } else {
-                notificationBadge.classList.add('hidden');
+                if (notificationBadge) {
+                    notificationBadge.classList.add('hidden');
+                }
             }
         }
 

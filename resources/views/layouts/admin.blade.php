@@ -198,7 +198,7 @@
         </div>
 
         <!-- Navbar untuk Admin -->
-        <div class="navbar bg-white border-b">
+        <div class="navbar bg-white border-b-gray-200 shadow-lg">
             @include('partials.admin.navbar')
         </div>
 
@@ -210,7 +210,7 @@
             </main>
 
             <!-- Footer -->
-            <footer class="bg-white border-t py-4 px-4 md:px-8 text-center text-gray-500 text-sm">
+            <footer class="bg-white border-t-gray-200 shadow-lg py-4 px-4 md:px-8 text-center text-gray-500 text-sm">
                 <p>© {{ date('Y') }} Sistem Koperasi Digital Pondok. All rights reserved.</p>
             </footer>
         </div>

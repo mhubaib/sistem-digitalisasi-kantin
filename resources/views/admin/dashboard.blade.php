@@ -145,11 +145,12 @@
                         </thead>
                         <tbody class="divide-y divide-slate-100/60">
                             @forelse ($recentTransactions as $index => $trx)
-                                <tr class="hover:bg-slate-200 transition-all duration-200">
-                                    <td class="py-6 px-6 min-w-[200px] hover:border-blue-500 hover:border-l-4">
+                                <tr
+                                    class="hover:bg-slate-200 transition-all duration-200 hover:border-blue-500 hover:border-l-4">
+                                    <td class="py-6 px-6 min-w-[200px]">
                                         <div class="flex items-center space-x-4">
                                             <div
-                                                class="w-10 h-10 bg-gradient-to-br from-slate-600 to-slate-700 rounded-xl flex items-center justify-center text-white text-sm font-medium shadow-md">
+                                                class="w-10 h-10 bg-gradient-to-br from-slate-500 to-slate-800 rounded-xl flex items-center justify-center text-white text-sm font-medium shadow-md">
                                                 {{ substr($trx->santri->user->name ?? 'U', 0, 1) }}
                                             </div>
                                             <div>
