@@ -153,7 +153,7 @@
                                     <td class="py-6 px-10 min-w-[200px]">
                                         <div class="flex items-center space-x-4">
                                             <div
-                                                class="w-10 h-10 bg-gradient-to-br from-gray-600 to-gray-700 rounded-xl flex items-center justify-center text-white text-sm font-medium shadow-md">
+                                                class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white text-sm font-medium shadow-md">
                                                 {{ substr($trx->santri->user->name ?? 'U', 0, 1) }}
                                             </div>
                                             <div>
@@ -237,10 +237,10 @@
             animation: float 2s ease-in-out infinite;
         }
 
-        /* Premium Gradients */
+        /* Premium Gradients
         .bg-gradient-to-br {
             background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
-        }
+        } */
 
         /* Smooth Scrolling */
         html {
