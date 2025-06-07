@@ -59,6 +59,7 @@ class NotificationController extends Controller
     {
         $icons = [
             'santri_registration' => 'fa-user-plus',
+            'santri_transaction' => 'fa-shopping-cart',
             // Add more types as needed
         ];
         return $icons[$type] ?? 'fa-bell';
@@ -68,6 +69,7 @@ class NotificationController extends Controller
     {
         $bgClasses = [
             'santri_registration' => 'bg-green-100',
+            'santri_transaction' => 'bg-blue-100',
             // Add more types as needed
         ];
         return $bgClasses[$type] ?? 'bg-blue-100';
@@ -77,6 +79,7 @@ class NotificationController extends Controller
     {
         $iconColors = [
             'santri_registration' => 'text-green-600',
+            'santri_transaction' => 'text-blue-600',
             // Add more types as needed
         ];
         return $iconColors[$type] ?? 'text-blue-600';

@@ -1,4 +1,4 @@
-<header class="bg-white border-b shadow-sm px-4 md:px-8 py-4 flex justify-between items-center relative">
+<header class="bg-whitepx-4 md:px-8 py-4 flex justify-between items-center relative">
     <div class="flex items-center">
         <!-- Hamburger menu untuk toggle sidebar -->
         <button
@@ -18,9 +18,50 @@
             <button
                 class="notification-toggle relative p-2 text-gray-500 hover:text-indigo-600 hover:bg-gray-50 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                 <i class="fas fa-bell text-lg"></i>
-                <span id="notification-badge"
-                    class="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold leading-none text-white bg-gradient-to-r from-red-500 to-pink-500 rounded-full shadow-lg animate-pulse">3</span>
+                @if (isset($notifications) && $notifications->count() > 0)
+                    <span id="notification-badge"
+                        class="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold leading-none text-white bg-gradient-to-r from-red-500 to-pink-500 rounded-full shadow-lg animate-pulse">
+                        {{ $notifications->count() }}
+                    </span>
+                @endif
             </button>
+
+            <script>
+                // Function to update notification badge
+                function updateNotificationBadge() {
+                    fetch('{{ route('wali.notifications.index') }}')
+                        .then(response => response.json())
+                        .then(data => {
+                            const badge = document.getElementById('notification-badge');
+                            if (data.total_unread > 0) {
+                                if (!badge) {
+                                    // Create badge if it doesn't exist
+                                    const newBadge = document.createElement('span');
+                                    newBadge.id = 'notification-badge';
+                                    newBadge.className =
+                                        'absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold leading-none text-white bg-gradient-to-r from-red-500 to-pink-500 rounded-full shadow-lg animate-pulse';
+                                    newBadge.textContent = data.total_unread;
+                                    document.querySelector('.notification-toggle').appendChild(newBadge);
+                                } else {
+                                    // Update existing badge
+                                    badge.textContent = data.total_unread;
+                                }
+                            } else {
+                                // Remove badge if no notifications
+                                if (badge) {
+                                    badge.remove();
+                                }
+                            }
+                        })
+                        .catch(error => console.error('Error fetching notifications:', error));
+                }
+
+                // Update notifications every 30 seconds
+                setInterval(updateNotificationBadge, 30000);
+
+                // Initial update
+                document.addEventListener('DOMContentLoaded', updateNotificationBadge);
+            </script>
 
             <!-- Notifications Dropdown Menu -->
             <div id="notifications-menu"
@@ -28,64 +69,23 @@
                 <div class="p-4 border-b border-gray-100">
                     <div class="flex items-center justify-between">
                         <h3 class="text-lg font-semibold text-gray-800">Notifications</h3>
-                        <button class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">Mark all read</button>
+                        <button onclick="markAllAsRead()"
+                            class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">Mark all read</button>
                     </div>
                 </div>
 
                 <div class="max-h-96 overflow-y-auto">
                     <!-- Notification Items -->
-                    <div
-                        class="notification-item p-4 hover:bg-gray-50 transition-colors duration-150 border-b border-gray-50 cursor-pointer">
-                        <div class="flex items-start space-x-3">
-                            <div
-                                class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-user-plus text-blue-600 text-sm"></i>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-gray-800">New member registration</p>
-                                <p class="text-xs text-gray-500 mt-1">John Doe has registered as a new member</p>
-                                <p class="text-xs text-gray-400 mt-1">2 minutes ago</p>
-                            </div>
-                            <div class="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
-                        </div>
-                    </div>
-
-                    <div
-                        class="notification-item p-4 hover:bg-gray-50 transition-colors duration-150 border-b border-gray-50 cursor-pointer">
-                        <div class="flex items-start space-x-3">
-                            <div
-                                class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-coins text-green-600 text-sm"></i>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-gray-800">Payment received</p>
-                                <p class="text-xs text-gray-500 mt-1">Rp 500,000 payment from member savings</p>
-                                <p class="text-xs text-gray-400 mt-1">1 hour ago</p>
-                            </div>
-                            <div class="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-                        </div>
-                    </div>
-
-                    <div
-                        class="notification-item p-4 hover:bg-gray-50 transition-colors duration-150 border-b border-gray-50 cursor-pointer">
-                        <div class="flex items-start space-x-3">
-                            <div
-                                class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-clock text-yellow-600 text-sm"></i>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-gray-800">Loan payment reminder</p>
-                                <p class="text-xs text-gray-500 mt-1">3 members have pending loan payments</p>
-                                <p class="text-xs text-gray-400 mt-1">3 hours ago</p>
-                            </div>
-                        </div>
+                    <div id="notifications-container">
+                        <!-- Notifikasi akan dimuat secara dinamis melalui JavaScript -->
+                        <div class="p-4 text-center text-gray-500">Memuat notifikasi...</div>
                     </div>
                 </div>
 
                 <div class="p-3 border-t border-gray-100">
-                    <button
+                    <button onclick="fetchNotifications()"
                         class="w-full text-center text-sm text-indigo-600 hover:text-indigo-800 font-medium py-2 hover:bg-indigo-50 rounded-lg transition-colors duration-150">
-                        View all notifications
+                        Muat Ulang Notifikasi
                     </button>
                 </div>
             </div>
@@ -160,6 +160,22 @@
     /* Enhanced navbar styles */
     .notification-toggle:hover .fas.fa-bell {
         animation: swing 0.5s ease-in-out;
+    }
+    
+    /* Hover effects for notification items */
+    .notification-item {
+        transition: all 0.3s ease-in-out;
+    }
+
+    .notification-item:hover {
+        transform: translateX(2px);
+    }
+
+    /* Slide out animation for notifications */
+    .notification-item.slide-out {
+        transform: translateX(100%);
+        opacity: 0;
+        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
     }
 
     @keyframes swing {
@@ -242,11 +258,6 @@
         background: #d1d5db;
     }
 
-    /* Hover effects for notification items */
-    .notification-item:hover {
-        transform: translateX(2px);
-    }
-
     /* Enhanced focus states */
     .sidebar-toggle:focus,
     .notification-toggle:focus,
@@ -266,9 +277,216 @@
         background: white;
         border-radius: 11px;
     }
+
+    .translate-x-full {
+        transform: translateX(100%);
+        transition: transform 0.3s, opacity 0.3s;
+    }
+
+    .opacity-0 {
+        opacity: 0 !important;
+        transition: opacity 0.3s;
+    }
 </style>
 
 <script>
+    function showConfirmDialog(title, message, onConfirm, onCancel = null) {
+        const backdrop = document.createElement('div');
+        backdrop.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
+        backdrop.style.animation = 'fadeIn 0.3s ease-out';
+
+        const dialog = document.createElement('div');
+        dialog.className = 'bg-white rounded-lg shadow-xl max-w-md w-full transform';
+        dialog.style.animation = 'scaleIn 0.3s ease-out';
+
+        dialog.innerHTML = `
+        <div class="p-6">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-question-circle text-orange-600 text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900">${title}</h3>
+                    <p class="text-sm text-gray-600 mt-1">${message}</p>
+                </div>
+            </div>
+            <div class="flex gap-3 justify-end">
+                <button id="cancel-btn" class="px-4 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors font-medium">
+                    <i class="fas fa-times mr-2"></i>Batal
+                </button>
+                <button id="confirm-btn" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium">
+                    <i class="fas fa-check mr-2"></i>Ya, Logout
+                </button>
+            </div>
+        </div>
+    `;
+
+        backdrop.appendChild(dialog);
+        document.body.appendChild(backdrop);
+
+        const style = document.createElement('style');
+        style.textContent = `
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+        @keyframes scaleOut { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.9); } }
+    `;
+        document.head.appendChild(style);
+
+        dialog.querySelector('#confirm-btn').onclick = () => {
+            backdrop.style.animation = 'fadeOut 0.3s ease-in';
+            dialog.style.animation = 'scaleOut 0.3s ease-in';
+            setTimeout(() => {
+                document.body.removeChild(backdrop);
+                document.head.removeChild(style);
+            }, 300);
+            if (onConfirm) onConfirm();
+        };
+
+        const cancelHandler = () => {
+            backdrop.style.animation = 'fadeOut 0.3s ease-in';
+            dialog.style.animation = 'scaleOut 0.3s ease-in';
+            setTimeout(() => {
+                document.body.removeChild(backdrop);
+                document.head.removeChild(style);
+            }, 300);
+            if (onCancel) onCancel();
+        };
+
+        dialog.querySelector('#cancel-btn').onclick = cancelHandler;
+        backdrop.onclick = (e) => {
+            if (e.target === backdrop) cancelHandler();
+        };
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') cancelHandler();
+        });
+    }
+
+    // Make fetchNotifications globally accessible
+    window.fetchNotifications = function() {
+        const notificationsContainer = document.getElementById('notifications-container');
+        const notificationBadge = document.getElementById('notification-badge');
+        const csrfToken = document.querySelector('meta[name="csrf-token"]');
+
+        notificationsContainer.innerHTML = `
+            <div class="p-4 text-center text-gray-500">
+                <i class="fas fa-spinner fa-spin mr-2"></i>Memuat notifikasi...
+            </div>
+        `;
+
+        fetch('/wali/notifications?_=' + new Date().getTime(), {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    ...(csrfToken ? {
+                        'X-CSRF-TOKEN': csrfToken.getAttribute('content')
+                    } : {})
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Fetched notifications:', data);
+                notificationsContainer.innerHTML = '';
+                if (!data.notifications || data.notifications.length === 0) {
+                    notificationsContainer.innerHTML = `
+                    <div class="p-4 text-center text-gray-500">
+                        Tidak ada notifikasi.
+                    </div>
+                `;
+                    if (notificationBadge) {
+                        notificationBadge.classList.add('hidden');
+                        notificationBadge.textContent = '0';
+                    }
+                    return;
+                }
+
+                data.notifications.forEach(notification => {
+                    const item = document.createElement('div');
+                    item.className =
+                        'notification-item p-4 hover:bg-gray-50 transition-all duration-300 ease-in-out border-b border-gray-50 cursor-pointer';
+
+                    item.innerHTML = `
+                    <div class="flex items-start space-x-3">
+                        <div class="w-10 h-10 ${notification.bgClass} rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas ${notification.icon} ${notification.iconColor} text-sm"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-gray-800">${notification.title}</p>
+                            <p class="text-xs text-gray-500 mt-1">${notification.message}</p>
+                            <p class="text-xs text-gray-400 mt-1">${notification.created_at}</p>
+                        </div>
+                        <div class="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+                    </div>
+                `;
+
+                    item.addEventListener('click', function() {
+                        // Add slide-out class for animation
+                        item.classList.add('slide-out');
+
+                        // Wait for animation to complete before removing
+                        setTimeout(() => {
+                            fetch(`/wali/notifications/${notification.id}/read`, {
+                                method: 'PATCH',
+                                headers: {
+                                    'X-CSRF-TOKEN': csrfToken.getAttribute(
+                                        'content')
+                                }
+                            }).then(() => {
+                                item.remove();
+                                fetchNotifications();
+                            });
+                        }, 300); // Match this with the CSS transition duration
+                    });
+
+                    notificationsContainer.appendChild(item);
+                });
+
+                if (notificationBadge) {
+                    notificationBadge.textContent = data.total_unread > 99 ? '99+' : data.total_unread;
+                    notificationBadge.classList.remove('hidden');
+                }
+            })
+            .catch(error => {
+                notificationsContainer.innerHTML = `
+                <div class="p-4 text-center text-red-500">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    Gagal memuat notifikasi: ${error.message}
+                </div>`;
+            });
+    };
+
+    // Function to mark all notifications as read
+    window.markAllAsRead = function() {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]');
+        const notificationItems = document.querySelectorAll('.notification-item');
+        const markAllBtn = document.querySelector('button[onclick*="markAllNotificationsAsRead"]');
+        if (markAllBtn) markAllBtn.disabled = true;
+
+        notificationItems.forEach(item => {
+            item.classList.add('slide-out');
+        });
+
+        fetch('/wali/notifications/mark-all-read', {
+                method: 'PATCH',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken.getAttribute('content'),
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Mark all as read response:', data);
+                setTimeout(() => {
+                    fetchNotifications();
+                    if (markAllBtn) markAllBtn.disabled = false;
+                }, 300);
+            });
+    };
+
     document.addEventListener('DOMContentLoaded', function() {
         // Notifications dropdown functionality
         const notificationToggle = document.querySelector('.notification-toggle');
@@ -278,6 +496,20 @@
         // Profile dropdown functionality
         const profileToggle = document.querySelector('.profile-toggle');
         const profileMenu = document.getElementById('profile-menu');
+
+        // Fix for "Mark all read" button
+        const markAllReadButton = Array.from(document.querySelectorAll('button')).find(
+            button => button.textContent.trim() === 'Mark all read'
+        );
+
+        if (markAllReadButton) {
+            markAllReadButton.addEventListener('click', function() {
+                document.querySelectorAll('.notification-item .w-2.h-2').forEach(dot => {
+                    dot.remove();
+                });
+                updateNotificationBadge(0);
+            });
+        }
 
         // Toggle notifications dropdown
         notificationToggle.addEventListener('click', function(e) {
@@ -340,43 +572,21 @@
         // Notification functionality
         function updateNotificationBadge(count) {
             if (count > 0) {
-                notificationBadge.textContent = count > 99 ? '99+' : count;
-                notificationBadge.classList.remove('hidden');
+                if (notificationBadge) {
+                    notificationBadge.textContent = count > 99 ? '99+' : count;
+                    notificationBadge.classList.remove('hidden');
+                }
             } else {
-                notificationBadge.classList.add('hidden');
+                if (notificationBadge) {
+                    notificationBadge.classList.add('hidden');
+                }
             }
         }
 
-        // Mark notification as read
-        document.querySelectorAll('.notification-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const unreadDot = this.querySelector(
-                    '.w-2.h-2.bg-blue-500, .w-2.h-2.bg-green-500');
-                if (unreadDot) {
-                    unreadDot.remove();
-                    // Update badge count
-                    const currentCount = parseInt(notificationBadge.textContent);
-                    updateNotificationBadge(currentCount - 1);
-                }
-            });
-        });
+        // Panggil fungsi saat halaman dimuat
+        fetchNotifications();
 
-        // Mark all as read functionality
-        document.querySelector('button:contains("Mark all read")').addEventListener('click', function() {
-            document.querySelectorAll('.notification-item .w-2.h-2').forEach(dot => {
-                dot.remove();
-            });
-            updateNotificationBadge(0);
-        });
-
-        // Simulate real-time notifications (for demo)
-        setInterval(() => {
-            // This would typically come from a WebSocket or polling mechanism
-            // For demo purposes, we'll randomly add notifications
-            if (Math.random() > 0.95) { // 5% chance every interval
-                const currentCount = parseInt(notificationBadge.textContent) || 0;
-                updateNotificationBadge(currentCount + 1);
-            }
-        }, 10000); // Check every 10 seconds
+        // Refresh notifikasi setiap 30 detik
+        setInterval(fetchNotifications, 30000);
     });
 </script>

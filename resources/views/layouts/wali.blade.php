@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Wali Santri Dashboard')</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -101,7 +102,7 @@
             top: 0 !important;
             z-index: 40 !important;
             background: white !important;
-            border-bottom: 1px solid #e5e7eb !important;
+            border-bottom: 1px solid #c0c1c4 !important;
             width: 100% !important;
             max-width: 100% !important;
             box-sizing: border-box;
@@ -196,6 +197,7 @@
             text-align: center;
             color: #6b7280;
             font-size: 0.875rem;
+            border-top: 1px solid #e5e6e7;
         }
 
         .transition-margin {
@@ -220,7 +222,7 @@
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="content-wrapper">
         <!-- Navbar untuk Wali (Sticky) -->
-        <nav class="navbar">
+        <nav class="navbar shadow-lg">
             @include('partials.wali.navbar')
         </nav>
 
@@ -243,7 +245,7 @@
         </main>
 
         <!-- Footer -->
-        <footer class="footer">
+        <footer class="footer shadow-lg">
             <p>© {{ date('Y') }} Sistem Koperasi Digital Pondok. All rights reserved.</p>
         </footer>
     </div>

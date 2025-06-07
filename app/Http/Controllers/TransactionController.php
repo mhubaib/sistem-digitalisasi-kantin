@@ -7,6 +7,7 @@ use App\Models\Santri;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
 use App\Models\WalletHistory;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -117,9 +118,6 @@ class TransactionController extends Controller
                 ]);
             }
 
-            // Clear session cart
-            Session::forget('cart');
-
             // Record the transaction in Wallet History for cash payments as well
             if ($request->payment_type === 'cash') {
                 WalletHistory::create([
@@ -133,6 +131,25 @@ class TransactionController extends Controller
             }
 
             DB::commit();
+
+            // Create notification for wali when their santri makes a transaction
+            if ($request->santri_id) {
+                $santri = Santri::findOrFail($request->santri_id);
+                if ($santri->wali_id) {
+                    $notifications = Notification::createForWali(
+                        $santri->wali_id,
+                        'santri_transaction',
+                        'Transaksi Santri',
+                        "Santri {$santri->user->name} telah melakukan transaksi sebesar Rp " . number_format($total, 0, ',', '.'),
+                        [
+                            'santri_id' => $santri->id,
+                            'transaction_id' => $transaction->id,
+                            'amount' => $total,
+                            'items' => $request->items
+                        ]
+                    );
+                }
+            }
 
             return response()->json([
                 'success' => true,
@@ -178,5 +195,35 @@ class TransactionController extends Controller
             'success' => true,
             'message' => 'Cart berhasil disinkronkan.',
         ]);
+    }
+
+    /**
+     * Show all transactions for admin (santri or not, cash or saldo), with filter and total.
+     */
+    public function allTransactions(Request $request)
+    {
+        $query = Transaction::with(['santri.user', 'createdBy']);
+
+        // Filter by payment type
+        if ($request->filled('payment_type')) {
+            $query->where('payment_type', $request->payment_type);
+        }
+        // Filter by santri
+        if ($request->filled('santri_id')) {
+            $query->where('santri_id', $request->santri_id);
+        }
+        // Filter by date
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        $transactions = $query->latest()->paginate(15);
+        $totalIncome = $query->sum('total');
+        $santris = Santri::with('user')->get();
+
+        return view('admin.transaction.index', compact('transactions', 'totalIncome', 'santris'));
     }
 }

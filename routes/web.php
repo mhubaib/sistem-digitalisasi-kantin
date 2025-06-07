@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\ExpenseController;
 
 
 
@@ -34,6 +35,7 @@ Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'admin'])->name('dashboard');
     Route::resource('/product', ProductController::class);
+    Route::resource('/expenses', ExpenseController::class);
 
     // Santri Approval
     Route::get('/santri-approvals', [AuthController::class, 'index'])->name('santri.approvals');
@@ -64,6 +66,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
     Route::patch('/admin/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
+
+    Route::get('/transaction/all', [TransactionController::class, 'allTransactions'])->name('transaction.index');
 });
 
 
@@ -80,4 +84,9 @@ Route::middleware(['auth', 'role:wali'])->prefix('wali')->name('wali.')->group(f
     Route::get('/dashboard', [DashboardController::class, 'wali'])->name('dashboard');
     Route::get('/transactions', [DashboardController::class, 'waliTransactions'])->name('transactions');
     Route::get('/topups', [DashboardController::class, 'waliTopups'])->name('topups');
+
+    // Wali notifications routes
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+    Route::patch('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
 });

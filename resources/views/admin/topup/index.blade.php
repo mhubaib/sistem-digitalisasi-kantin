@@ -78,8 +78,7 @@
                                 <tbody class="bg-white divide-y divide-gray-200">
                                     @forelse($topups as $topup)
                                         <tr class="hover:bg-gray-50 transition-colors duration-200">
-                                            <td
-                                                class="px-4 sm:px-6 py-4 whitespace-normal text-sm text-gray-500">
+                                            <td class="px-4 sm:px-6 py-4 whitespace-normal text-sm text-gray-500">
                                                 {{ $topup->created_at->format('d M Y H:i') }}
                                             </td>
                                             <td class="px-4 sm:px-6 py-4 whitespace-normal">

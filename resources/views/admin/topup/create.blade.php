@@ -4,12 +4,14 @@
 
 @section('content')
     <div class="container px-6 mx-auto">
-        <div class="mb-6">
-            <a href="{{ route('admin.topup.index') }}" class="text-indigo-600 hover:text-indigo-800 flex items-center">
-                <i class="fas fa-arrow-left mr-2"></i>
-                <span>Kembali ke Daftar Top-up</span>
+        <!-- Breadcrumb -->
+        <nav class="flex items-center text-sm text-gray-500 mb-6" aria-label="Breadcrumb">
+            <a href="{{ route('admin.topup.index') }}" class="hover:text-blue-600 flex items-center">
+                <i class="fas fa-home mr-1"></i> Top-up
             </a>
-        </div>
+            <span class="mx-2">/</span>
+            <span class="text-gray-700 font-semibold">Top-up Baru</span>
+        </nav>
 
         <div class="bg-white rounded-xl shadow-lg overflow-hidden">
             <div class="p-6 sm:p-8">

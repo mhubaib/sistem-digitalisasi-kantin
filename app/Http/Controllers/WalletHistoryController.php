@@ -16,10 +16,11 @@ class WalletHistoryController extends Controller
     public function index(Request $request)
     {
         // Fetch all users who are santris for the filter dropdown, ordered by name.
-        // Assuming 'santris' table has a 'user_id' that links to 'users' table where the name is stored.
         $santris = User::whereHas('santri')->orderBy('name')->get();
 
-        $query = WalletHistory::with(['santri.user', 'createdBy']); // Eager load santri.user relationship
+        $query = WalletHistory::with(['santri.user', 'createdBy'])
+            ->whereNotNull('santri_id')
+            ->whereIn('method', ['saldo', 'cash', 'transfer', 'manual', 'lainnya']);
 
         // Apply filters
         if ($request->filled('santri_id')) {
