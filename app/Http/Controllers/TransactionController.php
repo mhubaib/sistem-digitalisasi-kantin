@@ -12,9 +12,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use App\Services\NotificationService;
 
 class TransactionController extends Controller
 {
+
+    protected $notificationService;
+
+    public function __construct(NotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
 
     /**
      * Display the transaction cart page with products and santri.
@@ -136,7 +144,7 @@ class TransactionController extends Controller
             if ($request->santri_id) {
                 $santri = Santri::findOrFail($request->santri_id);
                 if ($santri->wali_id) {
-                    $notifications = Notification::createForWali(
+                    $notification = $this->notificationService->createForWali(
                         $santri->wali_id,
                         'santri_transaction',
                         'Transaksi Santri',

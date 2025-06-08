@@ -126,16 +126,16 @@
                 </div>
             </div>
 
-            <div class="bg-gradient-to-br from-purple-50 to-purple-100/50 border border-purple-200/50 rounded-2xl p-6">
+            <div class="bg-gradient-to-br from-green-50 to-green-100/50 border border-green-200/50 rounded-2xl p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-purple-600 text-sm font-medium mb-1">Rata-rata per Pengeluaran</p>
-                        <p class="text-2xl font-light text-purple-800">Rp
-                            {{ $expenses->total() > 0 ? number_format($totalExpenses / $expenses->total(), 0, ',', '.') : '0' }}
+                        <p class="text-green-800 text-sm font-medium mb-1">Untung Bersih</p>
+                        <p class="text-2xl font-light {{ $netProfit >= 0 ? 'text-green-600' : 'text-red-600' }}">Rp
+                            {{ number_format($netProfit, 0, ',', '.') }}
                         </p>
                     </div>
-                    <div class="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-calculator text-purple-500"></i>
+                    <div class="w-12 h-12 bg-green-500/10 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-chart-line text-green-500"></i>
                     </div>
                 </div>
             </div>

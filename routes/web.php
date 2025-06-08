@@ -77,6 +77,11 @@ Route::middleware(['auth', 'role:santri'])->prefix('santri')->name('santri.')->g
     Route::get('/product/index', [DashboardController::class, 'products'])->name('product.index');
     Route::get('/transactions/index', [DashboardController::class, 'transactions'])->name('transactions.index');
     Route::get('/topups/index', [DashboardController::class, 'topups'])->name('topups.index');
+
+    // Santri notifications routes
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+    Route::patch('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
 });
 
 // Wali-only Dashboard

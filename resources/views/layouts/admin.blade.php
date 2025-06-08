@@ -98,10 +98,7 @@
         
         .sidebar-icon-only + .content-wrapper {
             margin-left: 70px; /* Adjust for icon-only sidebar */
-        }
-        
-        .sidebar-hidden + .content-wrapper {
-            margin-left: 0; /* No offset when sidebar is hidden */
+            margin-right: 10px;
         }
         
         /* Main content */

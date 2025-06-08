@@ -9,18 +9,43 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Services\NotificationService;
 
 class TopupController extends Controller
 {
+    protected $notificationService;
+
+    public function __construct(NotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
 
     // Tampilkan daftar top-up
     public function index()
     {
         $query = Topup::with(['santri.user']);
 
-        // Apply filter by source if provided
-        if (request()->has('source') && in_array(request()->input('source'), ['admin', 'wali'])) {
+        // Filter by santri
+        if (request()->has('santri_id')) {
+            $query->where('santri_id', request()->input('santri_id'));
+        }
+
+        // Filter by method
+        if (request()->has('method')) {
+            $query->where('method', request()->input('method'));
+        }
+
+        // Filter by source
+        if (request()->has('source')) {
             $query->where('source', request()->input('source'));
+        }
+
+        // Filter by date range
+        if (request()->has('start_date')) {
+            $query->whereDate('created_at', '>=', request()->input('start_date'));
+        }
+        if (request()->has('end_date')) {
+            $query->whereDate('created_at', '<=', request()->input('end_date'));
         }
 
         $topups = $query->latest()->paginate(10);
@@ -35,7 +60,12 @@ class TopupController extends Controller
 
         $totalTransactions = Topup::count();
 
-        return view('admin.topup.index', compact('topups', 'todayTopups', 'monthTopups', 'totalTransactions'));
+        // Get all santris for filter dropdown
+        $santris = Santri::with('user')
+            ->where('status', 'approved')
+            ->get();
+
+        return view('admin.topup.index', compact('topups', 'todayTopups', 'monthTopups', 'totalTransactions', 'santris'));
     }
 
     // Tampilkan form create top-up
@@ -86,6 +116,21 @@ class TopupController extends Controller
             ]);
 
             DB::commit();
+
+            // Create notification for santri if topup is from admin
+            if ($source === 'admin') {
+                $notification = $this->notificationService->createForSantri(
+                    $santri->user_id,
+                    'topup',
+                    'Top-up Saldo Berhasil',
+                    'Admin telah melakukan top-up saldo sebesar Rp ' . number_format($amount, 0, ',', '.') . ' ke akun Anda.',
+                    [
+                        'amount' => $amount,
+                        'method' => $request->method,
+                        'topup_id' => $topup->id
+                    ]
+                );
+            }
 
             return redirect()
                 ->route('admin.topup.index')

@@ -19,7 +19,7 @@
 
     <div class="p-4">
         <div class="sidebar-children bg-green-700 rounded-lg p-4 mb-6">
-            <p class="text-xs text-green-200 mb-1 sidebar-children-text">Jumlah Anak</p>
+            <p class="text-xs text-green-200 mb-1 sidebar-children-text">Jumlah Santri yang Diampu</p>
             <p class="text-xl font-bold">{{ Auth::user()->santris->count() ?? 0 }} Santri</p>
         </div>
     </div>

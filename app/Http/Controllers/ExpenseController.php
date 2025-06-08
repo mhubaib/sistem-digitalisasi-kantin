@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Expense;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -37,7 +38,20 @@ class ExpenseController extends Controller
         $expenses = $query->latest()->paginate(10);
         $totalExpenses = $expenses->sum('amount');
 
-        return view('admin.expenses.index', compact('expenses', 'totalExpenses'));
+        // Calculate total income based on the same date range
+        $incomeQuery = Transaction::query();
+
+        if ($request->filled('start_date')) {
+            $incomeQuery->whereDate('created_at', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $incomeQuery->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        $totalIncome = $incomeQuery->sum('total');
+        $netProfit = $totalIncome - $totalExpenses;
+
+        return view('admin.expenses.index', compact('expenses', 'totalExpenses', 'totalIncome', 'netProfit'));
     }
 
     /**

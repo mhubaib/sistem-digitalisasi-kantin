@@ -83,11 +83,6 @@
                     </div>
                     <h3 class="text-2xl font-bold text-gray-800 mb-3">Belum Ada Riwayat Topup</h3>
                     <p class="text-gray-500 mb-6">Anda belum memiliki riwayat topup. Mulai lakukan topup untuk melihat riwayat di sini.</p>
-                    {{-- <a href="{{ route('santri.topups.create') }}" 
-                        class="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-                        <i class="fas fa-plus"></i>
-                        <span>Topup Sekarang</span>
-                    </a> --}}
                 </div>
             </div>
         @else
@@ -126,7 +121,7 @@
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center space-x-2">
                                         <i class="fas fa-user text-gray-400 text-sm"></i>
-                                        <span class="text-sm text-gray-600">Petugas</span>
+                                        <span class="text-sm text-gray-600">Sumber</span>
                                     </div>
                                     <span class="text-sm font-medium text-gray-800">{{ $topup->createdBy->name ?? 'Tidak diketahui' }}</span>
                                 </div>

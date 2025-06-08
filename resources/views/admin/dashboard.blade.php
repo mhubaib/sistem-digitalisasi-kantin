@@ -54,7 +54,7 @@
                             <div class="flex items-center justify-between">
                                 <div class="text-xs text-gray-600">Kelola data santri</div>
                                 <i
-                                    class="fas fa-arrow-right text-gray-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-all duration-300"></i>
+                                    class="fas fa-arrow-right text-gray-400 group-hover:text-blue-500 group-hover:translate-x-2 transition-all duration-200"></i>
                             </div>
                         </div>
                     </div>
@@ -103,7 +103,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="text-xs text-gray-600">Pendapatan harian</div>
+                            <div class="flex items-center justify-between">
+                                <div class="text-xs text-gray-600">Pendapatan harian</div>
+                                <i
+                                    class="fas fa-arrow-right text-gray-400 group-hover:text-blue-500 group-hover:translate-x-2 transition-all duration-200"></i>
+                            </div>
                         </div>
                     </div>
                 </a>
@@ -119,7 +123,7 @@
                             <p class="text-sm text-gray-500">Riwayat pembayaran terkini</p>
                         </div>
                         <a href="{{ route('admin.transaction.index') }}"
-                            class="group inline-flex items-center space-x-3 px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white text-sm font-medium rounded-2xl transition-all duration-300 shadow-md">
+                            class="group inline-flex items-center space-x-3 px-6 py-3 bg-gradient-to-br from-gray-800 to-gray-600 hover:from-gray-700 hover:to-gray-500 text-white text-sm font-medium rounded-2xl transition-all duration-300 shadow-md">
                             <span>Lihat Semua</span>
                             <i
                                 class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform duration-300"></i>
@@ -225,16 +229,16 @@
 
             0%,
             100% {
-                transform: translateY(0px);
+                transform: translateY(8px);
             }
 
             50% {
-                transform: translateY(-4px);
+                transform: translateY(-8px);
             }
         }
 
         .group:hover .fas.fa-arrow-right {
-            animation: float 2s ease-in-out infinite;
+            animation: float 1s ease-in-out infinite;
         }
 
         /* Premium Gradients

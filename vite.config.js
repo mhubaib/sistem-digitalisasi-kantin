@@ -17,7 +17,7 @@ export default defineConfig({
     //     strictPort: true,
     //     hmr: {
     //         protocol: 'ws', // atau 'wss' jika pakai https
-    //         host: '172.40.0.116', // ganti sesuai IP lokal kamu
+    //         host: '172.40.0.7', // ganti sesuai IP lokal kamu
     //         port: 5173, // pastikan sama
     //         clientPort: 5173
     //     }

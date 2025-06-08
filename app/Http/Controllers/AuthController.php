@@ -13,9 +13,17 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Log;
+use App\Services\NotificationService;
 
 class AuthController extends Controller
 {
+
+    protected $notificationService;
+
+    public function __construct(NotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
 
     // Tampilkan daftar santri yang belum di-approve (admin)
     public function index()
@@ -58,19 +66,12 @@ class AuthController extends Controller
         ]);
 
         // Tambahkan notifikasi untuk admin
-        $notification = Notification::createForAdmin(
+        $notification = $this->notificationService->createForAdmin(
             'santri_registration',
             'Pendaftaran Santri Baru',
             "Santri baru {$user->name} telah mendaftar dan menunggu persetujuan.",
             ['santri_id' => $user->id]
         );
-
-        // Log notification creation
-        Log::info('Santri Registration Notification Created', [
-            'santri_name' => $user->name,
-            'santri_email' => $user->email,
-            'notification_id' => $notification ? $notification->id : 'No notification created'
-        ]);
 
         return redirect()->route('auth.login')->with('success', 'Registrasi berhasil. Tunggu persetujuan admin.');
     }
