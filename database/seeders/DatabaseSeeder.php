@@ -2,10 +2,13 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\Product;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -38,6 +41,8 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('12341234'),
             'role'     =>'wali',
             'active'   => true,
-        ]);        
+        ]); 
+        
+        Product::factory(20)->create();
     }
 }

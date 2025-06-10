@@ -2,8 +2,8 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "build": "vite build"
     },
     "devDependencies": {
         "autoprefixer": "^10.4.20",
@@ -17,6 +17,6 @@
         "tailwindcss": "^4.1.8"
     },
     "engines": {
-        "node": "18.x"
+        "node": "22.14.0"
     }
 }
