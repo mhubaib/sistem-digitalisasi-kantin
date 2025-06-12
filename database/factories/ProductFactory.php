@@ -18,12 +18,11 @@ class ProductFactory extends Factory
     {
         $names = ['oreo', 'nabati cokelat', 'nabati keju', 'roma', 'malkist', 'malkist keju', 'malkist cokelat', 'classic cokelat', 'nipis madu', 'coca cola', 'big cola'];
         $kategories = ['snack', 'minuman', 'makanan'];
-        $statuses = ['active', 'inactive'];
 
         return [
             'name' => $this->faker->randomElement($names),
             'category' => $this->faker->randomElement($kategories),
-            'status' => $this->faker->randomElement($statuses),
+            'status' => 'active',
             'price' => $this->faker->numberBetween(10000, 100000),
             'stock' => $this->faker->numberBetween(1, 100),
             'description' => $this->faker->sentence(),

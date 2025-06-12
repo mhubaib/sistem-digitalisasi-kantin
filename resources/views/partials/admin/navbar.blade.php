@@ -490,6 +490,9 @@
                     fetchNotifications();
                     if (markAllBtn) markAllBtn.disabled = false;
                 }, 300);
+            }).then(() => {
+                item.remove();
+                fetchNotifications();
             });
     };
 

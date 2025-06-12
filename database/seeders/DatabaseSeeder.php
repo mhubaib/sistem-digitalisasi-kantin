@@ -43,6 +43,6 @@ class DatabaseSeeder extends Seeder
             'active'   => true,
         ]); 
         
-        Product::factory(20)->create();
+        Product::factory(11)->create();
     }
 }
