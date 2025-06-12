@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Expense;
 use App\Models\Notification;
 use App\Models\Product;
 use App\Models\Santri;
@@ -30,6 +31,7 @@ class DashboardController extends Controller
                 ->take(5)
                 ->get(),
             'notifications' => $notifications,
+            'totalExpenses' => Expense::sum('amount'),
         ]);
     }
 

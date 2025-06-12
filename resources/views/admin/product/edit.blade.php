@@ -69,7 +69,7 @@
                                         <img id="previewImg"
                                             src="{{ $product->image ? asset('storage/' . $product->image) : '' }}"
                                             alt="Preview" class="max-w-full h-48 object-cover rounded-lg mx-auto mb-4">
-                                        <button type="button" onclick="removeImage()"
+                                        <button type="button" name="delete_image" onclick="removeImage()"
                                             class="text-red-600 hover:text-red-700 text-sm">
                                             <i class="fas fa-trash mr-1"></i>
                                             Hapus Gambar

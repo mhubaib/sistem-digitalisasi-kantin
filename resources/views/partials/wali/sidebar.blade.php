@@ -47,7 +47,7 @@
                     <span class="ml-3 sidebar-text">Riwayat Top-up</span>
                 </a>
             </li>
-            <li>
+            {{-- <li>
                 <a href="#"
                     class="nav-link flex items-center px-4 py-3 rounded-lg {{ request()->routeIs('wali.topup.request') ? 'bg-green-700' : 'hover:bg-green-700' }}">
                     <i class="fas fa-plus-circle w-5 text-center"></i>
@@ -60,7 +60,7 @@
                     <i class="fas fa-chart-bar w-5 text-center"></i>
                     <span class="ml-3 sidebar-text">Statistik Penggunaan</span>
                 </a>
-            </li>
+            </li> --}}
             <li class="pt-36">
                 @if (session('status'))
                     <div class="bg-red-500 text-white p-2 rounded mb-2">{{ session('status') }}</div>

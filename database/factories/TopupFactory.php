@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\topups>
  */
-class TopupsFactory extends Factory
+class TopupFactory extends Factory
 {
     /**
      * Define the model's default state.

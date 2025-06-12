@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Expense;
+use App\Models\Notification;
 use App\Models\Product;
 use App\Models\Santri;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
 use App\Models\WalletHistory;
-use App\Models\Notification;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
-use App\Services\NotificationService;
 
 class TransactionController extends Controller
 {
@@ -230,8 +231,9 @@ class TransactionController extends Controller
 
         $transactions = $query->latest()->paginate(15);
         $totalIncome = $query->sum('total');
+        $totalExpenses = Expense::sum('amount');
         $santris = Santri::with('user')->get();
 
-        return view('admin.transaction.index', compact('transactions', 'totalIncome', 'santris'));
+        return view('admin.transaction.index', compact('transactions', 'totalIncome', 'santris', 'totalExpenses'));
     }
 }

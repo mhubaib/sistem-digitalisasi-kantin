@@ -98,7 +98,7 @@
                                 </div>
                                 <div class="text-right">
                                     <div class="text-2xl font-light text-gray-900 tracking-tight">Rp
-                                        {{ number_format($todayIncome, 0, ',', '.') }}</div>
+                                        {{ number_format($todayIncome - $totalExpenses, 0, ',', '.') }}</div>
                                     <div class="text-xs font-medium text-gray-500 uppercase tracking-widest mt-1">Hari Ini
                                     </div>
                                 </div>
@@ -238,7 +238,7 @@
         }
 
         .group:hover .fas.fa-arrow-right {
-            animation: float 1s ease-in-out infinite;
+            animation: float 3s ease-in-out infinite;
         }
 
         /* Premium Gradients
