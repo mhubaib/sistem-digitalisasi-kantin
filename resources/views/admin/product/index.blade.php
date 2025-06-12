@@ -98,7 +98,7 @@
 
                         <!-- Product Image -->
                         <div class="relative overflow-hidden bg-gray-100 h-36 flex items-center justify-center">
-                            @if (isset($product->image) && $product->image)
+                            @if ($product->hasImage())
                                 <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"
                                     class="max-w-full max-h-full object-cover">
                             @else

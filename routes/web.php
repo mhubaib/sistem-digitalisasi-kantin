@@ -46,6 +46,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('admin/transaction/cart', [TransactionController::class, 'cart'])->name('admin.transaction.cart');
     Route::post('admin/transaction/store', [TransactionController::class, 'store'])->name('admin.transaction.store');
     Route::post('admin/transaction/sync-cart', [TransactionController::class, 'syncCart'])->name('admin.transaction.syncCart');
+    Route::get('admin/transaction/export/excel', [TransactionController::class, 'exportExcel'])->name('admin.transaction.export.excel');
+    Route::get('admin/transaction/export/pdf', [TransactionController::class, 'exportPdf'])->name('admin.transaction.export.pdf');
 
     // Routes untuk quantity controls:
     Route::patch('/admin/transaction/cart/increment/{id}', [TransactionController::class, 'incrementQuantity'])->name('admin.transaction.cart.increment');

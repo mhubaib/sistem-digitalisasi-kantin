@@ -92,12 +92,19 @@
                         @endif
                     </div>
 
-                    <!-- Export Button -->
-                    <button type="button"
-                        class="px-4 py-3 bg-green-50 text-green-600 rounded-xl hover:bg-green-100 transition-all duration-200 flex items-center gap-2">
-                        <i class="fas fa-download text-sm"></i>
-                        Export
-                    </button>
+                    <!-- Export Buttons -->
+                    <div class="flex gap-2">
+                        <a href="{{ route('admin.admin.transaction.export.excel', request()->query()) }}"
+                            class="px-4 py-3 bg-green-50 text-green-600 rounded-xl hover:bg-green-100 transition-all duration-200 flex items-center gap-2">
+                            <i class="fas fa-file-excel text-sm"></i>
+                            Excel
+                        </a>
+                        <a href="{{ route('admin.admin.transaction.export.pdf', request()->query()) }}"
+                            class="px-4 py-3 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-all duration-200 flex items-center gap-2">
+                            <i class="fas fa-file-pdf text-sm"></i>
+                            PDF
+                        </a>
+                    </div>
                 </div>
             </form>
         </div>

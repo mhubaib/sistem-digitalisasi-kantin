@@ -69,7 +69,8 @@
                                         <img id="previewImg"
                                             src="{{ $product->image ? asset('storage/' . $product->image) : '' }}"
                                             alt="Preview" class="max-w-full h-48 object-cover rounded-lg mx-auto mb-4">
-                                        <button type="button" name="delete_image" onclick="removeImage()"
+                                        <input type="hidden" name="delete_image" id="delete_image" value="0">
+                                        <button type="button" onclick="removeImage()"
                                             class="text-red-600 hover:text-red-700 text-sm">
                                             <i class="fas fa-trash mr-1"></i>
                                             Hapus Gambar
@@ -403,6 +404,18 @@
             document.getElementById('image').value = '';
             document.getElementById('imagePreview').classList.add('hidden');
             document.getElementById('uploadArea').classList.remove('hidden');
+
+            // Add hidden input for delete_image flag
+            let deleteImageInput = document.querySelector('input[name="delete_image"]');
+            if (!deleteImageInput) {
+                deleteImageInput = document.createElement('input');
+                deleteImageInput.type = 'hidden';
+                deleteImageInput.name = 'delete_image';
+                deleteImageInput.value = '1';
+                document.querySelector('form').appendChild(deleteImageInput);
+            } else {
+                deleteImageInput.value = '1';
+            }
         }
 
         // Form validation and enhancement

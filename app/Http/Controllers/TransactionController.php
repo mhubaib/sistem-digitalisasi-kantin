@@ -14,6 +14,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use App\Exports\TransactionExport;
+use App\Exports\TransactionPdfExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TransactionController extends Controller
 {
@@ -235,5 +238,56 @@ class TransactionController extends Controller
         $santris = Santri::with('user')->get();
 
         return view('admin.transaction.index', compact('transactions', 'totalIncome', 'santris', 'totalExpenses'));
+    }
+
+    /**
+     * Export transactions to Excel
+     */
+    public function exportExcel(Request $request)
+    {
+        $query = Transaction::with(['santri.user', 'createdBy']);
+
+        // Apply filters
+        if ($request->filled('payment_type')) {
+            $query->where('payment_type', $request->payment_type);
+        }
+        if ($request->filled('santri_id')) {
+            $query->where('santri_id', $request->santri_id);
+        }
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        return Excel::download(new TransactionExport($query), 'laporan-transaksi-' . now()->format('Y-m-d') . '.xlsx');
+    }
+
+    /**
+     * Export transactions to PDF
+     */
+    public function exportPdf(Request $request)
+    {
+        $query = Transaction::with(['santri.user', 'createdBy']);
+
+        // Apply filters
+        if ($request->filled('payment_type')) {
+            $query->where('payment_type', $request->payment_type);
+        }
+        if ($request->filled('santri_id')) {
+            $query->where('santri_id', $request->santri_id);
+        }
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        $totalIncome = $query->sum('total');
+        $totalExpenses = Expense::sum('amount');
+
+        return (new TransactionPdfExport($query, $totalIncome, $totalExpenses))->export();
     }
 }

@@ -21,31 +21,31 @@ class TopupController extends Controller
     }
 
     // Tampilkan daftar top-up
-    public function index()
+    public function index(Request $request)
     {
         $query = Topup::with(['santri.user']);
 
         // Filter by santri
-        if (request()->has('santri_id')) {
-            $query->where('santri_id', request()->input('santri_id'));
+        if ($request->filled('santri_id')) {
+            $query->where('santri_id', $request->santri_id);
         }
 
         // Filter by method
-        if (request()->has('method')) {
-            $query->where('method', request()->input('method'));
+        if ($request->filled('method')) {
+            $query->where('method', $request->method);
         }
 
         // Filter by source
-        if (request()->has('source')) {
-            $query->where('source', request()->input('source'));
+        if ($request->filled('source')) {
+            $query->where('source', $request->source);
         }
 
         // Filter by date range
-        if (request()->has('start_date')) {
-            $query->whereDate('created_at', '>=', request()->input('start_date'));
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
         }
-        if (request()->has('end_date')) {
-            $query->whereDate('created_at', '<=', request()->input('end_date'));
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
         }
 
         $topups = $query->latest()->paginate(10);

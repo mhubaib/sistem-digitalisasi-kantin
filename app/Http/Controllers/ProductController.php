@@ -112,12 +112,12 @@ class ProductController extends Controller
             $data['image'] = $imagePath;
         }
 
-        if ($request->has('delete_image') && $product->image) {
-            Storage::disk('public')->delete($product->image);
+        // Handle image deletion
+        if ($request->has('delete_image') && $request->delete_image == '1') {
+            if ($product->image && Storage::disk('public')->exists($product->image)) {
+                Storage::disk('public')->delete($product->image);
+            }
             $data['image'] = null;
-            session()->flash('debug_message', 'Gambar berhasil dihapus!');  // Debug message
-        } else if ($request->has('delete_image')) {
-            session()->flash('debug_message', 'Delete_image terdeteksi, tapi tidak ada gambar untuk dihapus.');  // Debug for no image
         }
 
         $product->update($data);

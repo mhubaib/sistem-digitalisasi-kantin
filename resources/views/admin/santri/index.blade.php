@@ -300,15 +300,6 @@
             background: #94a3b8;
         }
 
-        /* Gradient backgrounds */
-        .bg-gradient-to-r {
-            background-image: linear-gradient(to right, var(--tw-gradient-stops));
-        }
-
-        .bg-gradient-to-br {
-            background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
-        }
-
         /* Enhanced button animations */
         button {
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -519,7 +510,7 @@
                 }
             });
 
-            // Add search shortcut hint
+            // Add search shortcut hinta
             searchInput.placeholder = 'Cari nama santri atau wali... (Ctrl+K)';
 
             // Initialize with current state
