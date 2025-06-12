@@ -6,10 +6,11 @@ use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class NotificationController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // Fetch unread notifications for the current admin
         $notifications = Notification::where('user_id', Auth::id())
@@ -31,6 +32,24 @@ class NotificationController extends Controller
             }),
             'total_unread' => $notifications->count()
         ]);
+    }
+
+    public function history()
+    {
+        $query = Notification::where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc');
+
+        // Get notifications grouped by date
+        $notifications = $query->get()->groupBy(function ($notification) {
+            return Carbon::parse($notification->created_at)->format('Y-m-d');
+        });
+
+        // Get unread count (for the page header, if needed)
+        $unreadCount = Notification::where('user_id', Auth::id())
+            ->where('is_read', false)
+            ->count();
+
+        return view('admin.notifications.index', compact('notifications', 'unreadCount'));
     }
 
     public function markAsRead($id)

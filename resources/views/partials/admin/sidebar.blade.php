@@ -67,6 +67,13 @@
                     <span class="ml-3 sidebar-text">Persetujuan Santri</span>
                 </a>
             </li>
+            <li>
+                <a href="{{ route('admin.notifications.history') }}"
+                    class="nav-link flex items-center px-4 py-3 rounded-lg {{ request()->routeIs('admin.notifications.history') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">
+                    <i class="fas fa-bell w-5 text-center"></i>
+                    <span class="ml-3 sidebar-text">Notifikasi</span>
+                </a>
+            </li>
             <li class="pt-16">
                 @if (session('status'))
                     <div class="bg-red-500 text-white p-2 rounded mb-2">{{ session('status') }}</div>
