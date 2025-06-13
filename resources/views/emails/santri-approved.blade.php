@@ -14,8 +14,8 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-            color: #333333;
-            background-color: #f4f4f4;
+            color: #2d3748;
+            background-color: #f7fafc;
             padding: 20px;
         }
         
@@ -24,12 +24,12 @@
             margin: 0 auto;
             background-color: #ffffff;
             border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             overflow: hidden;
         }
         
         .header {
-            background: linear-gradient(135deg, #2c5aa0 0%, #1e3a5f 100%);
+            background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
             color: white;
             padding: 30px 40px;
             text-align: center;
@@ -39,7 +39,7 @@
             width: 64px;
             height: 64px;
             margin: 0 auto 15px;
-            background-color: rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.15);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -64,7 +64,7 @@
         .greeting {
             font-size: 18px;
             font-weight: 500;
-            color: #2c5aa0;
+            color: #2b6cb0;
             margin-bottom: 20px;
         }
         
@@ -72,7 +72,7 @@
             font-size: 16px;
             line-height: 1.8;
             margin-bottom: 30px;
-            color: #555555;
+            color: #4a5568;
         }
         
         .cta-container {
@@ -82,7 +82,7 @@
         
         .cta-button {
             display: inline-block;
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
             color: white;
             text-decoration: none;
             padding: 15px 30px;
@@ -90,17 +90,17 @@
             font-weight: 600;
             font-size: 16px;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            box-shadow: 0 4px 15px rgba(66, 153, 225, 0.3);
         }
         
         .cta-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+            box-shadow: 0 6px 20px rgba(66, 153, 225, 0.4);
         }
         
         .info-box {
-            background-color: #f8f9fa;
-            border-left: 4px solid #2c5aa0;
+            background-color: #edf2f7;
+            border-left: 4px solid #4299e1;
             padding: 20px;
             margin: 25px 0;
             border-radius: 0 8px 8px 0;
@@ -108,27 +108,27 @@
         
         .info-box h3 {
             font-size: 16px;
-            color: #2c5aa0;
+            color: #2b6cb0;
             margin-bottom: 10px;
             display: flex;
             align-items: center;
         }
         
         .info-box p {
-            color: #666666;
+            color: #718096;
             font-size: 14px;
             line-height: 1.6;
         }
         
         .footer {
-            background-color: #f8f9fa;
+            background-color: #f7fafc;
             padding: 30px 40px;
             text-align: center;
-            border-top: 1px solid #e9ecef;
+            border-top: 1px solid #e2e8f0;
         }
         
         .footer p {
-            color: #666666;
+            color: #718096;
             font-size: 14px;
             margin-bottom: 10px;
         }
@@ -140,14 +140,14 @@
         .social-links a {
             display: inline-block;
             margin: 0 10px;
-            color: #2c5aa0;
+            color: #4299e1;
             text-decoration: none;
             font-size: 12px;
         }
         
         .divider {
             height: 1px;
-            background: linear-gradient(to right, transparent, #e9ecef, transparent);
+            background: linear-gradient(to right, transparent, #cbd5e0, transparent);
             margin: 25px 0;
         }
         
@@ -198,7 +198,7 @@
             <div class="info-box">
                 <h3>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 8px;">
-                        <path d="M13 16H12V12H11M12 8H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#2c5aa0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M13 16H12V12H11M12 8H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#2b6cb0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                     Informasi Penting
                 </h3>
@@ -216,7 +216,7 @@
             
             <div class="divider"></div>
             
-            <div class="message" style="margin-bottom: 10px; font-size: 14px; color: #666;">
+            <div class="message" style="margin-bottom: 10px; font-size: 14px; color: #718096;">
                 Barakallahu fiikum atas kepercayaan Anda bergabung dengan platform kami. Semoga bermanfaat untuk aktivitas keuangan anda.
             </div>
         </div>

@@ -110,8 +110,8 @@
         </div>
 
         <!-- Summary Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div class="bg-gradient-to-br from-blue-50 to-blue-100/50 border border-blue-200/50 rounded-2xl p-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 xl:grid-cols-4 gap-6 mb-8">
+            <div class="hover:shadow-lg transition-all duration-300 hover:translate-y-[-2px] bg-gradient-to-br from-blue-50 to-blue-100/50 border border-blue-200/50 rounded-2xl p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-blue-600 text-sm font-medium mb-1">Total Transaksi</p>
@@ -123,7 +123,7 @@
                 </div>
             </div>
 
-            <div class="bg-gradient-to-br from-green-50 to-green-100/50 border border-green-200/50 rounded-2xl p-6">
+            <div class="hover:shadow-lg transition-all duration-300 hover:translate-y-[-2px] bg-gradient-to-br from-green-50 to-green-100/50 border border-green-200/50 rounded-2xl p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-green-600 text-sm font-medium mb-1">Total Pendapatan</p>
@@ -135,7 +135,7 @@
                 </div>
             </div>
 
-            <div class="bg-gradient-to-br from-purple-50 to-purple-100/50 border border-purple-200/50 rounded-2xl p-6">
+            <div class="hover:shadow-lg transition-all duration-300 hover:translate-y-[-2px] bg-gradient-to-br from-purple-50 to-purple-100/50 border border-purple-200/50 rounded-2xl p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-purple-600 text-sm font-medium mb-1">Total Semua Pengeluaran</p>
@@ -148,7 +148,7 @@
                 </div>
             </div>
 
-            <div class="bg-gradient-to-br from-yellow-50 to-yellow-100/50 border border-yellow-200/50 rounded-2xl p-6">
+            <div class="hover:shadow-lg transition-all duration-300 hover:translate-y-[-2px] bg-gradient-to-br from-yellow-50 to-yellow-100/50 border border-yellow-200/50 rounded-2xl p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-yellow-600 text-sm font-medium mb-1">Pendapatan Bersih</p>
@@ -192,7 +192,7 @@
                     </thead>
                     <tbody class="divide-y divide-gray-100">
                         @forelse($transactions as $i => $trx)
-                            <tr class="hover:bg-gray-50/50 transition-colors duration-150">
+                            <tr class="hover:bg-gray-300/50 transition-all duration-150">
                                 <td class="px-6 py-4 text-sm text-gray-500">
                                     <div
                                         class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 font-medium text-xs">
