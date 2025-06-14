@@ -286,6 +286,25 @@
     <script>
         let cart = [];
 
+        // Load cart from localStorage when page loads
+        function loadCartFromStorage() {
+            const savedCart = localStorage.getItem('transactionCart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+                updateCartDisplay();
+            }
+        }
+
+        // Save cart to localStorage
+        function saveCartToStorage() {
+            localStorage.setItem('transactionCart', JSON.stringify(cart));
+        }
+
+        // Clear cart from localStorage
+        function clearCartFromStorage() {
+            localStorage.removeItem('transactionCart');
+        }
+
         // Flash Message Function
         function showFlashMessage(type, title, message, icon = null) {
             const container = document.getElementById('flash-message-container');
@@ -358,7 +377,7 @@
         function showConfirmDialog(title, message, onConfirm, onCancel = null) {
             const backdrop = document.createElement('div');
             backdrop.className =
-                'fixed inset-0 bg-black bg-opacity-10 backdrop-blur-xl z-50 flex items-center justify-center p-4';
+                'fixed inset-0 bg-opacity-20 backdrop-blur-lg z-50 flex items-center justify-center p-4';
             backdrop.style.animation = 'fadeIn 0.3s ease-out';
 
             const dialog = document.createElement('div');
@@ -491,6 +510,7 @@
             }
 
             updateCartDisplay();
+            saveCartToStorage();
             syncCartWithBackend();
         }
 
@@ -498,6 +518,7 @@
         function removeFromCart(id) {
             cart = cart.filter(item => item.id !== id);
             updateCartDisplay();
+            saveCartToStorage();
             syncCartWithBackend();
         }
 
@@ -509,6 +530,7 @@
                 () => {
                     cart = [];
                     updateCartDisplay();
+                    clearCartFromStorage();
                     syncCartWithBackend();
                     showFlashMessage('info', 'Keranjang Dikosongkan',
                         'Semua produk telah dihapus dari keranjang belanja.', 'fas fa-shopping-cart');
@@ -526,6 +548,7 @@
                 } else if (newQty <= item.stock) {
                     item.qty = newQty;
                     updateCartDisplay();
+                    saveCartToStorage();
                     syncCartWithBackend();
                 } else {
                     showFlashMessage('warning', 'Stok Terbatas!', `Stok ${item.name} hanya tersedia ${item.stock} unit.`,
@@ -680,6 +703,7 @@
 
                         cart = [];
                         updateCartDisplay();
+                        clearCartFromStorage();
                         syncCartWithBackend();
 
                         document.getElementById('santri_id').value = '';
@@ -786,6 +810,7 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
+            loadCartFromStorage();
             updateCartDisplay();
         });
     </script>

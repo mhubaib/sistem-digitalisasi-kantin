@@ -6,26 +6,13 @@ use App\Models\User;
 use App\Models\Santri;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $users = User::with('santri')->get();
-
-        return view('admin.users.index', compact('users'));
-    }
-
-    // Menampilkan detail user
-    public function show($id)
-    {
-        $user = User::with('santri')->findOrFail($id);
-
-        return view('admin.users.show', compact('user'));
-    }
 
     public function santriIndex()
     {
@@ -78,5 +65,16 @@ class UserController extends Controller
                 ->back()
                 ->with('error', 'Terjadi kesalahan saat memperbarui status: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Display the santri's profile page.
+     */
+    public function santriProfile()
+    {
+        $user = Auth::user();
+        $santri = $user->santri;
+
+        return view('santri.profile', compact('user', 'santri'));
     }
 }

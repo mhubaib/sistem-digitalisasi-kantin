@@ -82,6 +82,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 // Santri-only Dashboard
 Route::middleware(['auth', 'role:santri'])->prefix('santri')->name('santri.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'santri'])->name('dashboard');
+    Route::get('/profile', [UserController::class, 'santriProfile'])->name('profile');
     Route::get('/product/index', [DashboardController::class, 'products'])->name('product.index');
     Route::get('/transactions/index', [DashboardController::class, 'transactions'])->name('transactions.index');
     Route::get('/topups/index', [DashboardController::class, 'topups'])->name('topups.index');
