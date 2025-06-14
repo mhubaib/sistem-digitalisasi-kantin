@@ -3,169 +3,273 @@
 @section('title', 'Top-up Baru')
 
 @section('content')
-    <div class="container px-6 mx-auto">
-        <!-- Breadcrumb -->
-        <nav class="flex items-center text-sm text-gray-500 mb-6" aria-label="Breadcrumb">
-            <a href="{{ route('admin.topup.index') }}" class="hover:text-blue-600 flex items-center">
-                <i class="fas fa-home mr-1"></i> Top-up
+    <div class="container px-6 mx-auto max-w-6xl">
+        <!-- Enhanced Breadcrumb -->
+        <nav class="flex items-center text-sm text-gray-500 mb-8" aria-label="Breadcrumb">
+            <a href="{{ route('admin.dashboard') }}"
+                class="hover:text-indigo-600 flex items-center transition-all duration-300 hover:scale-105 group">
+                <i class="fas fa-home mr-2 text-xs group-hover:text-indigo-600"></i> Dashboard
             </a>
-            <span class="mx-2">/</span>
+            <span class="mx-3 text-gray-300">•</span>
+            <a href="{{ route('admin.topup.index') }}"
+                class="hover:text-indigo-600 transition-all duration-300 hover:scale-105">Manajemen Top-up</a>
+            <span class="mx-3 text-gray-300">•</span>
             <span class="text-gray-700 font-semibold">Top-up Baru</span>
         </nav>
 
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div class="p-6 sm:p-8">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">Top-up Saldo Santri</h2>
+        <!-- Main Card with Premium Design -->
+        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100">
+            <!-- Header Section with Gradient -->
+            <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 p-8">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-white mb-2">Top-up Saldo Santri</h1>
+                        <p class="text-indigo-100 text-lg">Kelola saldo dengan mudah dan aman</p>
+                    </div>
+                    <div class="hidden md:block">
+                        <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                            <i class="fas fa-wallet text-3xl text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <div class="p-8 md:p-10">
+                <!-- Success/Error Messages with Enhanced Design -->
                 @if (session('success'))
-                    <div class="mb-6 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg shadow-sm">
+                    <div
+                        class="mb-8 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6 shadow-sm">
                         <div class="flex items-center">
-                            <i class="fas fa-check-circle mr-2"></i>
-                            <p>{{ session('success') }}</p>
+                            <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-green-800 font-semibold mb-1">Berhasil!</h4>
+                                <p class="text-green-700">{{ session('success') }}</p>
+                            </div>
                         </div>
                     </div>
                 @endif
 
                 @if ($errors->any())
-                    <div class="mb-6 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg shadow-sm">
-                        <div class="flex items-center mb-2">
-                            <i class="fas fa-exclamation-circle mr-2"></i>
-                            <p class="font-semibold">Terjadi kesalahan:</p>
+                    <div
+                        class="mb-8 bg-gradient-to-r from-red-50 to-rose-50 border border-red-200 rounded-xl p-6 shadow-sm">
+                        <div class="flex items-start">
+                            <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center mr-4 mt-0.5">
+                                <i class="fas fa-exclamation-triangle text-red-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-red-800 font-semibold mb-2">Terjadi Kesalahan</h4>
+                                <ul class="space-y-1">
+                                    @foreach ($errors->all() as $error)
+                                        <li class="text-red-700 flex items-center">
+                                            <i class="fas fa-circle text-xs mr-2 text-red-400"></i>
+                                            {{ $error }}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
                         </div>
-                        <ul class="list-disc list-inside">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
                     </div>
                 @endif
 
-                <form action="{{ route('admin.topup.store') }}" method="POST" class="space-y-6">
+                <form action="{{ route('admin.topup.store') }}" method="POST" class="space-y-8">
                     @csrf
 
-                    <!-- Santri Selection -->
-                    <div class="form-group">
-                        <label for="santri_id" class="block text-sm font-medium text-gray-700 mb-2">
-                            Pilih Santri
-                        </label>
-                        <div class="relative">
-                            <select id="santri_id" name="santri_id" required
-                                class="block w-full pl-3 pr-10 py-2.5 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-lg shadow-sm transition duration-150 ease-in-out">
-                                <option value="">Pilih Santri</option>
-                                @foreach ($santris as $santri)
-                                    <option value="{{ $santri->id }}"
-                                        {{ old('santri_id') == $santri->id ? 'selected' : '' }}>
-                                        {{ $santri->user->name }} - Saldo: Rp
-                                        {{ number_format($santri->saldo, 0, ',', '.') }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                <i class="fas fa-chevron-down text-gray-400"></i>
+                    <!-- Enhanced Form Grid -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Left Column -->
+                        <div class="space-y-6">
+                            <!-- Santri Selection with Premium Style -->
+                            <div class="form-group">
+                                <label for="santri_id" class="block text-sm font-semibold text-gray-800 mb-3">
+                                    <i class="fas fa-user-graduate text-indigo-600 mr-2"></i>
+                                    Pilih Santri
+                                </label>
+                                <div class="relative group">
+                                    <select id="santri_id" name="santri_id" required
+                                        class="block w-full pl-4 pr-12 py-4 text-base border-2 border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 rounded-xl shadow-sm transition-all duration-300 bg-gray-50 focus:bg-white group-hover:border-gray-300">
+                                        <option value="">-- Pilih Santri --</option>
+                                        @foreach ($santris as $santri)
+                                            <option value="{{ $santri->id }}"
+                                                {{ old('santri_id') == $santri->id ? 'selected' : '' }}>
+                                                {{ $santri->user->name }} - Saldo: Rp
+                                                {{ number_format($santri->saldo, 0, ',', '.') }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
+                                        <i
+                                            class="fas fa-chevron-down text-gray-400 group-hover:text-indigo-500 transition-colors duration-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Amount Input with Advanced Styling -->
+                            <div class="form-group">
+                                <label for="amount" class="block text-sm font-semibold text-gray-800 mb-3">
+                                    <i class="fas fa-money-bill-wave text-green-600 mr-2"></i>
+                                    Jumlah Top-up
+                                </label>
+                                <div class="relative group">
+                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <span class="text-gray-600 font-semibold text-lg">Rp</span>
+                                    </div>
+                                    <input type="text" name="amount" id="amount" required
+                                        class="block w-full pl-12 pr-16 py-4 text-lg font-semibold border-2 border-gray-200 focus:border-green-500 focus:ring-4 focus:ring-green-100 rounded-xl transition-all duration-300 bg-gray-50 focus:bg-white text-gray-800"
+                                        placeholder="0" value="{{ old('amount') }}">
+                                    <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                                        <span class="text-gray-500 text-sm">.00</span>
+                                    </div>
+                                </div>
+                                <div class="mt-2 flex items-center text-sm text-gray-600">
+                                    <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                                    <span>Minimal top-up <strong class="text-blue-600">Rp 1.000</strong></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column - Payment Methods -->
+                        <div class="space-y-6">
+                            <div class="form-group">
+                                <label class="block text-sm font-semibold text-gray-800 mb-4">
+                                    <i class="fas fa-credit-card text-purple-600 mr-2"></i>
+                                    Metode Pembayaran
+                                </label>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <!-- Cash Option -->
+                                    <label class="relative group cursor-pointer">
+                                        <input type="radio" name="method" value="cash" class="peer sr-only"
+                                            {{ old('method') == 'cash' ? 'checked' : '' }}>
+                                        <div
+                                            class="w-full p-6 bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl transition-all duration-300 ease-in-out
+                                            peer-checked:border-green-500 peer-checked:ring-4 peer-checked:ring-green-100 peer-checked:shadow-lg 
+                                            hover:border-green-300 hover:shadow-md transform hover:scale-105 peer-checked:scale-105">
+                                            <div class="text-center">
+                                                <div
+                                                    class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                                    <i class="fas fa-money-bill-wave text-xl text-green-600"></i>
+                                                </div>
+                                                <h4 class="font-bold text-gray-800 mb-1">Tunai</h4>
+                                                <p class="text-sm text-gray-600">Pembayaran cash</p>
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                    <!-- Transfer Option -->
+                                    <label class="relative group cursor-pointer">
+                                        <input type="radio" name="method" value="transfer" class="peer sr-only"
+                                            {{ old('method') == 'transfer' ? 'checked' : '' }}>
+                                        <div
+                                            class="w-full p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl transition-all duration-300 ease-in-out
+                                            peer-checked:border-blue-500 peer-checked:ring-4 peer-checked:ring-blue-100 peer-checked:shadow-lg 
+                                            hover:border-blue-300 hover:shadow-md transform hover:scale-105 peer-checked:scale-105">
+                                            <div class="text-center">
+                                                <div
+                                                    class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                                    <i class="fas fa-university text-xl text-blue-600"></i>
+                                                </div>
+                                                <h4 class="font-bold text-gray-800 mb-1">Transfer Bank</h4>
+                                                <p class="text-sm text-gray-600">Transfer via bank</p>
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                    <!-- Manual Option -->
+                                    <label class="relative group cursor-pointer">
+                                        <input type="radio" name="method" value="manual" class="peer sr-only"
+                                            {{ old('method') == 'manual' ? 'checked' : '' }}>
+                                        <div
+                                            class="w-full p-6 bg-gradient-to-br from-yellow-50 to-amber-50 border-2 border-yellow-200 rounded-xl transition-all duration-300 ease-in-out
+                                            peer-checked:border-yellow-500 peer-checked:ring-4 peer-checked:ring-yellow-100 peer-checked:shadow-lg 
+                                            hover:border-yellow-300 hover:shadow-md transform hover:scale-105 peer-checked:scale-105">
+                                            <div class="text-center">
+                                                <div
+                                                    class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                                    <i class="fas fa-hand-holding-usd text-xl text-yellow-600"></i>
+                                                </div>
+                                                <h4 class="font-bold text-gray-800 mb-1">Manual</h4>
+                                                <p class="text-sm text-gray-600">Input manual</p>
+                                            </div>
+                                        </div>
+                                    </label>
+
+                                    <!-- Other Option -->
+                                    <label class="relative group cursor-pointer">
+                                        <input type="radio" name="method" value="lainnya" class="peer sr-only"
+                                            {{ old('method') == 'lainnya' ? 'checked' : '' }}>
+                                        <div
+                                            class="w-full p-6 bg-gradient-to-br from-gray-50 to-slate-50 border-2 border-gray-200 rounded-xl transition-all duration-300 ease-in-out
+                                            peer-checked:border-gray-500 peer-checked:ring-4 peer-checked:ring-gray-100 peer-checked:shadow-lg 
+                                            hover:border-gray-300 hover:shadow-md transform hover:scale-105 peer-checked:scale-105">
+                                            <div class="text-center">
+                                                <div
+                                                    class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                                    <i class="fas fa-ellipsis-h text-xl text-gray-600"></i>
+                                                </div>
+                                                <h4 class="font-bold text-gray-800 mb-1">Lainnya</h4>
+                                                <p class="text-sm text-gray-600">Metode lain</p>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Amount Input -->
-                    <div class="form-group">
-                        <label for="amount" class="block text-sm font-medium text-gray-700 mb-2">
-                            Jumlah Top-up
-                        </label>
-                        <div class="relative rounded-lg shadow-sm">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <span class="text-gray-500 sm:text-sm">Rp</span>
-                            </div>
-                            <input type="number" name="amount" id="amount" required min="1000"
-                                class="block w-full pl-12 pr-12 py-2.5 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-lg transition duration-150 ease-in-out"
-                                placeholder="0" value="{{ old('amount') }}">
-                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                <span class="text-gray-500 sm:text-sm">.00</span>
-                            </div>
+                    <!-- Enhanced Action Buttons -->
+                    <div
+                        class="flex flex-col sm:flex-row justify-between items-center gap-4 pt-8 border-t border-gray-100">
+                        <div class="text-sm text-gray-600 flex items-center">
+                            <i class="fas fa-shield-alt text-green-500 mr-2"></i>
+                            <span>Transaksi aman dan terenkripsi</span>
                         </div>
-                        <p class="mt-1 text-sm text-gray-500">Minimal top-up Rp 1.000</p>
-                    </div>
 
-                    <!-- Payment Method -->
-                    <div class="form-group">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Metode Pembayaran
-                        </label>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <label class="relative">
-                                <input type="radio" name="method" value="cash" class="peer sr-only"
-                                    {{ old('method') == 'cash' ? 'checked' : '' }}>
-                                <div
-                                    class="w-full p-4 bg-white border rounded-lg cursor-pointer transition-all duration-200 ease-in-out
-                                peer-checked:border-indigo-500 peer-checked:ring-2 peer-checked:ring-indigo-500 hover:border-gray-300">
-                                    <div class="flex items-center">
-                                        <i class="fas fa-money-bill-wave text-2xl mr-3 text-green-500"></i>
-                                        <div>
-                                            <h4 class="font-medium">Tunai</h4>
-                                            <p class="text-sm text-gray-500">Pembayaran cash</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </label>
+                        <div class="flex gap-4">
+                            <a href="{{ route('admin.topup.index') }}"
+                                class="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all duration-300 font-semibold border border-gray-200 hover:border-gray-300">
+                                <i class="fas fa-arrow-left mr-2"></i>
+                                Kembali
+                            </a>
 
-                            <label class="relative">
-                                <input type="radio" name="method" value="transfer" class="peer sr-only"
-                                    {{ old('method') == 'transfer' ? 'checked' : '' }}>
-                                <div
-                                    class="w-full p-4 bg-white border rounded-lg cursor-pointer transition-all duration-200 ease-in-out
-                                peer-checked:border-indigo-500 peer-checked:ring-2 peer-checked:ring-indigo-500 hover:border-gray-300">
-                                    <div class="flex items-center">
-                                        <i class="fas fa-university text-2xl mr-3 text-blue-500"></i>
-                                        <div>
-                                            <h4 class="font-medium">Transfer Bank</h4>
-                                            <p class="text-sm text-gray-500">Transfer via bank</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </label>
-
-                            <label class="relative">
-                                <input type="radio" name="method" value="manual" class="peer sr-only"
-                                    {{ old('method') == 'manual' ? 'checked' : '' }}>
-                                <div
-                                    class="w-full p-4 bg-white border rounded-lg cursor-pointer transition-all duration-200 ease-in-out
-                                peer-checked:border-indigo-500 peer-checked:ring-2 peer-checked:ring-indigo-500 hover:border-gray-300">
-                                    <div class="flex items-center">
-                                        <i class="fas fa-hand-holding-usd text-2xl mr-3 text-yellow-500"></i>
-                                        <div>
-                                            <h4 class="font-medium">Manual</h4>
-                                            <p class="text-sm text-gray-500">Input manual</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </label>
-
-                            <label class="relative">
-                                <input type="radio" name="method" value="lainnya" class="peer sr-only"
-                                    {{ old('method') == 'lainnya' ? 'checked' : '' }}>
-                                <div
-                                    class="w-full p-4 bg-white border rounded-lg cursor-pointer transition-all duration-200 ease-in-out
-                                peer-checked:border-indigo-500 peer-checked:ring-2 peer-checked:ring-indigo-500 hover:border-gray-300">
-                                    <div class="flex items-center">
-                                        <i class="fas fa-ellipsis-h text-2xl mr-3 text-gray-500"></i>
-                                        <div>
-                                            <h4 class="font-medium">Lainnya</h4>
-                                            <p class="text-sm text-gray-500">Metode lain</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </label>
+                            <button type="submit"
+                                class="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 font-semibold group">
+                                <i
+                                    class="fas fa-paper-plane mr-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+                                Proses Top-up
+                            </button>
                         </div>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <div class="flex justify-end mt-6">
-                        <button type="submit"
-                            class="bg-indigo-600 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transform transition-all duration-300 hover:scale-105">
-                            <i class="fas fa-paper-plane mr-2"></i>
-                            Proses Top-up
-                        </button>
                     </div>
                 </form>
+
+                <!-- Additional Info Section -->
+                <div class="mt-10 pt-8 border-t border-gray-100">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                        <div class="flex flex-col items-center">
+                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-3">
+                                <i class="fas fa-clock text-blue-600"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-800 mb-1">Proses Cepat</h4>
+                            <p class="text-sm text-gray-600">Saldo akan masuk dalam hitungan detik</p>
+                        </div>
+
+                        <div class="flex flex-col items-center">
+                            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-3">
+                                <i class="fas fa-shield-check text-green-600"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-800 mb-1">100% Aman</h4>
+                            <p class="text-sm text-gray-600">Transaksi dilindungi sistem keamanan terbaik</p>
+                        </div>
+
+                        <div class="flex flex-col items-center">
+                            <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-3">
+                                <i class="fas fa-headset text-purple-600"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-800 mb-1">Support 24/7</h4>
+                            <p class="text-sm text-gray-600">Tim support siap membantu kapan saja</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -173,12 +277,104 @@
 
 @push('scripts')
     <script>
-        // Format amount input with thousand separator
-        const amountInput = document.getElementById('amount');
-        amountInput.addEventListener('input', function(e) {
-            let value = this.value.replace(/\D/g, "");
-            if (value === "") return;
-            this.value = parseInt(value).toLocaleString('id-ID');
+        document.addEventListener('DOMContentLoaded', function() {
+            const santriSelect = document.getElementById('santri_id');
+            const formGroup = santriSelect.closest('.form-group');
+            const options = Array.from(santriSelect.options).slice(1); // Exclude placeholder option
+
+            // Create search input
+            const searchInput = document.createElement('input');
+            searchInput.type = 'text';
+            searchInput.placeholder = 'Cari santri...';
+            searchInput.className =
+                'block w-full pl-4 pr-12 py-4 text-base border-2 border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 rounded-xl shadow-sm transition-all duration-300 bg-gray-50 focus:bg-white mb-2';
+
+            // Insert search input before select
+            formGroup.querySelector('.relative').before(searchInput);
+
+            // Search functionality
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+
+                // Reset options
+                santriSelect.innerHTML = '<option value="">-- Pilih Santri --</option>';
+
+                // Filter and add matching options
+                options
+                    .filter(option => option.text.toLowerCase().includes(searchTerm))
+                    .forEach(option => santriSelect.appendChild(option));
+
+                // If search term is empty, restore all options
+                if (!searchTerm) {
+                    options.forEach(option => santriSelect.appendChild(option));
+                }
+            });
+        });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Enhanced amount input formatting
+            const amountInput = document.getElementById('amount');
+
+            // Format input on typing
+            amountInput.addEventListener('input', function(e) {
+                let value = this.value.replace(/\D/g, "");
+                if (value === "") {
+                    this.value = "";
+                    return;
+                }
+
+                // Format with thousand separator
+                let formatted = parseInt(value).toLocaleString('id-ID');
+                this.value = formatted;
+
+                // Add visual feedback for minimum amount
+                if (parseInt(value) < 1000) {
+                    this.classList.add('border-red-300', 'focus:border-red-500', 'focus:ring-red-100');
+                    this.classList.remove('border-gray-200', 'focus:border-green-500',
+                        'focus:ring-green-100');
+                } else {
+                    this.classList.remove('border-red-300', 'focus:border-red-500', 'focus:ring-red-100');
+                    this.classList.add('border-gray-200', 'focus:border-green-500', 'focus:ring-green-100');
+                }
+            });
+
+            // Remove formatting before form submission
+            const form = amountInput.closest('form');
+            form.addEventListener('submit', function(e) {
+                const rawValue = amountInput.value.replace(/\D/g, "");
+                amountInput.value = rawValue;
+            });
+
+            // Add smooth animation for payment method selection
+            const paymentOptions = document.querySelectorAll('input[name="method"]');
+            paymentOptions.forEach(option => {
+                option.addEventListener('change', function() {
+                    // Remove animation from all options
+                    paymentOptions.forEach(opt => {
+                        const label = opt.closest('label');
+                        label.querySelector('div').classList.remove('animate-pulse');
+                    });
+
+                    // Add animation to selected option
+                    if (this.checked) {
+                        const label = this.closest('label');
+                        label.querySelector('div').classList.add('animate-pulse');
+                        setTimeout(() => {
+                            label.querySelector('div').classList.remove('animate-pulse');
+                        }, 1000);
+                    }
+                });
+            });
+
+            // Add loading state to submit button
+            const submitButton = document.querySelector('button[type="submit"]');
+            const form = document.querySelector('form');
+
+            form.addEventListener('submit', function(e) {
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Memproses...';
+                submitButton.classList.add('opacity-75', 'cursor-not-allowed');
+            });
         });
     </script>
 @endpush

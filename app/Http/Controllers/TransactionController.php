@@ -44,7 +44,7 @@ class TransactionController extends Controller
         // Fetch approved santri with id, saldo, and name from related user
         $santris = Santri::select('santris.id', 'santris.saldo')
             ->join('users', 'santris.user_id', '=', 'users.id')
-            ->where('santris.status', 'approved')
+            ->where('santris.status', 'approved')->where('users.active', true)
             ->addSelect('users.name')
             ->get();
 

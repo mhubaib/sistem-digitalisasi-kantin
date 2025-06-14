@@ -28,7 +28,12 @@ class AuthController extends Controller
     // Tampilkan daftar santri yang belum di-approve (admin)
     public function index()
     {
-        $pendingSantris = User::with('santri')->where('role', 'santri')->where('active', false)->get();
+        $pendingSantris = User::with('santri')
+            ->where('role', 'santri')
+            ->whereHas('santri', function ($query) {
+                $query->where('status', 'pending');
+            })
+            ->get();
         return view('admin.santri-approvals', compact('pendingSantris'));
     }
 
@@ -93,6 +98,22 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
 
+            // Cek status aktif user
+            if (!$user->active) {
+                Auth::logout();
+                return back()->with('error', 'Akun Anda telah dinonaktifkan.');
+            }
+
+            // Khusus untuk wali, cek status aktif santri
+            if ($user->role === 'wali') {
+                $santri = Santri::where('wali_id', $user->id)->first();
+                if ($santri && !$santri->user->active) {
+                    Auth::logout();
+                    return back()->with('error', 'Akun Anda telah dinonaktifkan karena anak anda telah dinonaktifkan.');
+                }
+            }
+
+            // Khusus untuk santri, cek status approval
             if ($user->role === 'santri' && !$user->active) {
                 Auth::logout();
                 return back()->with('error', 'Akun Anda belum disetujui admin.');
@@ -121,13 +142,6 @@ class AuthController extends Controller
     {
         Auth::logout();
         return redirect()->route('auth.login');
-    }
-
-    // Tampilkan daftar santri yang belum di-approve (admin)
-    public function showPendingSantri()
-    {
-        $santris = User::where('role', 'santri')->where('active', false)->get();
-        return view('<admin class="santri"></admin>approvals', compact('santris'));
     }
 
     // Approve santri oleh admin

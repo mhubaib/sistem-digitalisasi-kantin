@@ -22,9 +22,17 @@ class DashboardController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
+        // Get active santri count and total saldo
+        $activeSantri = Santri::join('users', 'santris.user_id', '=', 'users.id')
+            ->where('users.active', true)
+            ->select('santris.id', 'santris.saldo');
+
+        $totalSantri = $activeSantri->count();
+        $totalSaldo = $activeSantri->sum('saldo');
+
         return view('admin.dashboard', [
-            'totalSantri' => Santri::count(),
-            'totalSaldo' => Santri::sum('saldo'),
+            'totalSantri' => $totalSantri,
+            'totalSaldo' => $totalSaldo,
             'todayIncome' => Transaction::whereDate('created_at', Carbon::today())->sum('total'),
             'recentTransactions' => Transaction::with('santri.user')
                 ->latest()

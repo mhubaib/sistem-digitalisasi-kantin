@@ -13,6 +13,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\Admin\SantriController;
 
 
 
@@ -71,6 +72,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::patch('/admin/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
 
     Route::get('/transaction/all', [TransactionController::class, 'allTransactions'])->name('transaction.index');
+
+    // Santri Status Routes
+    Route::get('/santri/{santri}/status/edit', [UserController::class, 'editSantriStatus'])->name('santri.status.edit');
+    Route::put('/santri/{santri}/status', [UserController::class, 'updateSantriStatus'])->name('santri.status.update');
 });
 
 

@@ -213,6 +213,7 @@
         </div>
     </div>
     
+    <script src="/path/to/santri_search.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const sidebar = document.getElementById('sidebar');

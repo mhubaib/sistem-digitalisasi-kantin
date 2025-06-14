@@ -60,8 +60,8 @@
                             <select id="statusFilter"
                                 class="border border-gray-300 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
                                 <option value="all">Semua Status</option>
-                                <option value="active">Aktif (Saldo > 0)</option>
-                                <option value="inactive">Kosong (Saldo = 0)</option>
+                                <option value="active">Aktif</option>
+                                <option value="inactive">Non Aktif</option>
                             </select>
                             <div class="flex items-center space-x-2 text-sm text-gray-600">
                                 <i class="fas fa-info-circle text-gray-400"></i>
@@ -122,6 +122,13 @@
                                         <span>Saldo</span>
                                     </div>
                                 </th>
+                                <th scope="col"
+                                    class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    <div class="flex items-center space-x-1">
+                                        <i class="fas fa-toggle-on w-4 h-4 text-gray-400"></i>
+                                        <span>Status</span>
+                                    </div>
+                                </th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200" id="santriTableBody">
@@ -132,7 +139,7 @@
                                     data-santri-email="{{ strtolower($santri->user->email ?? '') }}"
                                     data-wali-email="{{ strtolower($santri->wali->email ?? '') }}"
                                     data-saldo="{{ $santri->saldo ?? 0 }}"
-                                    data-status="{{ ($santri->saldo ?? 0) > 0 ? 'active' : 'inactive' }}">
+                                    data-status="{{ $santri->user->active ? 'active' : 'inactive' }}">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <div class="flex-shrink-0 h-10 w-10">
@@ -177,23 +184,27 @@
                                             <div class="text-sm font-bold text-gray-900">
                                                 Rp {{ number_format($santri->saldo ?? 0, 0, ',', '.') }}
                                             </div>
-                                            @if (($santri->saldo ?? 0) > 0)
-                                                <div class="ml-2 flex-shrink-0">
-                                                    <span
-                                                        class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                        <i class="fas fa-circle w-2 h-2 mr-1"></i>
-                                                        Aktif
-                                                    </span>
-                                                </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            @if ($santri->user->active)
+                                                <span
+                                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                    <i class="fas fa-check-circle w-4 h-4 mr-1"></i>
+                                                    Aktif
+                                                </span>
                                             @else
-                                                <div class="ml-2 flex-shrink-0">
-                                                    <span
-                                                        class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                                        <i class="fas fa-circle w-2 h-2 mr-1"></i>
-                                                        Kosong
-                                                    </span>
-                                                </div>
+                                                <span
+                                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                    <i class="fas fa-times-circle w-4 h-4 mr-1"></i>
+                                                    Non Aktif
+                                                </span>
                                             @endif
+                                            <a href="{{ route('admin.santri.status.edit', $santri->id) }}"
+                                                class="ml-2 text-blue-600 hover:text-blue-800 transition-colors">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
                                         </div>
                                     </td>
                                 </tr>
@@ -510,7 +521,7 @@
                 }
             });
 
-            // Add search shortcut hinta
+            // Add search shortcut hint
             searchInput.placeholder = 'Cari nama santri atau wali... (Ctrl+K)';
 
             // Initialize with current state
