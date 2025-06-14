@@ -4,19 +4,21 @@
 
 @section('content')
     <div class="container mx-auto px-4 lg:px-8">
-        <!-- Breadcrumb -->
-        <nav class="flex items-center text-sm text-gray-500 mb-6" aria-label="Breadcrumb">
-            <a href="{{ route('admin.dashboard') }}" class="hover:text-blue-600 flex items-center">
-                <i class="fas fa-home mr-1"></i> Dashboard
+        <!-- Breadcrumb dengan styling baru -->
+        <nav class="flex items-center text-sm text-gray-400 mb-8" aria-label="Breadcrumb">
+            <a href="{{ route('admin.dashboard') }}"
+                class="hover:text-blue-500 flex items-center transition-colors duration-200">
+                <i class="fas fa-home mr-2 text-xs"></i> Dashboard
             </a>
-            <span class="mx-2">/</span>
-            <a href="{{ route('admin.expenses.index') }}" class="hover:text-blue-600">Pengeluaran Kantin</a>
-            <span class="mx-2">/</span>
-            <span class="text-gray-700 font-semibold">Tambah Pengeluaran</span>
+            <span class="mx-3 text-gray-300">•</span>
+            <a href="{{ route('admin.expenses.index') }}"
+                class="hover:text-blue-500 transition-colors duration-200">Pengeluaran Kantin</a>
+            <span class="mx-3 text-gray-300">•</span>
+            <span class="text-gray-600 font-medium">Tambah Pengeluaran</span>
         </nav>
 
         <!-- Header Section -->
-        <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl p-6 mb-6 text-white">
+        <div class="bg-gradient-to-br from-gray-800 to-gray-600 rounded-xl p-6 mb-6 text-white">
             <div class="flex items-center justify-between">
                 <div>
                     <h1 class="text-3xl font-bold mb-2 flex items-center">
@@ -152,7 +154,7 @@
                 <!-- Action Buttons -->
                 <div class="mt-8 flex gap-4">
                     <button type="submit"
-                        class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center">
+                        class="px-6 py-3 bg-gradient-to-br from-gray-800 to-gray-600 hover:bg-gradient-to-tl from-gray-800 to-gray-600 hover:translate-y-1 text-white rounded-lg transition-all flex items-center">
                         <i class="fas fa-save mr-2"></i>
                         Simpan Pengeluaran
                     </button>

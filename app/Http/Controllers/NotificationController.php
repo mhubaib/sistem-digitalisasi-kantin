@@ -34,7 +34,7 @@ class NotificationController extends Controller
         ]);
     }
 
-    public function history()
+    public function historyAdmin()
     {
         $query = Notification::where('user_id', Auth::id())
             ->orderBy('created_at', 'desc');
@@ -50,6 +50,42 @@ class NotificationController extends Controller
             ->count();
 
         return view('admin.notifications.index', compact('notifications', 'unreadCount'));
+    }
+
+    public function historyWali()
+    {
+        $query = Notification::where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc');
+
+        // Get notifications grouped by date
+        $notifications = $query->get()->groupBy(function ($notification) {
+            return Carbon::parse($notification->created_at)->format('Y-m-d');
+        });
+
+        // Get unread count (for the page header, if needed)
+        $unreadCount = Notification::where('user_id', Auth::id())
+            ->where('is_read', false)
+            ->count();
+
+        return view('wali.notifications.index', compact('notifications', 'unreadCount'));
+    }
+
+    public function historySantri()
+    {
+        $query = Notification::where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc');
+
+        // Get notifications grouped by date
+        $notifications = $query->get()->groupBy(function ($notification) {
+            return Carbon::parse($notification->created_at)->format('Y-m-d');
+        });
+
+        // Get unread count (for the page header, if needed)
+        $unreadCount = Notification::where('user_id', Auth::id())
+            ->where('is_read', false)
+            ->count();
+
+        return view('santri.notifications.index', compact('notifications', 'unreadCount'));
     }
 
     public function markAsRead($id)

@@ -66,7 +66,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     // Notifications
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
-    Route::get('/notifications/history', [NotificationController::class, 'history'])->name('notifications.history');
+    Route::get('/notifications/history', [NotificationController::class, 'historyAdmin'])->name('notifications.history');
     Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
     Route::patch('/admin/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
 
@@ -83,6 +83,7 @@ Route::middleware(['auth', 'role:santri'])->prefix('santri')->name('santri.')->g
 
     // Santri notifications routes
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/history', [NotificationController::class, 'historySantri'])->name('notifications.history');
     Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
     Route::patch('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
 });
@@ -95,6 +96,7 @@ Route::middleware(['auth', 'role:wali'])->prefix('wali')->name('wali.')->group(f
 
     // Wali notifications routes
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/history', [NotificationController::class, 'historyWali'])->name('notifications.history');
     Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
     Route::patch('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
 });

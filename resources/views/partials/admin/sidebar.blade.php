@@ -34,21 +34,21 @@
             </li>
             <li>
                 <a href="{{ route('admin.product.index') }}"
-                    class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-700">
+                    class="nav-link flex items-center px-4 py-3 rounded-lg {{ request()->routeIs('admin.product.index') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">
                     <i class="fas fa-box w-5 text-center"></i>
                     <span class="ml-3 sidebar-text">Produk</span>
                 </a>
             </li>
             <li>
                 <a href="{{ route('admin.admin.transaction.cart') }}"
-                    class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-700">
+                    class="nav-link flex items-center px-4 py-3 rounded-lg {{ request()->routeIs('admin.admin.transaction.cart') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">
                     <i class="fas fa-cash-register w-5 text-center"></i>
                     <span class="ml-3 sidebar-text">Transaksi</span>
                 </a>
             </li>
             <li>
                 <a href="{{ route('admin.topup.index') }}"
-                    class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-gray-700">
+                    class="nav-link flex items-center px-4 py-3 rounded-lg {{ request()->routeIs('admin.topup.index') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">
                     <i class="fas fa-coins w-5 text-center"></i>
                     <span class="ml-3 sidebar-text">Top-Up</span>
                 </a>

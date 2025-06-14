@@ -14,6 +14,38 @@
             <span class="text-gray-600 font-medium">Manajemen Top-up</span>
         </nav>
 
+        <!-- Flash Message -->
+        @if (session('success'))
+            <div id="flash-message" class="mb-8 transform transition-all duration-500 ease-in-out translate-x-0 opacity-100">
+                <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-lg shadow-sm">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-check-circle text-green-500"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-green-700">{{ session('success') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div id="flash-message"
+                class="mb-8 transform transition-all duration-500 ease-in-out translate-x-0 opacity-100">
+                <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg shadow-sm">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-circle text-red-500"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-red-700">{{ session('error') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         <!-- Header Section -->
         <div class="mb-8">
             <div class="flex justify-between items-center">
@@ -283,6 +315,34 @@
         .stat-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px -8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Flash message animation */
+        @keyframes slideOut {
+            0% {
+                transform: translateX(0);
+                opacity: 1;
+                max-height: 100px;
+                margin-bottom: 2rem;
+            }
+
+            100% {
+                transform: translateX(100%);
+                opacity: 0;
+                max-height: 0;
+                margin-bottom: 0;
+                padding: 0;
+            }
+        }
+
+        #flash-message {
+            animation: slideOut 0.5s ease-in-out forwards;
+            animation-delay: 3s;
+            overflow: hidden;
+        }
+
+        #flash-message>div {
+            transition: all 0.5s ease-in-out;
         }
 
         /* Custom select dropdown */

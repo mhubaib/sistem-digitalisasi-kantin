@@ -194,6 +194,7 @@
         .cta-container {
             text-align: center;
             margin: 35px 0;
+            text-color: white;
         }
         
         .cta-button {

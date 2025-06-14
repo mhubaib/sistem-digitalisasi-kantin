@@ -33,6 +33,34 @@
             background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
             transform: translateY(-1px);
         }
+
+        /* Flash message animation */
+        @keyframes slideOut {
+            0% {
+                transform: translateX(0);
+                opacity: 1;
+                max-height: 100px;
+                margin-bottom: 2rem;
+            }
+
+            100% {
+                transform: translateX(100%);
+                opacity: 0;
+                max-height: 0;
+                margin-bottom: 0;
+                padding: 0;
+            }
+        }
+
+        .flash-message {
+            animation: slideOut 0.5s ease-in-out forwards;
+            animation-delay: 3s;
+            overflow: hidden;
+        }
+
+        .flash-message>div {
+            transition: all 0.5s ease-in-out;
+        }
     </style>
 </head>
 
@@ -52,7 +80,7 @@
             <div class="bg-white rounded-xl card-shadow p-8">
                 <!-- Alert Messages -->
                 <div id="error-message"
-                    class="hidden mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                    class="flash-message hidden mb-6 bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-lg">
                     <div class="flex items-center">
                         <i class="fas fa-exclamation-circle mr-2"></i>
                         <span id="error-text"></span>
@@ -60,7 +88,7 @@
                 </div>
 
                 <div id="success-message"
-                    class="hidden mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+                    class="flash-message hidden mb-6 bg-green-50 border-l-4 border-green-500 text-green-700 px-4 py-3 rounded-lg">
                     <div class="flex items-center">
                         <i class="fas fa-check-circle mr-2"></i>
                         <span id="success-text"></span>
@@ -176,6 +204,14 @@
             const errorText = document.getElementById('error-text');
             const successText = document.getElementById('success-text');
 
+            // Reset animation by removing and re-adding the class
+            errorDiv.classList.remove('flash-message');
+            successDiv.classList.remove('flash-message');
+            void errorDiv.offsetWidth; // Trigger reflow
+            void successDiv.offsetWidth; // Trigger reflow
+            errorDiv.classList.add('flash-message');
+            successDiv.classList.add('flash-message');
+
             errorDiv.classList.add('hidden');
             successDiv.classList.add('hidden');
 
@@ -186,11 +222,6 @@
                 successText.textContent = message;
                 successDiv.classList.remove('hidden');
             }
-
-            setTimeout(() => {
-                errorDiv.classList.add('hidden');
-                successDiv.classList.add('hidden');
-            }, 4000);
         }
     </script>
     @if (session('success'))

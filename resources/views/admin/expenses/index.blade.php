@@ -102,7 +102,7 @@
 
         <!-- Summary Cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="bg-gradient-to-br from-blue-50 to-blue-100/50 border border-blue-200/50 rounded-2xl p-6">
+            <div class="hover:shadow-lg transition-all duration-300 hover:translate-y-[-2px] bg-gradient-to-br from-blue-50 to-blue-100/50 border border-blue-200/50 rounded-2xl p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-blue-600 text-sm font-medium mb-1">Total Pengeluaran</p>
@@ -114,7 +114,7 @@
                 </div>
             </div>
 
-            <div class="bg-gradient-to-br from-red-50 to-red-100/50 border border-red-200/50 rounded-2xl p-6">
+            <div class="hover:shadow-lg transition-all duration-300 hover:translate-y-[-2px] bg-gradient-to-br from-red-50 to-red-100/50 border border-red-200/50 rounded-2xl p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-red-600 text-sm font-medium mb-1">Total Nominal</p>
@@ -126,7 +126,7 @@
                 </div>
             </div>
 
-            <div class="bg-gradient-to-br from-green-50 to-green-100/50 border border-green-200/50 rounded-2xl p-6">
+            <div class="hover:shadow-lg transition-all duration-300 hover:translate-y-[-2px] bg-gradient-to-br from-green-50 to-green-100/50 border border-green-200/50 rounded-2xl p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-green-800 text-sm font-medium mb-1">Untung Bersih</p>

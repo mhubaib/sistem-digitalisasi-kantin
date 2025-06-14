@@ -171,6 +171,25 @@
                                     <span
                                         class="text-sm font-medium text-gray-800">{{ $transaction->created_at->format('H:i') }}</span>
                                 </div>
+
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-money-bill-wave text-gray-400 text-sm"></i>
+                                        <span class="text-sm text-gray-600">Metode Pembayaran</span>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-800">
+                                        @if ($transaction->payment_type === 'cash')
+                                            <span
+                                                class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Cash</span>
+                                        @elseif($transaction->payment_type === 'saldo')
+                                            <span
+                                                class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">Saldo</span>
+                                        @else
+                                            <span
+                                                class="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs">{{ ucfirst($transaction->payment_method) }}</span>
+                                        @endif
+                                    </span>
+                                </div>
                             </div>
                         </div>
 

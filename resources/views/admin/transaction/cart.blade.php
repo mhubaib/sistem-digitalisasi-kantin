@@ -89,14 +89,26 @@
                 <!-- Santri Selection -->
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Santri</label>
-                    <select id="santri_id"
-                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">-- Pilih Santri (opsional untuk non-santri) --</option>
-                        @foreach ($santris as $santri)
-                            <option value="{{ $santri->id }}">{{ $santri->name }} - Saldo: Rp
-                                {{ number_format($santri->saldo, 0, ',', '.') }}</option>
-                        @endforeach
-                    </select>
+                    <div class="relative">
+                        <input type="text" id="santri_search" placeholder="Cari santri..."
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <input type="hidden" id="santri_id" name="santri_id">
+                        <div id="santri_dropdown"
+                            class="absolute z-10 w-full bg-white border border-gray-300 rounded-lg mt-1 max-h-60 overflow-y-auto hidden">
+                            <div class="p-2 text-sm text-gray-500 cursor-pointer hover:bg-gray-100" data-value=""
+                                onclick="selectSantri('', '-- Pilih Santri (opsional untuk non-santri) --')">
+                                -- Pilih Santri (opsional untuk non-santri) --
+                            </div>
+                            @foreach ($santris as $santri)
+                                <div class="p-2 text-sm text-gray-700 cursor-pointer hover:bg-gray-100"
+                                    data-value="{{ $santri->id }}"
+                                    data-label="{{ $santri->name }} - Saldo: Rp {{ number_format($santri->saldo, 0, ',', '.') }}"
+                                    onclick="selectSantri('{{ $santri->id }}', '{{ $santri->name }} - Saldo: Rp {{ number_format($santri->saldo, 0, ',', '.') }}')">
+                                    {{ $santri->name }} - Saldo: Rp {{ number_format($santri->saldo, 0, ',', '.') }}
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Payment Method -->
@@ -316,7 +328,7 @@
                 <div class="font-semibold text-lg mb-1">${title}</div>
                 <div class="text-sm opacity-90 leading-relaxed">${message}</div>
             </div>
-            <button onclick="removeFlashMessage(this)" class="flex-shrink-0 ml-2 hover:bg-white hover:bg-opacity-20 rounded-full p-1 transition-colors">
+            <button onclick="removeFlashMessage(this)" class="flex-shrink-0 ml-2 hover:text-white-500 hover:bg-opacity-20 rounded-full p-1 transition-colors">
                 <i class="fas fa-times text-sm"></i>
             </button>
         </div>
@@ -588,7 +600,7 @@
             document.getElementById('pay-amount').textContent = `Rp ${Math.round(total).toLocaleString('id-ID')}`;
         }
 
-        // Process payment with AJAX
+        // Process payment with FETCH API
         function processPayment() {
             if (cart.length === 0) {
                 showFlashMessage('warning', 'Keranjang Kosong!', 'Silakan tambahkan produk ke keranjang terlebih dahulu.',
@@ -653,7 +665,7 @@
                     payButton.disabled = false;
 
                     if (data.success) {
-                        const santriName = santriId ? document.getElementById('santri_id').selectedOptions[0].text
+                        const santriName = santriId ? document.getElementById('santri_search').value
                             .split(' - ')[0] : 'Non-Santri';
                         const paymentMethod = paymentType === 'saldo' ? 'Saldo Digital' : 'Tunai';
 
@@ -671,6 +683,7 @@
                         syncCartWithBackend();
 
                         document.getElementById('santri_id').value = '';
+                        document.getElementById('santri_search').value = '';
                     } else {
                         showFlashMessage('error',
                             'Transaksi Gagal!',
@@ -737,6 +750,38 @@
                 const productName = card.querySelector('h3').textContent.toLowerCase();
                 card.style.display = productName.includes(searchTerm) ? 'block' : 'none';
             });
+        });
+
+        // Santri dropdown functionality
+        function selectSantri(id, label) {
+            document.getElementById('santri_id').value = id;
+            document.getElementById('santri_search').value = label;
+            document.getElementById('santri_dropdown').classList.add('hidden');
+        }
+
+        document.getElementById('santri_search').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const dropdown = document.getElementById('santri_dropdown');
+            const items = dropdown.querySelectorAll('div[data-value]');
+
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(searchTerm) ? 'block' : 'none';
+            });
+
+            dropdown.classList.remove('hidden');
+        });
+
+        document.getElementById('santri_search').addEventListener('focus', function() {
+            document.getElementById('santri_dropdown').classList.remove('hidden');
+        });
+
+        document.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('santri_dropdown');
+            const input = document.getElementById('santri_search');
+            if (!dropdown.contains(e.target) && e.target !== input) {
+                dropdown.classList.add('hidden');
+            }
         });
 
         // Initialize

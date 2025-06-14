@@ -57,7 +57,7 @@
             </div>
         @else
             <div id="productsGrid"
-                class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                 @foreach ($products as $product)
                     <div class="product-card bg-white rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200"
                         data-name="{{ strtolower($product->name) }}" data-category="{{ strtolower($product->category) }}"

@@ -1,8 +1,10 @@
 <nav class="bg-white border-b border-gray-200 shadow-lg px-4 md:px-8 py-4 flex justify-between items-center relative">
     <div class="flex items-center">
         <!-- Hamburger menu untuk toggle sidebar -->
-        <button class="sidebar-toggle mr-4 text-gray-600 hover:text-blue-600 focus:outline-none">
-            <i class="fas fa-bars text-xl"></i>
+        <button
+            class="sidebar-toggle mr-4 text-gray-500 hover:text-indigo-600 focus:outline-none transition-colors duration-200 p-2 hover:bg-gray-50 rounded-lg"
+            title="Toggle Sidebar">
+            <i class="fas fa-bars text-lg"></i>
         </button>
 
         <div class="flex items-center space-x-3">

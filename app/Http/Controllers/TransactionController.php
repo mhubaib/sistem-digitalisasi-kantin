@@ -10,6 +10,7 @@ use App\Models\Transaction;
 use App\Models\TransactionItem;
 use App\Models\WalletHistory;
 use App\Services\NotificationService;
+use App\Services\WhatsAppService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -22,10 +23,12 @@ class TransactionController extends Controller
 {
 
     protected $notificationService;
+    protected $whatsappService;
 
-    public function __construct(NotificationService $notificationService)
+    public function __construct(NotificationService $notificationService, WhatsAppService $whatsappService)
     {
         $this->notificationService = $notificationService;
+        $this->whatsappService = $whatsappService;
     }
 
     /**
@@ -160,6 +163,17 @@ class TransactionController extends Controller
                             'items' => $request->items
                         ]
                     );
+                }
+            }
+
+            // Kirim notifikasi WhatsApp
+            if ($transaction) {
+                $santri = $request->santri_id ? Santri::find($request->santri_id) : null;
+                $this->whatsappService->sendTransactionNotification($transaction, $santri);
+
+                // Jika pembayaran menggunakan saldo, kirim notifikasi ke santri
+                if ($request->payment_type === 'saldo' && $santri) {
+                    $this->whatsappService->sendBalanceNotification($santri, $total, 'debit');
                 }
             }
 

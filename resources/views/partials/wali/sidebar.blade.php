@@ -61,6 +61,13 @@
                     <span class="ml-3 sidebar-text">Statistik Penggunaan</span>
                 </a>
             </li> --}}
+            <li>
+                <a href="{{ route('wali.notifications.history') }}"
+                    class="nav-link flex items-center px-4 py-3 rounded-lg {{ request()->routeIs('wali.notifications.history') ? 'bg-green-700' : 'hover:bg-green-700' }}">
+                    <i class="fas fa-bell w-5 text-center"></i>
+                    <span class="ml-3 sidebar-text">Notifikasi</span>
+                </a>
+            </li>
             <li class="pt-36">
                 @if (session('status'))
                     <div class="bg-red-500 text-white p-2 rounded mb-2">{{ session('status') }}</div>

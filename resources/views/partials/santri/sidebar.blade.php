@@ -35,21 +35,21 @@
             </li>
             <li>
                 <a href="{{ route('santri.product.index') }}"
-                    class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-blue-700">
+                    class="nav-link flex items-center px-4 py-3 rounded-lg {{ request()->routeIs('santri.product.index') ? 'bg-blue-700' : 'hover:bg-blue-700' }}">
                     <i class="fas fa-shopping-cart w-5 text-center"></i>
                     <span class="ml-3 sidebar-text">Products</span>
                 </a>
             </li>
             <li>
                 <a href="{{ route('santri.transactions.index') }}"
-                    class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-blue-700">
+                    class="nav-link flex items-center px-4 py-3 rounded-lg {{ request()->routeIs('santri.transactions.index') ? 'bg-blue-700' : 'hover:bg-blue-700' }}">
                     <i class="fas fa-history w-5 text-center"></i>
                     <span class="ml-3 sidebar-text">Riwayat Transaksi</span>
                 </a>
             </li>
             <li>
                 <a href="{{ route('santri.topups.index') }}"
-                    class="nav-link flex items-center px-4 py-3 rounded-lg hover:bg-blue-700">
+                    class="nav-link flex items-center px-4 py-3 rounded-lg {{ request()->routeIs('santri.topups.index') ? 'bg-blue-700' : 'hover:bg-blue-700' }}">
                     <i class="fas fa-wallet w-5 text-center"></i>
                     <span class="ml-3 sidebar-text">Riwayat Topup</span>
                 </a>
@@ -60,7 +60,14 @@
                     <span class="ml-3 sidebar-text">Profil</span>
                 </a>
             </li> --}}
-            <li class="pt-60">
+            <li>
+                <a href="{{ route('santri.notifications.history') }}"
+                    class="nav-link flex items-center px-4 py-3 rounded-lg {{ request()->routeIs('santri.notifications.history') ? 'bg-blue-700' : 'hover:bg-blue-700' }}">
+                    <i class="fas fa-bell w-5 text-center"></i>
+                    <span class="ml-3 sidebar-text">Notifikasi</span>
+                </a>
+            </li>
+            <li class="pt-32">
                 @if (session('status'))
                     <div class="bg-red-500 text-white p-2 rounded mb-2">{{ session('status') }}</div>
                 @endif
