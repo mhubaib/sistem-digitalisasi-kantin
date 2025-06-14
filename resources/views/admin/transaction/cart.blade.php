@@ -671,7 +671,7 @@
 
                         showFlashMessage('success',
                             'Transaksi Berhasil! 🎉',
-                            `ID Transaksi: <strong>${data.transaction_id}</strong><br>
+                            `ID Transaksi: <strong>${(data.transaction_id ? String(data.transaction_id).padStart(4, '0') : '')}</strong><br>
                  Pembeli: ${santriName}<br>
                  Metode: ${paymentMethod}<br>
                  Total: Rp ${Math.round(total).toLocaleString('id-ID')}`,

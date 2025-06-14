@@ -34,7 +34,7 @@
                 <!-- Total Santri -->
                 <a href="{{ route('admin.santri.index') }}" class="group block">
                     <div
-                        class="bg-white border border-gray-200 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden">
+                        class="bg-white border border-gray-200 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:cursor-pointer relative overflow-hidden">
                         <div
                             class="absolute inset-0 bg-gradient-to-br from-blue-100 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                         </div>

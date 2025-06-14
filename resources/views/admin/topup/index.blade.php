@@ -337,7 +337,7 @@
 
         #flash-message {
             animation: slideOut 0.5s ease-in-out forwards;
-            animation-delay: 3s;
+            animation-delay: 2s;
             overflow: hidden;
         }
 

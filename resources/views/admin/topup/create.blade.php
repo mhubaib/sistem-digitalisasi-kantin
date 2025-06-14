@@ -86,21 +86,22 @@
                                     <i class="fas fa-user-graduate text-indigo-600 mr-2"></i>
                                     Pilih Santri
                                 </label>
-                                <div class="relative group">
-                                    <select id="santri_id" name="santri_id" required
+                                <div class="relative">
+                                    <input type="text" id="santri_search" placeholder="Cari santri..."
                                         class="block w-full pl-4 pr-12 py-4 text-base border-2 border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 rounded-xl shadow-sm transition-all duration-300 bg-gray-50 focus:bg-white group-hover:border-gray-300">
-                                        <option value="">-- Pilih Santri --</option>
+                                    <input type="hidden" id="santri_id" name="santri_id">
+                                    <div id="santri_dropdown"
+                                        class="absolute z-50 w-full bg-white border border-gray-300 rounded-lg mt-1 max-h-60 overflow-y-auto shadow-lg"
+                                        style="display: none;">
                                         @foreach ($santris as $santri)
-                                            <option value="{{ $santri->id }}"
-                                                {{ old('santri_id') == $santri->id ? 'selected' : '' }}>
+                                            <div class="p-3 text-sm text-gray-700 cursor-pointer hover:bg-gray-100 transition-colors"
+                                                data-value="{{ $santri->id }}"
+                                                data-label="{{ $santri->user->name }} - Saldo: Rp {{ number_format($santri->saldo, 0, ',', '.') }}"
+                                                onclick="selectSantri('{{ $santri->id }}', '{{ $santri->user->name }} - Saldo: Rp {{ number_format($santri->saldo, 0, ',', '.') }}')">
                                                 {{ $santri->user->name }} - Saldo: Rp
                                                 {{ number_format($santri->saldo, 0, ',', '.') }}
-                                            </option>
+                                            </div>
                                         @endforeach
-                                    </select>
-                                    <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
-                                        <i
-                                            class="fas fa-chevron-down text-gray-400 group-hover:text-indigo-500 transition-colors duration-300"></i>
                                     </div>
                                 </div>
                             </div>
@@ -273,108 +274,144 @@
             </div>
         </div>
     </div>
-@endsection
 
-@push('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const santriSelect = document.getElementById('santri_id');
-            const formGroup = santriSelect.closest('.form-group');
-            const options = Array.from(santriSelect.options).slice(1); // Exclude placeholder option
+        // Wait for DOM to be fully loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeDropdown);
+        } else {
+            initializeDropdown();
+        }
 
-            // Create search input
-            const searchInput = document.createElement('input');
-            searchInput.type = 'text';
-            searchInput.placeholder = 'Cari santri...';
-            searchInput.className =
-                'block w-full pl-4 pr-12 py-4 text-base border-2 border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 rounded-xl shadow-sm transition-all duration-300 bg-gray-50 focus:bg-white mb-2';
+        function initializeDropdown() {
 
-            // Insert search input before select
-            formGroup.querySelector('.relative').before(searchInput);
+            // Get elements
+            const santriSearch = document.getElementById('santri_search');
+            const santriDropdown = document.getElementById('santri_dropdown');
+            const santriId = document.getElementById('santri_id');
+            const form = document.querySelector('form'); // Declare form here once
 
-            // Search functionality
-            searchInput.addEventListener('input', function() {
+            // Check if elements exist
+            if (!santriSearch) {
+                return;
+            }
+            if (!santriDropdown) {
+                return;
+            }
+            if (!santriId) {
+                return;
+            }
+
+            // Show/hide functions
+            function showDropdown() {
+                // console.log('Showing dropdown');
+                santriDropdown.style.display = 'block';
+            }
+
+            function hideDropdown() {
+                // console.log('Hiding dropdown');
+                santriDropdown.style.display = 'none';
+            }
+
+            // Global select function
+            window.selectSantri = function(id, label) {
+                // console.log('Selecting santri:', id, label);
+                santriId.value = id;
+                santriSearch.value = label;
+                hideDropdown();
+            }
+
+            // Add event listeners
+            santriSearch.addEventListener('input', function() {
+                // console.log('Search input changed');
                 const searchTerm = this.value.toLowerCase();
+                const items = santriDropdown.querySelectorAll('div[data-value]');
 
-                // Reset options
-                santriSelect.innerHTML = '<option value="">-- Pilih Santri --</option>';
+                items.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    item.style.display = text.includes(searchTerm) ? 'block' : 'none';
+                });
 
-                // Filter and add matching options
-                options
-                    .filter(option => option.text.toLowerCase().includes(searchTerm))
-                    .forEach(option => santriSelect.appendChild(option));
+                showDropdown();
+            });
 
-                // If search term is empty, restore all options
-                if (!searchTerm) {
-                    options.forEach(option => santriSelect.appendChild(option));
+            santriSearch.addEventListener('focus', function() {
+                // console.log('Search input focused');
+                showDropdown();
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!santriDropdown.contains(e.target) && e.target !== santriSearch) {
+                    hideDropdown();
+                }
+            });
+
+            // Initial state
+            hideDropdown();
+            // console.log('Dropdown initialization complete');
+        }
+
+        // Enhanced amount input formatting
+        const amountInput = document.getElementById('amount');
+
+        // Format input on typing
+        amountInput.addEventListener('input', function(e) {
+            let value = this.value.replace(/\D/g, "");
+            if (value === "") {
+                this.value = "";
+                return;
+            }
+
+            // Format with thousand separator
+            let formatted = parseInt(value).toLocaleString('id-ID');
+            this.value = formatted;
+
+            // Add visual feedback for minimum amount
+            if (parseInt(value) < 1000) {
+                this.classList.add('border-red-300', 'focus:border-red-500', 'focus:ring-red-100');
+                this.classList.remove('border-gray-200', 'focus:border-green-500',
+                    'focus:ring-green-100');
+            } else {
+                this.classList.remove('border-red-300', 'focus:border-red-500', 'focus:ring-red-100');
+                this.classList.add('border-gray-200', 'focus:border-green-500', 'focus:ring-green-100');
+            }
+        });
+
+        // Remove formatting before form submission
+        const form = amountInput.closest('form');
+        form.addEventListener('submit', function(e) {
+            const rawValue = amountInput.value.replace(/\D/g, "");
+            amountInput.value = rawValue;
+        });
+
+        // Add smooth animation for payment method selection
+        const paymentOptions = document.querySelectorAll('input[name="method"]');
+        paymentOptions.forEach(option => {
+            option.addEventListener('change', function() {
+                // Remove animation from all options
+                paymentOptions.forEach(opt => {
+                    const label = opt.closest('label');
+                    label.querySelector('div').classList.remove('animate-pulse');
+                });
+
+                // Add animation to selected option
+                if (this.checked) {
+                    const label = this.closest('label');
+                    label.querySelector('div').classList.add('animate-pulse');
+                    setTimeout(() => {
+                        label.querySelector('div').classList.remove('animate-pulse');
+                    }, 1000);
                 }
             });
         });
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            // Enhanced amount input formatting
-            const amountInput = document.getElementById('amount');
 
-            // Format input on typing
-            amountInput.addEventListener('input', function(e) {
-                let value = this.value.replace(/\D/g, "");
-                if (value === "") {
-                    this.value = "";
-                    return;
-                }
+        // Add loading state to submit button
+        const submitButton = document.querySelector('button[type="submit"]');
 
-                // Format with thousand separator
-                let formatted = parseInt(value).toLocaleString('id-ID');
-                this.value = formatted;
-
-                // Add visual feedback for minimum amount
-                if (parseInt(value) < 1000) {
-                    this.classList.add('border-red-300', 'focus:border-red-500', 'focus:ring-red-100');
-                    this.classList.remove('border-gray-200', 'focus:border-green-500',
-                        'focus:ring-green-100');
-                } else {
-                    this.classList.remove('border-red-300', 'focus:border-red-500', 'focus:ring-red-100');
-                    this.classList.add('border-gray-200', 'focus:border-green-500', 'focus:ring-green-100');
-                }
-            });
-
-            // Remove formatting before form submission
-            const form = amountInput.closest('form');
-            form.addEventListener('submit', function(e) {
-                const rawValue = amountInput.value.replace(/\D/g, "");
-                amountInput.value = rawValue;
-            });
-
-            // Add smooth animation for payment method selection
-            const paymentOptions = document.querySelectorAll('input[name="method"]');
-            paymentOptions.forEach(option => {
-                option.addEventListener('change', function() {
-                    // Remove animation from all options
-                    paymentOptions.forEach(opt => {
-                        const label = opt.closest('label');
-                        label.querySelector('div').classList.remove('animate-pulse');
-                    });
-
-                    // Add animation to selected option
-                    if (this.checked) {
-                        const label = this.closest('label');
-                        label.querySelector('div').classList.add('animate-pulse');
-                        setTimeout(() => {
-                            label.querySelector('div').classList.remove('animate-pulse');
-                        }, 1000);
-                    }
-                });
-            });
-
-            // Add loading state to submit button
-            const submitButton = document.querySelector('button[type="submit"]');
-            const form = document.querySelector('form');
-
-            form.addEventListener('submit', function(e) {
-                submitButton.disabled = true;
-                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Memproses...';
-                submitButton.classList.add('opacity-75', 'cursor-not-allowed');
-            });
+        form.addEventListener('submit', function(e) {
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Memproses...';
+            submitButton.classList.add('opacity-75', 'cursor-not-allowed');
         });
     </script>
-@endpush
+@endsection
