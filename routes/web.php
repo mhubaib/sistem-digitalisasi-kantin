@@ -16,9 +16,6 @@ use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\Admin\SantriController;
 
 
-
-
-
 // Halaman awal
 Route::get('/', function () {
     return redirect('/login');
