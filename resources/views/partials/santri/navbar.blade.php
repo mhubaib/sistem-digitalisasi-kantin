@@ -422,7 +422,7 @@
         window.markAllAsRead = function() {
             const csrfToken = document.querySelector('meta[name="csrf-token"]');
             const notificationItems = document.querySelectorAll('.notification-item');
-            const markAllBtn = document.querySelector('button[onclick*="markAllAsRead"]');
+            const markAllBtn = document.querySelector('button[onclick="markAllAsRead()"]');
             if (markAllBtn) markAllBtn.disabled = true;
 
             notificationItems.forEach(item => {
@@ -439,11 +439,19 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log('Mark all as read response:', data);
-                    setTimeout(() => {
-                        fetchNotifications();
+                    if (data.success) {
+                        setTimeout(() => {
+                            fetchNotifications();
+                            if (markAllBtn) markAllBtn.disabled = false;
+                        }, 300);
+                    } else {
+                        console.error('Failed to mark all notifications as read:', data);
                         if (markAllBtn) markAllBtn.disabled = false;
-                    }, 300);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error marking all notifications as read:', error);
+                    if (markAllBtn) markAllBtn.disabled = false;
                 });
         };
 

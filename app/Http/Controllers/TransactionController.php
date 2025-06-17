@@ -248,7 +248,17 @@ class TransactionController extends Controller
 
         $transactions = $query->latest()->paginate(15);
         $totalIncome = $query->sum('total');
-        $totalExpenses = Expense::sum('amount');
+
+        // Calculate expenses based on the same date filter
+        $expenseQuery = Expense::query();
+        if ($request->filled('start_date')) {
+            $expenseQuery->whereDate('expense_date', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $expenseQuery->whereDate('expense_date', '<=', $request->end_date);
+        }
+        $totalExpenses = $expenseQuery->sum('amount');
+
         $santris = Santri::with('user')->get();
 
         return view('admin.transaction.index', compact('transactions', 'totalIncome', 'santris', 'totalExpenses'));

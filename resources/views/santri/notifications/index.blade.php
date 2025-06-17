@@ -22,7 +22,7 @@
                     <p class="text-gray-500 text-sm">Riwayat notifikasi sistem</p>
                 </div>
                 @if ($unreadCount > 0)
-                    <button onclick="markAllAsRead()"
+                    <button onclick="markAllAsRead()" type="button"
                         class="px-4 py-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-all duration-200 flex items-center gap-2">
                         <i class="fas fa-check-double text-sm"></i>
                         Tandai Semua Dibaca
@@ -137,7 +137,7 @@
 
     <script>
         function markAsRead(id) {
-            fetch(`/wali/notifications/${id}/read`, {
+            fetch(`/santri/notifications/${id}/read`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',
@@ -160,7 +160,10 @@
         }
 
         function markAllAsRead() {
-            fetch('/wali/notifications/mark-all-read', {
+            const markAllButton = document.querySelector('button[onclick="markAllAsRead()"]');
+            if (markAllButton) markAllButton.disabled = true;
+
+            fetch('/santri/notifications/mark-all-read', {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',
@@ -177,10 +180,18 @@
                                 readButton.remove();
                             }
                         });
-                        updateUnreadCount();
+                        if (markAllButton) {
+                            markAllButton.remove();
+                        }
+                    } else {
+                        console.error('Failed to mark all notifications as read:', data);
+                        if (markAllButton) markAllButton.disabled = false;
                     }
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => {
+                    console.error('Error marking all notifications as read:', error);
+                    if (markAllButton) markAllButton.disabled = false;
+                });
         }
 
         function updateUnreadCount() {

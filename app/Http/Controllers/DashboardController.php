@@ -39,7 +39,7 @@ class DashboardController extends Controller
                 ->take(5)
                 ->get(),
             'notifications' => $notifications,
-            'totalExpenses' => Expense::sum('amount'),
+            'totalExpenses' => Expense::whereDate('expense_date', Carbon::today())->sum('amount'),
         ]);
     }
 

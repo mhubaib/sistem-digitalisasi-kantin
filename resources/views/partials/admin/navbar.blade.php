@@ -125,11 +125,11 @@
                 </div>
 
                 <div class="py-2">
-                    <a href="#"
+                    {{-- <a href="#"
                         class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-150">
                         <i class="fas fa-user-circle w-5 h-5 mr-3 text-gray-400"></i>
                         Your Profile
-                    </a>
+                    </a> --}}
                     <a href="#"
                         class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-150">
                         <i class="fas fa-cog w-5 h-5 mr-3 text-gray-400"></i>
