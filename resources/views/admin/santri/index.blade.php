@@ -40,7 +40,7 @@
         </div>
 
         <!-- Main Content -->
-        <div class="p-1">
+        <div class="p-4">
             <!-- Search & Filter Section -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-6">
                 <div class="p-6">

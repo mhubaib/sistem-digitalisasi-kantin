@@ -3,7 +3,7 @@
 @section('title', 'Pengeluaran Kantin')
 
 @section('content')
-    <div class="container mx-auto px-6 lg:px-8">
+    <div class="max-w-screen mx-auto px-3 lg:px-8">
         <!-- Breadcrumb dengan styling baru -->
         <nav class="flex items-center text-sm text-gray-400 mb-8" aria-label="Breadcrumb">
             <a href="{{ route('admin.dashboard') }}"
@@ -102,7 +102,8 @@
 
         <!-- Summary Cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="hover:shadow-lg transition-all duration-300 hover:translate-y-[-2px] bg-gradient-to-br from-blue-50 to-blue-100/50 border border-blue-200/50 rounded-2xl p-6">
+            <div
+                class="hover:shadow-lg transition-all duration-300 hover:translate-y-[-2px] bg-gradient-to-br from-blue-50 to-blue-100/50 border border-blue-200/50 rounded-2xl p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-blue-600 text-sm font-medium mb-1">Total Pengeluaran</p>
@@ -114,7 +115,8 @@
                 </div>
             </div>
 
-            <div class="hover:shadow-lg transition-all duration-300 hover:translate-y-[-2px] bg-gradient-to-br from-red-50 to-red-100/50 border border-red-200/50 rounded-2xl p-6">
+            <div
+                class="hover:shadow-lg transition-all duration-300 hover:translate-y-[-2px] bg-gradient-to-br from-red-50 to-red-100/50 border border-red-200/50 rounded-2xl p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-red-600 text-sm font-medium mb-1">Total Nominal</p>
@@ -126,7 +128,8 @@
                 </div>
             </div>
 
-            <div class="hover:shadow-lg transition-all duration-300 hover:translate-y-[-2px] bg-gradient-to-br from-green-50 to-green-100/50 border border-green-200/50 rounded-2xl p-6">
+            <div
+                class="hover:shadow-lg transition-all duration-300 hover:translate-y-[-2px] bg-gradient-to-br from-green-50 to-green-100/50 border border-green-200/50 rounded-2xl p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-green-800 text-sm font-medium mb-1">Untung Bersih</p>
@@ -143,18 +146,18 @@
 
         <!-- Table Section -->
         <div class="bg-white rounded-2xl shadow-sm border border-gray-200/50 overflow-hidden">
-            <div class="p-6 border-b border-gray-100">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-lg font-medium text-gray-800">Data Pengeluaran</h3>
-                    <div class="flex items-center gap-4">
-                        <div class="flex items-center gap-2 text-sm text-gray-500">
+            <div class="p-8 border-b border-gray-100">
+                <div class="flex items-center gap-1 justify-between">
+                    <h3 class="pr-2 text-lg font-medium text-gray-800">Data Pengeluaran</h3>
+                    <div class="flex items-center">
+                        <div class="hidden sm:flex items-center gap-2 text-sm text-gray-500">
                             <i class="fas fa-layer-group text-xs"></i>
                             {{ $expenses->total() }} total pengeluaran
                         </div>
                         <a href="{{ route('admin.expenses.create') }}"
                             class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl transition-all duration-200 flex items-center gap-2">
                             <i class="fas fa-plus text-sm"></i>
-                            Tambah Pengeluaran
+                            Tambah
                         </a>
                     </div>
                 </div>

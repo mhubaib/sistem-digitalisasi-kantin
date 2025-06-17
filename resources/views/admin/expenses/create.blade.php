@@ -3,7 +3,7 @@
 @section('title', 'Tambah Pengeluaran')
 
 @section('content')
-    <div class="container mx-auto px-4 lg:px-8">
+    <div class="max-w-screen mx-auto px-4 lg:px-8">
         <!-- Breadcrumb dengan styling baru -->
         <nav class="flex items-center text-sm text-gray-400 mb-8" aria-label="Breadcrumb">
             <a href="{{ route('admin.dashboard') }}"
@@ -41,7 +41,7 @@
                 @csrf
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Judul -->
-                    <div class="col-span-2">
+                    <div class="col-span-1 md:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             <i class="fas fa-tag mr-1 text-blue-500"></i>
                             Judul Pengeluaran
@@ -55,7 +55,7 @@
                     </div>
 
                     <!-- Deskripsi -->
-                    <div class="col-span-2">
+                    <div class="col-span-1 md:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             <i class="fas fa-align-left mr-1 text-blue-500"></i>
                             Deskripsi
