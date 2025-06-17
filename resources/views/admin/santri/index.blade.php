@@ -216,10 +216,6 @@
                                             <h3 class="text-lg font-medium text-gray-900 mb-2">Tidak ada data santri</h3>
                                             <p class="text-gray-500 text-sm">Belum ada santri yang terdaftar dalam sistem.
                                             </p>
-                                            <button
-                                                class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
-                                                Tambah Santri Pertama
-                                            </button>
                                         </div>
                                     </td>
                                 </tr>
