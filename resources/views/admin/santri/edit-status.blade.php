@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/40">
+    <div class="max-w-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/40">
         <!-- Enhanced Header Section -->
         <div class="bg-white/80 backdrop-blur-sm border-b border-gray-200/60 shadow-sm">
             <div class="px-6 py-5">
@@ -53,7 +53,7 @@
         </div>
 
         <!-- Enhanced Main Content -->
-        <div class="p-6">
+        <div class="p-1">
             <div class="max-w-5xl mx-auto">
                 <!-- Main Card with Enhanced Design -->
                 <div class="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden">
@@ -205,7 +205,7 @@
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <!-- Active Status Option -->
                                             <label for="status_active" class="group cursor-pointer">
-                                                <div class="relative bg-white border-2 border-emerald-200 rounded-2xl p-6 transition-all duration-300 hover:border-emerald-400 hover:shadow-lg {{ $santri->user->active ? 'border-emerald-400 bg-emerald-50/50 shadow-lg' : '' }}">
+                                                <div class="relative bg-white border-2 border-emerald-200 rounded-2xl p-3 transition-all duration-300 hover:border-emerald-400 hover:shadow-lg {{ $santri->user->active ? 'border-emerald-400 bg-emerald-50/50 shadow-lg' : '' }}">
                                                     <div class="flex items-center space-x-4">
                                                         <input type="radio" id="status_active" name="active" value="1"
                                                             class="w-5 h-5 text-emerald-600 focus:ring-emerald-500 border-emerald-300 transition-all duration-200"
@@ -232,7 +232,7 @@
 
                                             <!-- Inactive Status Option -->
                                             <label for="status_inactive" class="group cursor-pointer">
-                                                <div class="relative bg-white border-2 border-red-200 rounded-2xl p-6 transition-all duration-300 hover:border-red-400 hover:shadow-lg {{ !$santri->user->active ? 'border-red-400 bg-red-50/50 shadow-lg' : '' }}">
+                                                <div class="relative bg-white border-2 border-red-200 rounded-2xl p-3 transition-all duration-300 hover:border-red-400 hover:shadow-lg {{ !$santri->user->active ? 'border-red-400 bg-red-50/50 shadow-lg' : '' }}">
                                                     <div class="flex items-center space-x-4">
                                                         <input type="radio" id="status_inactive" name="active" value="0"
                                                             class="w-5 h-5 text-red-600 focus:ring-red-500 border-red-300 transition-all duration-200"
@@ -263,7 +263,7 @@
 
                             <!-- Enhanced Action Buttons -->
                             <div class="bg-gradient-to-r from-slate-50 to-gray-50 rounded-2xl p-6 border border-slate-200/60">
-                                <div class="flex items-center justify-end space-x-4">
+                                <div class="flex flex-col gap-4">
                                     <a href="{{ route('admin.santri.index') }}"
                                         class="group inline-flex items-center px-6 py-3 border-2 border-slate-300 rounded-xl text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 hover:border-slate-400 focus:outline-none focus:ring-4 focus:ring-slate-200 transition-all duration-200 hover:scale-105">
                                         <i class="fas fa-arrow-left mr-2 group-hover:-translate-x-1 transition-transform duration-200"></i>
@@ -273,7 +273,7 @@
                                     <button type="submit"
                                         class="group inline-flex items-center px-8 py-3 border border-transparent rounded-xl shadow-lg text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-200 hover:scale-105 hover:shadow-xl">
                                         <i class="fas fa-save mr-2 group-hover:scale-110 transition-transform duration-200"></i>
-                                        Simpan Perubahan
+                                        Simpan
                                     </button>
                                 </div>
                             </div>

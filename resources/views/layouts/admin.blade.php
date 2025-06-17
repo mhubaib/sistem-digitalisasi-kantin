@@ -226,7 +226,7 @@
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="content-wrapper flex-1 flex flex-col">
             <!-- Main Content -->
-            <main class="main-content flex-1 p-4 md:p-8 bg-gray-100">
+            <main class="main-content flex-1 p-4 md:p-4 bg-gray-100">
                 @yield('content')
             </main>
 

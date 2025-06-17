@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div class="max-w-screen bg-gradient-to-br from-gray-50 to-gray-100">
         <!-- Header Section -->
         <div class="bg-white border-b border-gray-200 shadow-sm">
             <div class="px-6 py-4">
@@ -40,7 +40,7 @@
         </div>
 
         <!-- Main Content -->
-        <div class="p-6">
+        <div class="p-1">
             <!-- Search & Filter Section -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-6">
                 <div class="p-6">
@@ -257,8 +257,8 @@
                                 <button
                                     class="px-3 py-1 text-sm font-medium text-gray-600 hover:text-gray-800 transition-colors disabled:opacity-50"
                                     disabled>
-                                    <i class="fas fa-chevron-left w-3 h-3 mr-1"></i>
                                     Sebelumnya
+                                    <i class="fas fa-chevron-left w-3 h-3 mr-1"></i>
                                 </button>
                                 <button
                                     class="px-3 py-1 text-sm font-medium text-gray-600 hover:text-gray-800 transition-colors disabled:opacity-50"
