@@ -66,12 +66,13 @@
 
             <!-- Notifications Dropdown Menu -->
             <div id="notifications-menu"
-                class="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-100 z-50 hidden opacity-0 transform scale-95 transition-all duration-200 origin-top-right">
+                class="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-100 z-50 hidden opacity-0 transform scale-95 transition-all duration-200 origin-top-right sm:right-0 sm:origin-top-right left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0">
                 <div class="p-4 border-b border-gray-100">
                     <div class="flex items-center justify-between">
                         <h3 class="text-lg font-semibold text-gray-800">Notifikasi</h3>
                         <button onclick="markAllAsRead()"
-                            class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">Tandai Semua Dibaca</button>
+                            class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">Tandai Semua
+                            Dibaca</button>
                     </div>
                 </div>
 
