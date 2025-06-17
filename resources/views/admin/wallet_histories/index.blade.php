@@ -3,7 +3,7 @@
 @section('title', 'Riwayat Wallet Santri')
 
 @section('content')
-    <div class="container mx-auto px-6 lg:px-8">
+    <div class="max-w-screen mx-auto px-6 lg:px-8">
         <!-- Breadcrumb dengan styling baru -->
         <nav class="flex items-center text-sm text-gray-400 mb-8" aria-label="Breadcrumb">
             <a href="{{ route('admin.dashboard') }}"
