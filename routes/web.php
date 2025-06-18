@@ -1,19 +1,20 @@
 <?php
 
+use App\Http\Controllers\Admin\SantriController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ProductController;
 
+use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TopupController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\UserController;
 use App\Models\Topup;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\NotificationController;
-use Illuminate\Support\Facades\Log;
-use App\Http\Controllers\ExpenseController;
-use App\Http\Controllers\Admin\SantriController;
 
 
 // Halaman awal
@@ -89,6 +90,9 @@ Route::middleware(['auth', 'role:santri'])->prefix('santri')->name('santri.')->g
     Route::get('/notifications/history', [NotificationController::class, 'historySantri'])->name('notifications.history');
     Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
     Route::patch('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
+
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
 });
 
 // Wali-only Dashboard

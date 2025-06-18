@@ -45,12 +45,16 @@ class DashboardController extends Controller
 
     public function santri()
     {
-        $santri = Auth::user()->santri;
+        $user = Auth::user();
+        $santri = Santri::with(['user', 'transactions', 'topups', 'walletHistories'])
+            ->where('user_id', $user->id)
+            ->first();
 
         return view('santri.dashboard', [
             'santri' => $santri,
             'totalTransactions' => $santri?->transactions()->count() ?? 0,
             'recentTransactions' => $santri?->transactions()
+                ->with(['items.product'])
                 ->latest()
                 ->take(5)
                 ->get() ?? collect(),
@@ -81,19 +85,29 @@ class DashboardController extends Controller
 
     public function transactions(Request $request)
     {
-        $santri = Auth::user()->santri;
-        $query = $santri ? $santri->transactions() : collect();
+        $user = Auth::user();
+        $santri = Santri::with(['transactions.items.product'])
+            ->where('user_id', $user->id)
+            ->first();
+
+        if (!$santri) {
+            return view('santri.transactions.index', [
+                'transactions' => collect(),
+                'totalSpending' => 0,
+                'transactionItems' => collect(),
+            ]);
+        }
+
+        $query = $santri->transactions()->with(['items.product']);
 
         // Apply date filtering if provided
         if ($request->has('start_date') && $request->has('end_date')) {
-            if ($santri) {
-                $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
-            }
+            $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
         }
 
-        $transactions = $santri ? $query->latest()->get() : collect();
+        $transactions = $query->latest()->get();
         $totalSpending = $transactions->sum('total');
-        $transactionItems = $santri ? TransactionItem::whereIn('transaction_id', $transactions->pluck('id'))->get() : collect();
+        $transactionItems = TransactionItem::whereIn('transaction_id', $transactions->pluck('id'))->get();
 
         return view('santri.transactions.index', [
             'transactions' => $transactions,
@@ -104,7 +118,10 @@ class DashboardController extends Controller
 
     public function topups(Request $request)
     {
-        $santri = Auth::user()->santri;
+        $user = Auth::user();
+        $santri = Santri::with(['topups.createdBy'])
+            ->where('user_id', $user->id)
+            ->first();
 
         if (!$santri) {
             return view('santri.topups.index', [
@@ -112,7 +129,7 @@ class DashboardController extends Controller
             ]);
         }
 
-        $query = Topup::where('santri_id', $santri->id)->with('createdBy');
+        $query = $santri->topups()->with('createdBy');
 
         // Apply date filtering if provided
         if ($request->has('start_date') && $request->has('end_date')) {
