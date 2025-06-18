@@ -7,57 +7,50 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 
 class ProfileController extends Controller
 {
     public function update(Request $request)
     {
-        $user = Auth::user();
-        $santri = $user->santri;
+        try {
+            /** @var \App\Models\User $user */
+            $user = Auth::user();
 
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'wali_name' => ['required', 'string', 'max:255'],
-            'wali_email' => ['required', 'string', 'email', 'max:255'],
-        ]);
-
-        DB::transaction(function () use ($request, $user, $santri) {
-            // Update user data
-            DB::table('users')->where('id', $user->id)->update([
-                'name' => $request->name,
-                'email' => $request->email,
+            $request->validate([
+                'name' => ['required', 'string', 'max:255'],
             ]);
 
-            // Update wali data
-            if ($santri->wali) {
-                DB::table('users')->where('id', $santri->wali->id)->update([
-                    'name' => $request->wali_name,
-                    'email' => $request->wali_email,
-                ]);
-            }
-        });
+            $user->name = $request->name;
+            $user->save();
 
-        return redirect()->back()->with('success', 'Profil berhasil diperbarui');
+            return redirect()->back()->with('success', 'Profil berhasil diperbarui');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui profil: ' . $e->getMessage());
+        }
     }
 
     public function updatePassword(Request $request)
     {
-        $request->validate([
-            'current_password' => ['required', 'string'],
-            'new_password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
+        try {
+            $request->validate([
+                'current_password' => ['required', 'string'],
+                'new_password' => ['required', 'string', 'min:8', 'confirmed'],
+            ]);
 
-        $user = Auth::user();
+            $user = Auth::user();
 
-        if (!Hash::check($request->current_password, $user->password)) {
-            return back()->withErrors(['current_password' => 'Password saat ini tidak sesuai']);
+            if (!Hash::check($request->current_password, $user->password)) {
+                return back()->with('error', 'Password saat ini tidak sesuai');
+            }
+
+            DB::table('users')->where('id', $user->id)->update([
+                'password' => Hash::make($request->new_password)
+            ]);
+
+            return redirect()->back()->with('success', 'Password berhasil diperbarui');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui password: ' . $e->getMessage());
         }
-
-        DB::table('users')->where('id', $user->id)->update([
-            'password' => Hash::make($request->new_password)
-        ]);
-
-        return redirect()->back()->with('success', 'Password berhasil diperbarui');
     }
 }
