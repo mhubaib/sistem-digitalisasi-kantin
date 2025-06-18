@@ -3,7 +3,7 @@
 @section('title', 'Dashboard Santri')
 
 @section('content')
-    <div class="max-w-7xl mx-auto py-8">
+    <div class="max-w-screen mx-auto py-8">
         <!-- Header Section with Gradient -->
         <div class="relative mb-8">
             <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-800 rounded-2xl opacity-10"></div>
@@ -40,7 +40,8 @@
                                 </div>
                                 <h3 class="text-sm font-medium text-gray-600 uppercase tracking-wide">Saldo Anda</h3>
                             </div>
-                            <p class="text-3xl font-bold text-gray-800">Rp {{ number_format($santri->saldo, 0, ',', '.') }}
+                            <p class="text-3xl font-bold text-gray-800">Rp
+                                {{ number_format($santri->saldo ?? 0, 0, ',', '.') }}
                             </p>
                             <p class="text-sm text-green-600 font-medium mt-1">Saldo terkini</p>
                         </div>
@@ -124,66 +125,72 @@
 
             <div class="p-8">
                 <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead>
-                            <tr class="border-b-2 border-gray-200">
-                                <th class="text-left py-4 px-2 font-semibold text-gray-700 uppercase tracking-wide text-sm">
-                                    Total</th>
-                                <th class="text-left py-4 px-2 font-semibold text-gray-700 uppercase tracking-wide text-sm">
-                                    Metode</th>
-                                <th class="text-left py-4 px-2 font-semibold text-gray-700 uppercase tracking-wide text-sm">
-                                    Tanggal</th>
-                                <th class="text-left py-4 px-2 font-semibold text-gray-700 uppercase tracking-wide text-sm">
-                                    Status</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-100">
-                            @forelse ($recentTransactions as $trx)
-                                <tr class="hover:bg-blue-50/50 transition-colors duration-200">
-                                    <td class="py-4 px-2">
-                                        <span class="text-lg font-bold text-green-600">
-                                            Rp {{ number_format($trx->total, 0, ',', '.') }}
-                                        </span>
-                                    </td>
-                                    <td class="py-4 px-2">
-                                        <span
-                                            class="bg-gray-100 text-gray-700 px-3 py-1 rounded-lg text-sm font-medium capitalize">
-                                            <i class="fas fa-credit-card mr-1"></i>
-                                            {{ $trx->payment_type }}
-                                        </span>
-                                    </td>
-                                    <td class="py-4 px-2">
-                                        <div class="flex flex-col">
+                    <div class="min-w-[800px]">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b-2 border-gray-200">
+                                    <th
+                                        class="text-left py-4 px-2 font-semibold text-gray-700 uppercase tracking-wide text-sm">
+                                        Total</th>
+                                    <th
+                                        class="text-left py-4 px-2 font-semibold text-gray-700 uppercase tracking-wide text-sm">
+                                        Metode</th>
+                                    <th
+                                        class="text-left py-4 px-2 font-semibold text-gray-700 uppercase tracking-wide text-sm">
+                                        Tanggal</th>
+                                    <th
+                                        class="text-left py-4 px-2 font-semibold text-gray-700 uppercase tracking-wide text-sm">
+                                        Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                @forelse ($recentTransactions as $trx)
+                                    <tr class="hover:bg-blue-50/50 transition-colors duration-200">
+                                        <td class="py-4 px-2">
+                                            <span class="text-lg font-bold text-green-600">
+                                                Rp {{ number_format($trx->total, 0, ',', '.') }}
+                                            </span>
+                                        </td>
+                                        <td class="py-4 px-2">
                                             <span
-                                                class="font-medium text-gray-800">{{ $trx->created_at->format('d M Y') }}</span>
-                                            <span class="text-sm text-gray-500">{{ $trx->created_at->format('H:i') }}
-                                                WIB</span>
-                                        </div>
-                                    </td>
-                                    <td class="py-4 px-2">
-                                        <span
-                                            class="px-3 py-1 text-xs rounded-full bg-green-100 text-green-800 font-medium">
-                                            <i class="fas fa-check-circle mr-1"></i>
-                                            Sukses
-                                        </span>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="4" class="py-12 text-center">
-                                        <div class="flex flex-col items-center space-y-3">
-                                            <div
-                                                class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
-                                                <i class="fas fa-shopping-cart text-gray-400 text-xl"></i>
+                                                class="bg-gray-100 text-gray-700 px-3 py-1 rounded-lg text-sm font-medium capitalize">
+                                                <i class="fas fa-credit-card mr-1"></i>
+                                                {{ $trx->payment_type }}
+                                            </span>
+                                        </td>
+                                        <td class="py-4 px-2">
+                                            <div class="flex flex-col">
+                                                <span
+                                                    class="font-medium text-gray-800">{{ $trx->created_at->format('d M Y') }}</span>
+                                                <span class="text-sm text-gray-500">{{ $trx->created_at->format('H:i') }}
+                                                    WIB</span>
                                             </div>
-                                            <p class="text-gray-500 font-medium">Belum ada transaksi</p>
-                                            <p class="text-sm text-gray-400">Transaksi Anda akan muncul di sini</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                                        </td>
+                                        <td class="py-4 px-2">
+                                            <span
+                                                class="px-3 py-1 text-xs rounded-full bg-green-100 text-green-800 font-medium">
+                                                <i class="fas fa-check-circle mr-1"></i>
+                                                Sukses
+                                            </span>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="py-12 text-center">
+                                            <div class="flex flex-col items-center space-y-3">
+                                                <div
+                                                    class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
+                                                    <i class="fas fa-shopping-cart text-gray-400 text-xl"></i>
+                                                </div>
+                                                <p class="text-gray-500 font-medium">Belum ada transaksi</p>
+                                                <p class="text-sm text-gray-400">Transaksi Anda akan muncul di sini</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
