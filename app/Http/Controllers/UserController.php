@@ -79,4 +79,12 @@ class UserController extends Controller
 
         return view('santri.profile', compact('user', 'santri'));
     }
+
+
+    public function waliProfile()
+    {
+        $user = Auth::user();
+        $santris = Santri::where('wali_id', $user->id)->get();
+        return view('wali.profile', compact('user', 'santris'));
+    }
 }

@@ -64,7 +64,7 @@ class DashboardController extends Controller
     public function wali()
     {
         $user = Auth::user();
-        $santris = $user->santris ?? collect();
+        $santris = Santri::where('wali_id', $user->id)->get();
         $santriIds = $santris->pluck('id');
 
         return view('wali.dashboard', [
@@ -129,7 +129,7 @@ class DashboardController extends Controller
             ]);
         }
 
-        $query = $santri->topups()->with('createdBy');
+        $query = Topup::where('santri_id', $santri->id)->with('createdBy');
 
         // Apply date filtering if provided
         if ($request->has('start_date') && $request->has('end_date')) {

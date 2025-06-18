@@ -15,7 +15,7 @@ use App\Models\Topup;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
-
+use Symfony\Component\HttpKernel\Profiler\Profile;
 
 // Halaman awal
 Route::get('/', function () {
@@ -106,4 +106,8 @@ Route::middleware(['auth', 'role:wali'])->prefix('wali')->name('wali.')->group(f
     Route::get('/notifications/history', [NotificationController::class, 'historyWali'])->name('notifications.history');
     Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
     Route::patch('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
+
+    Route::get('/profile', [UserController::class, 'waliProfile'])->name('profile');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
 });
