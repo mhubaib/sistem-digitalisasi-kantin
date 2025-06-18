@@ -90,6 +90,7 @@
             z-index: 40;
             /* Below sidebar but above content */
             transition: left 0.3s ease;
+            background-color: white;
         }
 
         .sidebar-icon-only+.navbar {

@@ -1,5 +1,6 @@
-<nav class="bg-white border-b border-gray-200 shadow-lg px-4 md:px-8 py-4 flex justify-between items-center relative">
-    <div class="flex items-center">
+<nav class="bg-white border-b border-gray-200 shadow-sm px-4 md:px-8 py-4 flex justify-between items-center"
+    style="pointer-events: none;">
+    <div class="flex items-center" style="pointer-events: auto;">
         <!-- Hamburger menu untuk toggle sidebar -->
         <button
             class="sidebar-toggle mr-4 text-gray-500 hover:text-indigo-600 focus:outline-none transition-colors duration-200 p-2 hover:bg-gray-50 rounded-lg"
@@ -15,7 +16,7 @@
         </div>
     </div>
 
-    <div class="flex items-center space-x-6">
+    <div class="flex items-center space-x-6" style="pointer-events: auto;">
         <!-- Notifications Dropdown -->
         <div class="relative" id="notifications-dropdown">
             <button
