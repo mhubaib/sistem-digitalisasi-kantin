@@ -106,7 +106,7 @@
         .content-wrapper {
             margin-left: 16rem;
             /* Offset for sidebar */
-            margin-top: 6rem;
+            margin-top: 5rem;
             /* Offset for navbar */
             transition: margin-left 0.3s ease;
         }
