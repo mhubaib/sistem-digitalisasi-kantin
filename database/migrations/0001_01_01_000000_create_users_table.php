@@ -16,9 +16,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('role', ['admin', 'wali', 'santri']); 
+            $table->enum('role', ['admin', 'wali', 'santri']);
             $table->string('card_code')->nullable();
-            $table->boolean('active')->default(true);
+            $table->boolean('active')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

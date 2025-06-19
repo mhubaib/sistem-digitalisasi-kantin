@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Log;
 use App\Services\NotificationService;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -147,13 +148,25 @@ class AuthController extends Controller
     // Approve santri oleh admin
     public function approveSantri($id)
     {
-        $user = User::with('santri')->where('id', $id)->where('role', 'santri')->firstOrFail();
-        $user->active = true;
-        $user->save();
+        DB::beginTransaction();
+        try {
+            $user = User::with('santri')
+                ->where('id', $id)
+                ->where('role', 'santri')
+                ->whereHas('santri', function ($q) {
+                    $q->where('status', 'pending');
+                })
+                ->firstOrFail();
 
-        // Update status santri
-        if ($user->santri) {
-            $santri = $user->santri;
+            // Update user status
+            $user->active = true;
+            $user->save();
+
+            // Update status santri
+            $santri = Santri::where('user_id', $user->id)->where('status', 'pending')->first();
+            if (!$santri) {
+                throw new \Exception('Data santri tidak ditemukan atau sudah tidak pending.');
+            }
             $santri->status = 'approved';
 
             // Buat akun wali jika belum ada
@@ -170,19 +183,52 @@ class AuthController extends Controller
                     'active'   => true,
                 ]);
 
-                // Kirim password wali ke email
-                Mail::to($wali->email)->send(new WaliAccountCreated($wali, $generatedPassword, $user->name));
+                try {
+                    // Kirim password wali ke email
+                    Mail::to($wali->email)->send(new WaliAccountCreated($wali, $generatedPassword, $user->name));
+                } catch (\Exception $e) {
+                    Log::error('Failed to send email to wali: ' . $e->getMessage());
+                    // Lanjutkan proses meskipun email gagal terkirim
+                }
             }
 
             // Update wali_id di santri
             $santri->wali_id = $wali->id;
             $santri->save();
 
-            // Kirim email notifikasi ke santri
-            Mail::to($user->email)->send(new SantriApprovedMail($user));
-        }
+            try {
+                // Kirim email notifikasi ke santri
+                Mail::to($user->email)->send(new SantriApprovedMail($user));
+            } catch (\Exception $e) {
+                Log::error('Failed to send email to santri: ' . $e->getMessage());
+                // Lanjutkan proses meskipun email gagal terkirim
+            }
 
-        return back()->with('success', 'Santri berhasil di-approve dan akun wali telah dibuat.');
+            // Tambahkan notifikasi untuk santri
+            $this->notificationService->createForSantri(
+                $user->id,
+                'santri_approved',
+                'Akun Disetujui',
+                'Akun Anda telah disetujui oleh admin. Sekarang Anda dapat mengakses sistem.',
+                ['santri_id' => $user->id]
+            );
+
+            // Tambahkan notifikasi untuk wali
+            $this->notificationService->createForWali(
+                $wali->id,
+                'wali_account_created',
+                'Akun Wali Dibuat',
+                'Akun wali telah dibuat untuk Anda. Silakan cek email Anda untuk informasi login.',
+                ['santri_id' => $user->id]
+            );
+
+            DB::commit();
+            return back()->with('success', 'Santri berhasil di-approve dan akun wali telah dibuat.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Failed to approve santri: ' . $e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan saat menyetujui santri: ' . $e->getMessage());
+        }
     }
 
     // Tolak pendaftaran santri

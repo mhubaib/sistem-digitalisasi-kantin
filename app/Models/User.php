@@ -42,7 +42,7 @@ class User extends Authenticatable
     // Jika user ini adalah santri
     public function santri()
     {
-        return $this->hasOne(Santri::class);
+        return $this->hasOne(Santri::class, 'user_id');
     }
 
     // Jika user ini adalah wali, ia memiliki banyak santri

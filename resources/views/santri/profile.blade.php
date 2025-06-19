@@ -311,7 +311,7 @@
 
     <!-- Password Update Modal -->
     <div id="password-modal"
-        class="fixed inset-0 bg-opacity-50 backdrop-blur-lg flex items-center justify-center hidden z-50 p-4">
+        class="fixed inset-0 bg-opacity-50 backdrop-blur-xl flex items-center justify-center hidden z-50 p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md transform transition-all">
             <!-- Modal Header -->
             <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4 rounded-t-2xl">
