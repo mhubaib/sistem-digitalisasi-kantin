@@ -314,7 +314,7 @@
                             <!-- Enhanced Action Buttons -->
                             <div
                                 class="bg-gradient-to-r from-slate-50 to-gray-50 rounded-2xl p-6 border border-slate-200/60">
-                                <div class="flex flex-col gap-4">
+                                <div class="flex gap-4">
                                     <a href="{{ route('admin.santri.index') }}"
                                         class="group inline-flex items-center px-6 py-3 border-2 border-slate-300 rounded-xl text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 hover:border-slate-400 focus:outline-none focus:ring-4 focus:ring-slate-200 transition-all duration-200 hover:scale-105">
                                         <i
