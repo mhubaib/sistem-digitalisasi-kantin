@@ -29,12 +29,21 @@ class AuthController extends Controller
     // Tampilkan daftar santri yang belum di-approve (admin)
     public function index()
     {
-        $pendingSantris = User::with('santri')
-            ->where('role', 'santri')
-            ->whereHas('santri', function ($query) {
-                $query->where('status', 'pending');
-            })
+        // Ambil data santri pending dengan email wali
+        $pendingSantris = DB::table('users')
+            ->join('santris', 'users.id', '=', 'santris.user_id')
+            ->where('users.role', 'santri')
+            ->where('santris.status', 'pending')
+            ->select('users.*', 'santris.wali_email', 'santris.status as santri_status')
             ->get();
+
+        // Convert ke collection User untuk kompatibilitas
+        $pendingSantris = $pendingSantris->map(function ($item) {
+            $user = User::find($item->id);
+            $user->wali_email = $item->wali_email;
+            return $user;
+        });
+
         return view('admin.santri-approvals', compact('pendingSantris'));
     }
 
@@ -69,6 +78,14 @@ class AuthController extends Controller
             'wali_id' => null, // Akan diisi nanti saat approval
             'status' => 'pending',
             'wali_email' => $request->wali_email,
+        ]);
+
+        // Log untuk memverifikasi penyimpanan wali_email
+        Log::info('Santri Registration Debug', [
+            'user_id' => $user->id,
+            'santri_id' => $santri->id,
+            'wali_email' => $santri->wali_email,
+            'input_wali_email' => $request->wali_email
         ]);
 
         // Tambahkan notifikasi untuk admin

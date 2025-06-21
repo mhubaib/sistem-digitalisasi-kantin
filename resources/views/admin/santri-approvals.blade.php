@@ -179,9 +179,9 @@
                                     </td>
                                     <td class="py-4 px-6">
                                         <div class="flex items-center gap-2">
-                                            @if ($santri->santri && $santri->santri->wali_email)
+                                            @if ($santri->wali_email)
                                                 <i class="fas fa-check-circle text-green-500"></i>
-                                                <span class="text-gray-700">{{ $santri->santri->wali_email }}</span>
+                                                <span class="text-gray-700">{{ $santri->wali_email }}</span>
                                             @else
                                                 <i class="fas fa-exclamation-triangle text-yellow-500"></i>
                                                 <span class="text-gray-500 italic">Tidak ada</span>
@@ -284,8 +284,8 @@
                                 </div>
                                 <div class="flex items-center gap-2 text-sm">
                                     <i class="fas fa-user-tie text-gray-400 w-4"></i>
-                                    @if ($santri->santri && $santri->santri->wali_email)
-                                        <span class="text-gray-700 truncate">{{ $santri->santri->wali_email }}</span>
+                                    @if ($santri->wali_email)
+                                        <span class="text-gray-700 truncate">{{ $santri->wali_email }}</span>
                                     @else
                                         <span class="text-gray-500 italic">Tidak ada email wali</span>
                                     @endif
