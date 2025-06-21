@@ -535,38 +535,116 @@
             return labels[fieldName] || fieldName;
         }
 
+        function showConfirmDialog(title, message, onConfirm, onCancel = null) {
+        const backdrop = document.createElement('div');
+        backdrop.className = 'fixed inset-0 bg-opacity-50 backdrop-blur-lg z-50 flex items-center justify-center p-4';
+        backdrop.style.animation = 'fadeIn 0.3s ease-out';
+
+        const dialog = document.createElement('div');
+        dialog.className = 'bg-white rounded-lg shadow-xl max-w-md w-full transform';
+        dialog.style.animation = 'scaleIn 0.3s ease-out';
+
+        dialog.innerHTML = `
+        <div class="p-6">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-question-circle text-orange-600 text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900">${title}</h3>
+                    <p class="text-sm text-gray-600 mt-1">${message}</p>
+                </div>
+            </div>
+            <div class="flex gap-3 justify-end">
+                <button id="cancel-btn" class="px-4 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors font-medium">
+                    <i class="fas fa-times mr-2"></i>Batal
+                </button>
+                <button id="confirm-btn" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium">
+                    <i class="fas fa-check mr-2"></i>Ya, Reset
+                </button>
+            </div>
+        </div>
+    `;
+
+        backdrop.appendChild(dialog);
+        document.body.appendChild(backdrop);
+
+        const style = document.createElement('style');
+        style.textContent = `
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+        @keyframes scaleOut { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.9); } }
+    `;
+        document.head.appendChild(style);
+
+        dialog.querySelector('#confirm-btn').onclick = () => {
+            backdrop.style.animation = 'fadeOut 0.3s ease-in';
+            dialog.style.animation = 'scaleOut 0.3s ease-in';
+            setTimeout(() => {
+                document.body.removeChild(backdrop);
+                document.head.removeChild(style);
+            }, 300);
+            if (onConfirm) onConfirm();
+        };
+
+        const cancelHandler = () => {
+            backdrop.style.animation = 'fadeOut 0.3s ease-in';
+            dialog.style.animation = 'scaleOut 0.3s ease-in';
+            setTimeout(() => {
+                document.body.removeChild(backdrop);
+                document.head.removeChild(style);
+            }, 300);
+            if (onCancel) onCancel();
+        };
+
+        dialog.querySelector('#cancel-btn').onclick = cancelHandler;
+        backdrop.onclick = (e) => {
+            if (e.target === backdrop) cancelHandler();
+        };
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') cancelHandler();
+        });
+    }
+
+
         function resetForm() {
-            if (confirm('Apakah Anda yakin ingin mereset form ke data asli? Semua perubahan akan hilang.')) {
-                // Reset to original values
-                document.getElementById('name').value = originalValues.name;
-                document.getElementById('category').value = originalValues.category;
-                document.getElementById('price').value = originalValues.price;
-                document.getElementById('stock').value = originalValues.stock;
-                document.getElementById('description').value = originalValues.description;
+            showConfirmDialog(
+                'Reset Formulir',
+                'Apakah Anda yakin ingin mereset form ke data asli? Semua perubahan akan hilang.',
+                function() {
+                    // Reset to original values
+                    document.getElementById('name').value = originalValues.name;
+                    document.getElementById('category').value = originalValues.category;
+                    document.getElementById('price').value = originalValues.price;
+                    document.getElementById('stock').value = originalValues.stock;
+                    document.getElementById('description').value = originalValues.description;
 
-                // Reset radio buttons
-                const statusRadios = document.querySelectorAll('input[name="status"]');
-                statusRadios.forEach(radio => {
-                    radio.checked = radio.value === originalValues.status;
-                });
+                    // Reset radio buttons
+                    const statusRadios = document.querySelectorAll('input[name="status"]');
+                    statusRadios.forEach(radio => {
+                        radio.checked = radio.value === originalValues.status;
+                    });
 
-                // Reset image
-                document.getElementById('image').value = '';
-                if (originalValues.image) {
-                    document.getElementById('previewImg').src = originalValues.image;
-                    document.getElementById('imagePreview').classList.remove('hidden');
-                    document.getElementById('uploadArea').classList.add('hidden');
-                } else {
-                    document.getElementById('imagePreview').classList.add('hidden');
-                    document.getElementById('uploadArea').classList.remove('hidden');
+                    // Reset image
+                    document.getElementById('image').value = '';
+                    if (originalValues.image) {
+                        document.getElementById('previewImg').src = originalValues.image;
+                        document.getElementById('imagePreview').classList.remove('hidden');
+                        document.getElementById('uploadArea').classList.add('hidden');
+                    } else {
+                        document.getElementById('imagePreview').classList.add('hidden');
+                        document.getElementById('uploadArea').classList.remove('hidden');
+                    }
+
+                    // Clear all errors
+                    document.querySelectorAll('.error-message').forEach(msg => msg.remove());
+                    document.querySelectorAll('.border-red-500').forEach(field => {
+                        field.classList.remove('border-red-500', 'error-input');
+                    });
                 }
-
-                // Clear all errors
-                document.querySelectorAll('.error-message').forEach(msg => msg.remove());
-                document.querySelectorAll('.border-red-500').forEach(field => {
-                    field.classList.remove('border-red-500', 'error-input');
-                });
-            }
+            );
         }
 
         // Warn user about unsaved changes
