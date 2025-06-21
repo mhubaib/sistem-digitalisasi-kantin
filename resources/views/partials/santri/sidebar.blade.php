@@ -88,7 +88,7 @@
     // Paste the showConfirmDialog function here from cart.blade.php
     function showConfirmDialog(title, message, onConfirm, onCancel = null) {
         const backdrop = document.createElement('div');
-        backdrop.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
+        backdrop.className = 'fixed inset-0 bg-opacity-50 backdrop-blur-lg z-50 flex items-center justify-center p-4';
         backdrop.style.animation = 'fadeIn 0.3s ease-out';
 
         const dialog = document.createElement('div');
