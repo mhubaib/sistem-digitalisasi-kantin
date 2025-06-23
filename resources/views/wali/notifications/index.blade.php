@@ -84,7 +84,7 @@
                                         </div>
                                         <p class="text-sm text-gray-600 mb-2">{{ $notification->message }}</p>
                                         @if ($notification->data)
-                                            <div class="text-xs text-gray-500">
+                                            <div class="text-xs text-gray-500 mb-2">
                                                 @if (isset($notification->data['santri_id']))
                                                     <span
                                                         class="inline-flex items-center px-2 py-1 rounded-full bg-gray-100">
@@ -94,14 +94,14 @@
                                                 @endif
                                                 @if (isset($notification->data['transaction_id']))
                                                     <span
-                                                        class="inline-flex items-center px-2 py-1 rounded-full bg-gray-100 ml-2">
+                                                        class="inline-flex items-center px-2 py-1 rounded-full bg-gray-100">
                                                         <i class="fas fa-receipt mr-1"></i>
                                                         ID Transaksi: {{ $notification->data['transaction_id'] }}
                                                     </span>
                                                 @endif
                                                 @if (isset($notification->data['amount']))
                                                     <span
-                                                        class="inline-flex items-center px-2 py-1 rounded-full bg-gray-100 ml-2">
+                                                        class="inline-flex items-center px-2 py-1 rounded-full bg-gray-100">
                                                         <i class="fas fa-money-bill mr-1"></i>
                                                         Jumlah: Rp
                                                         {{ number_format($notification->data['amount'], 0, ',', '.') }}
