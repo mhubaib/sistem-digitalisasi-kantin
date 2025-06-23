@@ -37,7 +37,7 @@
                 <h2 class="text-lg font-semibold text-gray-800">Filter Riwayat</h2>
             </div>
 
-            <form method="GET" action="{{ route('santri.transactions.index') }}">
+            <form method="GET" action="{{ route('santri.transactions.index') }}" id="transactionFilterForm">
                 <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                     <div class="space-y-2">
                         <label class="text-sm font-medium text-gray-700">Tanggal Mulai</label>
@@ -55,6 +55,7 @@
                         </div>
                     </div>
 
+
                     <div class="flex space-x-3">
                         <button type="submit"
                             class="bg-gradient-to-r from-blue-700 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center space-x-2">
@@ -62,7 +63,7 @@
                             <span>Filter</span>
                         </button>
 
-                        @if (request()->has('start_date') || request()->has('end_date'))
+                        @if (request()->has('start_date') || request()->has('end_date') || request()->has('payment_type'))
                             <a href="{{ route('santri.transactions.index') }}"
                                 class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-3 rounded-xl font-medium transition-all duration-300 flex items-center space-x-2 border border-gray-300">
                                 <i class="fas fa-undo"></i>
@@ -126,7 +127,8 @@
                                     <div>
                                         <h3 class="font-bold text-gray-800 text-sm">Transaksi
                                             #{{ str_pad($transaction->id, 4, '0', STR_PAD_LEFT) }}</h3>
-                                        <p class="text-xs text-gray-500">{{ $transaction->created_at->format('d M Y') }}</p>
+                                        <p class="text-xs text-gray-500">{{ $transaction->created_at->format('d M Y') }}
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">

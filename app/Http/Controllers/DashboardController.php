@@ -12,6 +12,7 @@ use App\Models\TransactionItem;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
 {
@@ -98,7 +99,8 @@ class DashboardController extends Controller
             ]);
         }
 
-        $query = $santri->transactions()->with(['items.product']);
+        // Get all transactions for the santri
+        $query = Transaction::where('santri_id', $santri->id)->with(['items.product']);
 
         // Apply date filtering if provided
         if ($request->has('start_date') && $request->has('end_date')) {
@@ -106,6 +108,7 @@ class DashboardController extends Controller
         }
 
         $transactions = $query->latest()->get();
+
         $totalSpending = $transactions->sum('total');
         $transactionItems = TransactionItem::whereIn('transaction_id', $transactions->pluck('id'))->get();
 
@@ -155,7 +158,7 @@ class DashboardController extends Controller
         if ($request->has('start_date') && $request->has('end_date')) {
             $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
         }
-        if ($request->has('payment_type')) {
+        if ($request->has('payment_type') && $request->payment_type !== 'all') {
             $query->where('payment_type', $request->payment_type);
         }
 
