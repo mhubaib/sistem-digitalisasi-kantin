@@ -84,7 +84,7 @@
                                         </div>
                                         <p class="text-sm text-gray-600 mb-2">{{ $notification->message }}</p>
                                         @if ($notification->data)
-                                            <div class="text-xs text-gray-500 mb-2">
+                                            <div class="text-xs text-gray-500 pb-2">
                                                 @if (isset($notification->data['santri_id']))
                                                     <span
                                                         class="inline-flex items-center px-2 py-1 rounded-full bg-gray-100">
