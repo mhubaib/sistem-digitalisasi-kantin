@@ -68,19 +68,5 @@ class User extends Authenticatable
     {
         return $this->hasMany(WalletHistory::class, 'created_by');
     }
-
-    public function isAdmin(): bool
-    {
-        return $this->role === 'admin';
-    }
-
-    public function isSantri(): bool
-    {
-        return $this->role === 'santri';
-    }
-
-    public function isWali(): bool
-    {
-        return $this->role === 'wali';
-    }
+    
 }

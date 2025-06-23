@@ -146,120 +146,94 @@
     </div>
 
     <!-- Topup Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
-        @forelse ($topups as $topup)
-            <div class="group relative overflow-hidden">
-                <!-- Card Background with Gradient -->
-                <div class="absolute inset-0 bg-gradient-to-br from-white to-gray-50 rounded-2xl"></div>
-                
-                <!-- Main Card -->
-                <div class="relative bg-white/95 backdrop-blur-sm rounded-2xl p-6 border border-gray-100 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-                    <!-- Card Header -->
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
-                                <i class="fas fa-arrow-up text-white text-lg"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-bold text-gray-800">Topup #{{ $topup->id }}</h3>
-                                <p class="text-sm text-gray-500">{{ $topup->created_at->format('d M Y, H:i') }} WIB</p>
+    @if ($topups->isEmpty())
+            <div class="bg-white rounded-2xl shadow-lg p-16 text-center border border-gray-100">
+                <div class="max-w-md mx-auto">
+                    <div class="bg-gray-100 w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center">
+                        <i class="fas fa-wallet text-4xl text-gray-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-3">Belum Ada Riwayat Topup</h3>
+                    <p class="text-gray-500 mb-6">Anak anda belum memiliki riwayat topup.</p>
+                </div>
+            </div>
+        @else
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                @foreach ($topups as $topup)
+                    <div class="topup-card bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 group">
+                        <!-- Card Header -->
+                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 border-b border-gray-100">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="bg-blue-100 p-2 rounded-lg group-hover:bg-blue-200 transition-colors duration-300">
+                                        <i class="fas fa-receipt text-blue-600"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-gray-800 text-sm">Topup #{{ str_pad($topup->id, 4, '0', STR_PAD_LEFT) }}</h3>
+                                        <p class="text-xs text-gray-500">{{ $topup->created_at->format('d M Y') }}</p>
+                                    </div>
+                                </div>
+                                <div class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                                    <i class="fas fa-check-circle mr-1"></i>
+                                    Berhasil
+                                </div>
                             </div>
                         </div>
                         
-                        <!-- Status Badge -->
-                        <div class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">
-                            <i class="fas fa-check-circle mr-1"></i>
-                            Berhasil
-                        </div>
-                    </div>
-
-                    <!-- Amount Display -->
-                    <div class="bg-gradient-to-r from-green-50 to-green-100 rounded-xl p-4 mb-4">
-                        <div class="text-center">
-                            <p class="text-sm text-green-600 font-medium mb-1">Jumlah Topup</p>
-                            <p class="text-3xl font-bold text-green-700">
-                                Rp {{ number_format($topup->amount, 0, ',', '.') }}
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Details Grid -->
-                    <div class="space-y-3">
-                        <!-- Santri Info -->
-                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-xs">
-                                    {{ strtoupper(substr($topup->santri->user->name ?? 'N/A', 0, 2)) }}
-                                </div>
-                                <div>
-                                    <p class="text-sm font-medium text-gray-800">{{ $topup->santri->user->name ?? 'Tidak diketahui' }}</p>
-                                    <p class="text-xs text-gray-500">Nama Santri</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Method & Source -->
-                        <div class="grid grid-cols-2 gap-3">
-                            <div class="p-3 bg-blue-50 rounded-lg">
-                                <div class="flex items-center space-x-2">
-                                    <i class="fas fa-credit-card text-blue-500"></i>
-                                    <div>
-                                        <p class="text-xs text-blue-600 font-medium">Metode</p>
-                                        <p class="text-sm font-semibold text-blue-800 capitalize">{{ $topup->method }}</p>
-                                    </div>
-                                </div>
+                        <!-- Card Body -->
+                        <div class="p-4 space-y-4">
+                            <!-- Amount Display -->
+                            <div class="text-center py-4">
+                                <p class="text-sm text-gray-500 mb-1">Jumlah Topup</p>
+                                <p class="text-2xl font-bold text-gray-800">Rp {{ number_format($topup->amount, 0, ',', '.') }}</p>
                             </div>
                             
-                            <div class="p-3 bg-purple-50 rounded-lg">
-                                <div class="flex items-center space-x-2">
-                                    <i class="fas fa-user-shield text-purple-500"></i>
-                                    <div>
-                                        <p class="text-xs text-purple-600 font-medium">Sumber</p>
-                                        <p class="text-sm font-semibold text-purple-800 capitalize">{{ $topup->source }}</p>
+                            <!-- Details -->
+                            <div class="space-y-3 border-t border-gray-100 pt-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-user text-gray-400 text-sm"></i>
+                                        <span class="text-sm text-gray-600">Sumber</span>
                                     </div>
+                                    <span class="text-sm font-medium text-gray-800">{{ $topup->createdBy->name ?? 'Tidak diketahui' }}</span>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-clock text-gray-400 text-sm"></i>
+                                        <span class="text-sm text-gray-600">Waktu</span>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-800">{{ $topup->created_at->format('H:i') }}</span>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-calendar text-gray-400 text-sm"></i>
+                                        <span class="text-sm text-gray-600">Tanggal</span>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-800">{{ $topup->created_at->format('d/m/Y') }}</span>
+                                </div>
+
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-credit-card text-gray-400 text-sm"></i>
+                                        <span class="text-sm text-gray-600">Metode</span>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-800">{{ $topup->method }}</span>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Card Footer -->
-                    <div class="mt-4 pt-4 border-t border-gray-200">
-                        <div class="flex items-center justify-between text-xs text-gray-500">
-                            <span class="flex items-center space-x-1">
-                                <i class="fas fa-clock"></i>
-                                <span>{{ $topup->created_at->diffForHumans() }}</span>
-                            </span>
-                            <span class="bg-gray-100 px-2 py-1 rounded text-gray-600 font-mono">
-                                ID: {{ $topup->id }}
-                            </span>
+                        
+                        <!-- Card Footer -->
+                        <div class="bg-gray-50 px-4 py-3 border-t border-gray-100">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-gray-500">ID: {{ $topup->id }}</span>
+                                <span class="text-xs text-gray-500">{{ $topup->created_at->diffForHumans() }}</span>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Hover Effect Decoration -->
-                    <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-green-400/10 to-green-600/10 rounded-full -mr-10 -mt-10 group-hover:scale-110 transition-transform duration-300"></div>
-                </div>
+                @endforeach
             </div>
-        @empty
-            <!-- Empty State -->
-            <div class="col-span-full">
-                <div class="bg-white/95 backdrop-blur-sm rounded-2xl p-12 text-center border border-gray-100 shadow-lg">
-                    <div class="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full mx-auto mb-6 flex items-center justify-center">
-                        <i class="fas fa-wallet text-4xl text-gray-400"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Tidak Ada Data Topup</h3>
-                    <p class="text-gray-600 mb-6">Belum ada transaksi topup yang sesuai dengan filter yang Anda pilih.</p>
-                    <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                        <a href="{{ route('wali.topups') }}" 
-                           class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 flex items-center justify-center space-x-2">
-                            <i class="fas fa-refresh"></i>
-                            <span>Reset Filter</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        @endforelse
-    </div>
-
+        @endif
     <!-- Enhanced Pagination -->
     @if($topups->hasPages())
         <div class="bg-white/95 backdrop-blur-sm rounded-2xl p-6 border border-gray-100 shadow-lg">
