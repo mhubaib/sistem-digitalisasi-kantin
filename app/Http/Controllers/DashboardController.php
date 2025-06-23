@@ -165,10 +165,11 @@ class DashboardController extends Controller
             ->latest();
 
         // Apply filters
-        if ($request->has('start_date') && $request->has('end_date')) {
-            $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+            $query->whereDate('created_at', '<=', $request->end_date);
         }
-        if ($request->has('payment_type') && $request->payment_type !== 'all') {
+        if ($request->filled('payment_type')) {
             $query->where('payment_type', $request->payment_type);
         }
 
@@ -188,25 +189,26 @@ class DashboardController extends Controller
             ->latest();
 
         // Apply filter by source if provided
-        if (request()->has('source') && in_array(request()->input('source'), ['admin', 'wali'])) {
-            $query->where('source', request()->input('source'));
+        if ($request->filled('source')) {
+            $query->where('source', $request->source);
         }
 
         // Apply filter by method if provided
-        if (request()->has('method') && in_array(request()->input('method'), ['cash', 'transfer', 'manual', 'lainnya'])) {
-            $query->where('method', request()->input('method'));
+        if ($request->filled('method')) {
+            $query->where('method', $request->method);
         }
 
         // Apply filter by santri name if provided
-        if (request()->has('santri_name')) {
+        if ($request->filled('santri_name')) {
             $query->whereHas('santri.user', function ($q) use ($request) {
-                $q->where('name', 'like', '%' . request()->input('santri_name') . '%');
+                $q->where('name', 'like', '%' . $request->input('santri_name') . '%');
             });
         }
 
         // Apply filter by date range if provided
-        if (request()->has('start_date') && request()->has('end_date')) {
-            $query->whereBetween('created_at', [request()->input('start_date'), request()->input('end_date')]);
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+            $query->whereDate('created_at', '<=', $request->end_date);
         }
 
         $topups = $query->paginate(10);

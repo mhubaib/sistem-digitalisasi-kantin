@@ -130,50 +130,54 @@
         </div>
 
         <!-- Transaction Cards Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
-            @forelse ($transactions as $transaction)
-                <div class="group relative overflow-hidden">
-                    <!-- Card Background with Gradient -->
-                    <div class="absolute inset-0 bg-gradient-to-br from-white to-gray-50 rounded-2xl"></div>
-
-                    <!-- Main Card -->
+        @if ($transactions->isEmpty())
+            <div class="bg-white rounded-2xl shadow-lg p-16 text-center border border-gray-100">
+                <div class="max-w-md mx-auto">
+                    <div class="bg-gray-100 w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center">
+                        <i class="fas fa-shopping-cart text-4xl text-gray-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-3">Belum Ada Transaksi</h3>
+                    <p class="text-gray-500 mb-6">Anak anda belum memiliki riwayat transaksi.</p>
+                </div>
+            </div>
+        @else
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+             @foreach ($transactions as $transaction)
                     <div
-                        class="relative bg-white/95 backdrop-blur-sm rounded-2xl p-6 border border-gray-100 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                        class="transaction-card bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 group">
                         <!-- Card Header -->
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center space-x-3">
-                                <div
-                                    class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-                                    <i class="fas fa-shopping-bag text-white text-lg"></i>
+                        <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-4 border-b border-gray-100">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div
+                                        class="bg-green-100 p-2 rounded-lg group-hover:bg-green-200 transition-colors duration-300">
+                                        <i class="fas fa-receipt text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-gray-800 text-sm">Transaksi
+                                            #{{ str_pad($transaction->id, 4, '0', STR_PAD_LEFT) }}</h3>
+                                        <p class="text-xs text-gray-500">{{ $transaction->created_at->format('d M Y') }}
+                                        </p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 class="text-lg font-bold text-gray-800">Transaksi #{{ $transaction->id }}</h3>
-                                    <p class="text-sm text-gray-500">{{ $transaction->created_at->format('d M Y, H:i') }}
-                                        WIB</p>
+                                <div class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
+                                    <i class="fas fa-check-circle mr-1"></i>
+                                    Selesai
                                 </div>
-                            </div>
-
-                            <!-- Status Badge -->
-                            <div
-                                class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">
-                                <i class="fas fa-check-circle mr-1"></i>
-                                Selesai
                             </div>
                         </div>
 
-                        <!-- Amount Display -->
-                        <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-4 mb-4">
-                            <div class="text-center">
-                                <p class="text-sm text-blue-600 font-medium mb-1">Total Transaksi</p>
-                                <p class="text-3xl font-bold text-blue-700">
-                                    Rp {{ number_format($transaction->total, 0, ',', '.') }}
-                                </p>
-                            </div>
-                        </div>
+                        <!-- Card Body -->
+                        <div class="p-4 space-y-4">
 
-                        <!-- Details Grid -->
-                        <div class="space-y-3">
-                            <!-- Santri Info -->
+                            <!-- Amount Display -->
+                            <div class="text-center py-4 bg-gray-50 rounded-xl">
+                                <p class="text-sm text-gray-500 mb-1">Total Pembayaran</p>
+                                <p class="text-2xl font-bold text-green-600">Rp
+                                    {{ number_format($transaction->total, 0, ',', '.') }}</p>
+                            </div>
+
+                             <!-- Santri Info -->
                             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                 <div class="flex items-center space-x-3">
                                     <div
@@ -187,19 +191,7 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- Payment Method -->
-                            <div class="p-3 bg-green-50 rounded-lg">
-                                <div class="flex items-center space-x-2">
-                                    <i class="fas fa-credit-card text-green-500"></i>
-                                    <div>
-                                        <p class="text-xs text-green-600 font-medium">Metode Pembayaran</p>
-                                        <p class="text-sm font-semibold text-green-800 capitalize">
-                                            {{ $transaction->payment_type }}</p>
-                                    </div>
-                                </div>
-                            </div>
-
+                            
                             <!-- Items Section -->
                             <div class="bg-yellow-50 rounded-lg p-3">
                                 <h4 class="text-sm font-semibold text-yellow-800 mb-2 flex items-center">
@@ -227,50 +219,59 @@
                                     @endforelse
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Card Footer -->
-                        <div class="mt-4 pt-4 border-t border-gray-200">
-                            <div class="flex items-center justify-between text-xs text-gray-500">
-                                <span class="flex items-center space-x-1">
-                                    <i class="fas fa-clock"></i>
-                                    <span>{{ $transaction->created_at->diffForHumans() }}</span>
-                                </span>
-                                <span class="bg-gray-100 px-2 py-1 rounded text-gray-600 font-mono">
-                                    ID: {{ $transaction->id }}
-                                </span>
+                            <!-- Details -->
+                            <div class="space-y-3 border-t border-gray-100 pt-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-calendar text-gray-400 text-sm"></i>
+                                        <span class="text-sm text-gray-600">Tanggal</span>
+                                    </div>
+                                    <span
+                                        class="text-sm font-medium text-gray-800">{{ $transaction->created_at->format('d/m/Y') }}</span>
+                                </div>
+
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-clock text-gray-400 text-sm"></i>
+                                        <span class="text-sm text-gray-600">Waktu</span>
+                                    </div>
+                                    <span
+                                        class="text-sm font-medium text-gray-800">{{ $transaction->created_at->format('H:i') }}</span>
+                                </div>
+
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-money-bill-wave text-gray-400 text-sm"></i>
+                                        <span class="text-sm text-gray-600">Metode Pembayaran</span>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-800">
+                                        @if ($transaction->payment_type === 'cash')
+                                            <span
+                                                class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Cash</span>
+                                        @elseif($transaction->payment_type === 'saldo')
+                                            <span
+                                                class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">Saldo</span>
+                                        @else
+                                            <span
+                                                class="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs">{{ ucfirst($transaction->payment_method) }}</span>
+                                        @endif
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Hover Effect Decoration -->
-                        <div
-                            class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-400/10 to-blue-600/10 rounded-full -mr-10 -mt-10 group-hover:scale-110 transition-transform duration-300">
+                        <!-- Card Footer -->
+                        <div class="bg-gray-50 px-4 py-3 border-t border-gray-100">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-gray-500">ID: {{ $transaction->id }}</span>
+                                <span class="text-xs text-gray-500">{{ $transaction->created_at->diffForHumans() }}</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            @empty
-                <!-- Empty State -->
-                <div class="col-span-full">
-                    <div
-                        class="bg-white/95 backdrop-blur-sm rounded-2xl p-12 text-center border border-gray-100 shadow-lg">
-                        <div
-                            class="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full mx-auto mb-6 flex items-center justify-center">
-                            <i class="fas fa-shopping-cart text-4xl text-gray-400"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">Tidak Ada Data Transaksi</h3>
-                        <p class="text-gray-600 mb-6">Belum ada transaksi yang sesuai dengan filter yang Anda pilih.</p>
-                        <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                            <a href="{{ route('wali.transactions') }}"
-                                class="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 flex items-center justify-center space-x-2">
-                                <i class="fas fa-refresh"></i>
-                                <span>Reset Filter</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            @endforelse
-        </div>
-
+                @endforeach
+            </div>
+        @endif
         <!-- Enhanced Pagination -->
         @if (method_exists($transactions, 'hasPages') && $transactions->hasPages())
             <div class="bg-white/95 backdrop-blur-sm rounded-2xl p-6 border border-gray-100 shadow-lg">

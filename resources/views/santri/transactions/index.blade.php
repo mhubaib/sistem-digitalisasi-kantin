@@ -149,18 +149,40 @@
 
                         <!-- Card Body -->
                         <div class="p-4 space-y-4">
-                            <!-- Product Name -->
-                            <div class="text-center py-2">
-                                <p class="text-sm text-gray-500 mb-1">Produk</p>
-                                <p class="font-semibold text-gray-800 text-lg line-clamp-2">
-                                    {{ $transaction->items->first()->product->name ?? 'Produk Tidak Diketahui' }}</p>
-                            </div>
 
                             <!-- Amount Display -->
                             <div class="text-center py-4 bg-gray-50 rounded-xl">
                                 <p class="text-sm text-gray-500 mb-1">Total Pembayaran</p>
                                 <p class="text-2xl font-bold text-green-600">Rp
                                     {{ number_format($transaction->total, 0, ',', '.') }}</p>
+                            </div>
+                            
+                            <!-- Items Section -->
+                            <div class="bg-yellow-50 rounded-lg p-3">
+                                <h4 class="text-sm font-semibold text-yellow-800 mb-2 flex items-center">
+                                    <i class="fas fa-box mr-2 text-yellow-600"></i>
+                                    Item yang Dibeli
+                                </h4>
+                                <div class="space-y-2 max-h-32 overflow-y-auto">
+                                    @forelse ($transaction->items as $item)
+                                        <div class="bg-white rounded-md p-2 border border-yellow-200">
+                                            <div class="flex justify-between items-start">
+                                                <div class="flex-1">
+                                                    <p class="text-xs font-medium text-gray-800">
+                                                        {{ $item->product->name ?? 'Produk tidak tersedia' }}</p>
+                                                    <p class="text-xs text-gray-500">Qty: {{ $item->quantity }}</p>
+                                                </div>
+                                                <div class="text-right">
+                                                    <p class="text-xs font-semibold text-green-600">
+                                                        Rp {{ number_format($item->subtotal, 0, ',', '.') }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <p class="text-xs text-gray-500 italic">Tidak ada item</p>
+                                    @endforelse
+                                </div>
                             </div>
 
                             <!-- Details -->
