@@ -47,13 +47,6 @@ class UserController extends Controller
                 'active' => $request->active,
             ]);
 
-            // If santri has a wali, update wali's status too
-            if ($santri->wali_id) {
-                $santri->wali->update([
-                    'active' => $request->active,
-                ]);
-            }
-
             DB::commit();
 
             return redirect()

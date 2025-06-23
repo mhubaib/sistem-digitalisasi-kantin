@@ -80,14 +80,6 @@ class AuthController extends Controller
             'wali_email' => $request->wali_email,
         ]);
 
-        // Log untuk memverifikasi penyimpanan wali_email
-        Log::info('Santri Registration Debug', [
-            'user_id' => $user->id,
-            'santri_id' => $santri->id,
-            'wali_email' => $santri->wali_email,
-            'input_wali_email' => $request->wali_email
-        ]);
-
         // Tambahkan notifikasi untuk admin
         $notification = $this->notificationService->createForAdmin(
             'santri_registration',
