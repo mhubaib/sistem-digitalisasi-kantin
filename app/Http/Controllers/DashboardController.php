@@ -144,7 +144,7 @@ class DashboardController extends Controller
     public function waliTransactions(Request $request)
     {
         $user = Auth::user();
-        $santris = $user->santris ?? collect();
+        $santris = Santri::where('wali_id', $user->id)->get() ?? collect();
         $santriIds = $santris->pluck('id');
 
         $query = Transaction::whereIn('santri_id', $santriIds)
@@ -167,7 +167,7 @@ class DashboardController extends Controller
     public function waliTopups(Request $request)
     {
         $user = Auth::user();
-        $santris = $user->santris ?? collect();
+        $santris = Santri::where('wali_id', $user->id)->get() ?? collect();
         $santriIds = $santris->pluck('id');
 
         $query = Topup::whereIn('santri_id', $santriIds)

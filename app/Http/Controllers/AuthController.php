@@ -221,24 +221,6 @@ class AuthController extends Controller
                 // Lanjutkan proses meskipun email gagal terkirim
             }
 
-            // Tambahkan notifikasi untuk santri
-            $this->notificationService->createForSantri(
-                $user->id,
-                'santri_approved',
-                'Akun Disetujui',
-                'Akun Anda telah disetujui oleh admin. Sekarang Anda dapat mengakses sistem.',
-                ['santri_id' => $user->id]
-            );
-
-            // Tambahkan notifikasi untuk wali
-            $this->notificationService->createForWali(
-                $wali->id,
-                'wali_account_created',
-                'Akun Wali Dibuat',
-                'Akun wali telah dibuat untuk Anda. Silakan cek email Anda untuk informasi login.',
-                ['santri_id' => $user->id]
-            );
-
             DB::commit();
             return back()->with('success', 'Santri berhasil di-approve dan akun wali telah dibuat.');
         } catch (\Exception $e) {
