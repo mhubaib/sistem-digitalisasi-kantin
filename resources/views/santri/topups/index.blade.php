@@ -54,6 +54,17 @@
                                 class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300">
                         </div>
                     </div>
+
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-gray-700">Metode</label>
+                        <select name="method" class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300">
+                            <option value="">Semua</option>
+                            <option value="cash" {{ request('method') == 'cash' ? 'selected' : '' }}>Cash</option>
+                            <option value="transfer" {{ request('method') == 'transfer' ? 'selected' : '' }}>Transfer</option>
+                            <option value="manual" {{ request('method') == 'manual' ? 'selected' : '' }}>Manual</option>
+                            <option value="lainnya" {{ request('method') == 'lainnya' ? 'selected' : '' }}>Lainnya</option>
+                        </select>
+                    </div>
                     
                     <div class="flex space-x-3">
                         <button type="submit"
@@ -140,6 +151,14 @@
                                         <span class="text-sm text-gray-600">Tanggal</span>
                                     </div>
                                     <span class="text-sm font-medium text-gray-800">{{ $topup->created_at->format('d/m/Y') }}</span>
+                                </div>
+
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fas fa-credit-card text-gray-400 text-sm"></i>
+                                        <span class="text-sm text-gray-600">Metode</span>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-800">{{ $topup->method }}</span>
                                 </div>
                             </div>
                         </div>

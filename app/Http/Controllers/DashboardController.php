@@ -103,8 +103,13 @@ class DashboardController extends Controller
         $query = Transaction::where('santri_id', $santri->id)->with(['items.product']);
 
         // Apply date filtering if provided
-        if ($request->has('start_date') && $request->has('end_date')) {
-            $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        if ($request->filled('payment_type')) {
+            $query->where('payment_type', $request->payment_type);
         }
 
         $transactions = $query->latest()->get();
@@ -135,8 +140,13 @@ class DashboardController extends Controller
         $query = Topup::where('santri_id', $santri->id)->with('createdBy');
 
         // Apply date filtering if provided
-        if ($request->has('start_date') && $request->has('end_date')) {
-            $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        if ($request->filled('method')) {
+            $query->where('method', $request->method);
         }
 
         $topups = $query->latest()->get();

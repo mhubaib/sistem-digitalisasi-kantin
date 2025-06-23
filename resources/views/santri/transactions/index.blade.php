@@ -55,6 +55,15 @@
                         </div>
                     </div>
 
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium text-gray-700">Metode Pembayaran</label>
+                        <select name="payment_type" class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300">
+                            <option value="">Semua</option>
+                            <option value="cash" {{ request('payment_type') == 'cash' ? 'selected' : '' }}>Cash</option>
+                            <option value="saldo" {{ request('payment_type') == 'saldo' ? 'selected' : '' }}>Saldo</option>
+                        </select>
+                    </div>
+
 
                     <div class="flex space-x-3">
                         <button type="submit"
