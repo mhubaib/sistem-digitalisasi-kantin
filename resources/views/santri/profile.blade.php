@@ -334,6 +334,9 @@
                 @csrf
                 @method('PUT')
 
+                <!-- Error Message Container -->
+                <div id="password-modal-errors" class="mb-4"></div>
+
                 <div class="space-y-6">
                     <!-- Current Password -->
                     <div class="group">
@@ -479,11 +482,53 @@
             const cancelPasswordBtn = document.getElementById('cancel-password-btn');
             const closeModalBtn = document.getElementById('close-modal-btn');
             const passwordToggles = document.querySelectorAll('.password-toggle');
+            const passwordForm = document.getElementById('password-form');
+            const passwordModalErrors = document.getElementById('password-modal-errors');
+
+            // Function to create dismissible flash message
+            function createFlashMessage(type, message, container) {
+                const flashDiv = document.createElement('div');
+                flashDiv.className =
+                    `relative ${type === 'success' ? 'bg-green-50 border-green-400' : 'bg-red-50 border-red-400'} border-l-4 p-4 rounded-r-lg shadow-sm animate-slide-in`;
+
+                flashDiv.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas ${type === 'success' ? 'fa-check-circle text-green-400' : 'fa-exclamation-triangle text-red-400'}"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="${type === 'success' ? 'text-green-700' : 'text-red-700'} font-medium">${message}</p>
+                            </div>
+                        </div>
+                        <button class="flash-message-close ml-4 text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+
+                // Add close functionality
+                const closeBtn = flashDiv.querySelector('.flash-message-close');
+                closeBtn.addEventListener('click', function() {
+                    flashDiv.classList.remove('animate-slide-in');
+                    flashDiv.classList.add('animate-slide-out');
+                    setTimeout(() => {
+                        flashDiv.remove();
+                    }, 500);
+                });
+
+                // Clear previous messages
+                container.innerHTML = '';
+                container.appendChild(flashDiv);
+            }
 
             // Show modal
             updatePasswordBtn.addEventListener('click', function() {
                 passwordModal.classList.remove('hidden');
                 document.body.style.overflow = 'hidden';
+
+                // Clear previous error messages
+                passwordModalErrors.innerHTML = '';
             });
 
             // Hide modal function
@@ -491,7 +536,9 @@
                 passwordModal.classList.add('hidden');
                 document.body.style.overflow = 'auto';
                 // Clear form
-                document.getElementById('password-form').reset();
+                passwordForm.reset();
+                // Clear error messages
+                passwordModalErrors.innerHTML = '';
             }
 
             // Hide modal events
@@ -503,6 +550,83 @@
                 if (event.target === passwordModal) {
                     hideModal();
                 }
+            });
+
+            // Handle form submission
+            passwordForm.addEventListener('submit', function(event) {
+                // Prevent default form submission
+                event.preventDefault();
+
+                // Create FormData object
+                const formData = new FormData(passwordForm);
+
+                // Send AJAX request
+                fetch(passwordForm.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Success: show success message and close modal
+                            createFlashMessage('success', data.message, passwordModalErrors);
+
+                            // Close modal after a short delay
+                            setTimeout(hideModal, 2000);
+
+                            // Create a success flash message outside the modal
+                            const mainFlashContainer = document.querySelector(
+                                '.bg-gradient-to-r.from-indigo-600');
+                            if (mainFlashContainer) {
+                                const successMessage = document.createElement('div');
+                                successMessage.className =
+                                    'bg-green-50 border-l-4 border-green-400 p-4 rounded-r-lg shadow-sm animate-slide-in mt-4';
+                                successMessage.innerHTML = `
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0">
+                                            <i class="fas fa-check-circle text-green-400"></i>
+                                        </div>
+                                        <div class="ml-3">
+                                            <p class="text-green-700 font-medium">${data.message}</p>
+                                        </div>
+                                    </div>
+                                    <button class="flash-message-close ml-4 text-gray-500 hover:text-gray-700">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            `;
+
+                                // Add close functionality
+                                const closeBtn = successMessage.querySelector('.flash-message-close');
+                                closeBtn.addEventListener('click', function() {
+                                    successMessage.classList.remove('animate-slide-in');
+                                    successMessage.classList.add('animate-slide-out');
+                                    setTimeout(() => {
+                                        successMessage.remove();
+                                    }, 500);
+                                });
+
+                                mainFlashContainer.insertAdjacentElement('afterend', successMessage);
+                            }
+                        } else {
+                            // Errors: display error messages
+                            const errorMessages = data.errors ?
+                                Object.values(data.errors).flat().join('<br>') :
+                                'Terjadi kesalahan saat mengubah password';
+
+                            createFlashMessage('error', errorMessages, passwordModalErrors);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        createFlashMessage('error', 'Terjadi kesalahan. Silakan coba lagi.',
+                            passwordModalErrors);
+                    });
             });
 
             // Password visibility toggle
@@ -522,35 +646,6 @@
                         icon.classList.add('fa-eye');
                     }
                 });
-            });
-
-            // Auto hide flash messages after 5 seconds
-            setTimeout(function() {
-                const flashMessages = document.querySelectorAll('[role="alert"], .animate-slide-in');
-                flashMessages.forEach(function(message) {
-                    message.classList.remove('animate-slide-in');
-                    message.classList.add('animate-slide-out');
-                    setTimeout(() => {
-                        message.style.display = 'none';
-                    }, 500);
-                });
-            }, 3000);
-
-            // Add smooth scroll behavior for better UX
-            document.documentElement.style.scrollBehavior = 'smooth';
-
-            // Form validation enhancement
-            const form = document.getElementById('profile-form');
-            const nameInput = document.getElementById('name');
-
-            nameInput.addEventListener('input', function() {
-                if (this.value.length < 2) {
-                    this.classList.add('border-red-300');
-                    this.classList.remove('border-gray-300');
-                } else {
-                    this.classList.remove('border-red-300');
-                    this.classList.add('border-gray-300');
-                }
             });
 
             // Password matching validation
