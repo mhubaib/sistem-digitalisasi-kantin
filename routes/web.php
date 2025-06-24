@@ -69,7 +69,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
     Route::patch('/admin/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
 
-    Route::get('/transaction/all', [TransactionController::class, 'allTransactions'])->name('transaction.index');
+    Route::get('/transaction/index', [TransactionController::class, 'allTransactions'])->name('transaction.index');
 
     // Santri Status Routes
     Route::get('/santri/{santri}/status/edit', [UserController::class, 'editSantriStatus'])->name('santri.status.edit');

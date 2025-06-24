@@ -173,15 +173,15 @@
                 </div>
             </div>
 
-            <div class="bg-gradient-to-br from-red-50 to-red-100/50 border border-red-200/50 rounded-2xl p-6">
+            <div class="bg-gradient-to-br from-purple-50 to-purple-100/50 border border-purple-200/50 rounded-2xl p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-red-600 text-sm font-medium mb-1">Total Top-up Bulan Ini</p>
-                        <p class="text-2xl font-light text-red-800">Rp {{ number_format($monthTopups ?? 0, 0, ',', '.') }}
+                        <p class="text-purple-600 text-sm font-medium mb-1">Total Top-up Bulan Ini</p>
+                        <p class="text-2xl font-light text-purple-800">Rp {{ number_format($monthTopups ?? 0, 0, ',', '.') }}
                         </p>
                     </div>
-                    <div class="w-12 h-12 bg-red-500/10 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-chart-line text-red-500"></i>
+                    <div class="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-chart-line text-purple-500"></i>
                     </div>
                 </div>
             </div>

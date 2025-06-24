@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Login | Kantin PIT</title>
+    <title>Login | Sistem Koperasi Digital</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -13,29 +13,145 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            background-color: #f4f7fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-image: linear-gradient(135deg, rgba(45, 55, 72, 0.05) 0%, rgba(45, 55, 72, 0.15) 100%);
         }
 
-        .card-shadow {
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        .login-container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
         }
 
-        .input-focus:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        .login-image {
+            flex: 1;
+            background: linear-gradient(135deg, #2c5282 0%, #3182ce 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem;
+            color: white;
+            text-align: center;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            transition: all 0.2s ease;
+        .login-form {
+            flex: 1;
+            background-color: white;
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-            transform: translateY(-1px);
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
         }
 
-        /* Flash message animation */
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            border-color: #3182ce;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+        }
+
+        .input-group .icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+            transition: color 0.3s ease;
+        }
+
+        .input-group input:focus+.icon {
+            color: #3182ce;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(44, 82, 130, 0.3);
+        }
+
+        .register-link {
+            color: #3182ce;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .register-link:hover {
+            color: #2c5282;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+                max-width: 95%;
+                margin: 1rem;
+            }
+
+            .login-image,
+            .login-form {
+                padding: 2rem;
+            }
+        }
+
+        /* Flash message animations */
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translateX(0);
+                max-height: 100px;
+                margin-bottom: 2rem;
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+                max-height: 100px;
+                margin-bottom: 2rem;
+            }
+        }
+
         @keyframes slideOut {
             0% {
                 transform: translateX(0);
@@ -53,126 +169,113 @@
             }
         }
 
+
+        /* Flash message styles */
         .flash-message {
+            width: 100%;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            position: relative;
+        }
+
+        .flash-message.show {
+            display: flex;
+            animation: slideIn 0.5s ease-in-out forwards;
+        }
+
+        .flash-message.hide {
             animation: slideOut 0.5s ease-in-out forwards;
-            animation-delay: 3s;
+            animation-delay: 2s;
             overflow: hidden;
         }
 
-        .flash-message>div {
-            transition: all 0.5s ease-in-out;
+        #error-message {
+            background-color: #fecaca;
+            color: #7f1d1d;
+            border-left: 4px solid #ef4444;
+        }
+
+        #success-message {
+            background-color: #d1fae5;
+            color: #064e3b;
+            border-left: 4px solid #10b981;
         }
     </style>
 </head>
 
-<body class="min-h-screen">
-    <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-md w-full">
-            <!-- Header -->
-            <div class="text-center mb-8">
-                <div class="mx-auto h-12 w-12 bg-white rounded-xl flex items-center justify-center mb-4">
-                    <i class="fas fa-utensils text-blue-600 text-xl"></i>
-                </div>
-                <h2 class="text-3xl font-bold text-white">Kantin PIT</h2>
-                <p class="mt-2 text-blue-100">Masuk ke akun Anda</p>
+<body>
+    <div class="login-container">
+        <!-- Left Side - Image/Branding -->
+        <div class="login-image">
+            <div class="login-logo">
+                <i class="fas fa-utensils text-3xl text-white"></i>
+            </div>
+            <h1 class="text-3xl font-bold mb-4">Sistem Kantin PIT Digital</h1>
+            <p class="text-lg opacity-80 text-center">
+                Selamat datang di platform manajemen kantin pondok yang modern dan terpercaya.
+            </p>
+        </div>
+
+        <!-- Right Side - Login Form -->
+        <div class="login-form">
+            <h2 class="text-3xl font-bold mb-12 text-gray-800">Masuk ke Akun</h2>
+
+            <!-- Alert Messages -->
+            <div id="error-message" class="flash-message">
+                <i class="fas fa-exclamation-circle mr-3"></i>
+                <span id="error-text"></span>
             </div>
 
-            <!-- Login Card -->
-            <div class="bg-white rounded-xl card-shadow p-8">
-                <!-- Alert Messages -->
-                <div id="error-message"
-                    class="flash-message hidden mb-6 bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-lg">
-                    <div class="flex items-center">
-                        <i class="fas fa-exclamation-circle mr-2"></i>
-                        <span id="error-text"></span>
-                    </div>
+            <div id="success-message" class="flash-message">
+                <i class="fas fa-check-circle mr-3"></i>
+                <span id="success-text"></span>
+            </div>
+
+            <!-- Form -->
+            <form action="{{ route('login') }}" method="POST" class="space-y-6">
+                @csrf
+                <!-- Email Field -->
+                <div class="input-group">
+                    <input id="email" name="email" type="email" required placeholder="Email" class="pl-12">
+                    <i class="fas fa-envelope icon"></i>
                 </div>
 
-                <div id="success-message"
-                    class="flash-message hidden mb-6 bg-green-50 border-l-4 border-green-500 text-green-700 px-4 py-3 rounded-lg">
-                    <div class="flex items-center">
-                        <i class="fas fa-check-circle mr-2"></i>
-                        <span id="success-text"></span>
-                    </div>
-                </div>
-
-                <!-- Form -->
-                <form action="{{ route('login') }}" method="POST" class="space-y-6">
-                    @csrf
-                    <!-- Email Field -->
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-                            Email
-                        </label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fas fa-envelope text-gray-400"></i>
-                            </div>
-                            <input id="email" name="email" type="email" required
-                                class="input-focus block w-full pl-10 pr-3 py-3 border border-gray-300 
-                                rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none transition-all"
-                                placeholder="email@example.com">
-                        </div>
-                    </div>
-
-                    <!-- Password Field -->
-                    <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
-                            Password
-                        </label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fas fa-lock text-gray-400"></i>
-                            </div>
-                            <input id="password" name="password" type="password" required
-                                class="input-focus block w-full pl-10 pr-10 py-3 border border-gray-300 
-                                rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none transition-all"
-                                placeholder="Masukkan password">
-                            <button type="button" onclick="togglePassword()"
-                                class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
-                                <i id="password-toggle" class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Remember & Forgot -->
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <input id="remember-me" name="remember-me" type="checkbox"
-                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                            <label for="remember-me" class="ml-2 block text-sm text-gray-700">
-                                Ingat saya
-                            </label>
-                        </div>
-                        <a href="#" class="text-sm text-blue-600 hover:text-blue-500">
-                            Lupa password?
-                        </a>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <button type="submit"
-                        class="btn-primary w-full flex justify-center items-center py-3 px-4 
-                        text-sm font-medium rounded-lg text-white shadow-sm">
-                        <i class="fas fa-sign-in-alt mr-2"></i>
-                        Masuk
+                <!-- Password Field -->
+                <div class="input-group">
+                    <input id="password" name="password" type="password" required placeholder="Password"
+                        class="pl-12 pr-12">
+                    <i class="fas fa-lock icon"></i>
+                    <button type="button" onclick="togglePassword()"
+                        class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                        <i id="password-toggle" class="fas fa-eye"></i>
                     </button>
-                </form>
-
-                <!-- Register Link -->
-                <div class="mt-6 text-center">
-                    <p class="text-sm text-gray-600">
-                        Belum punya akun?
-                        <a href="{{ route('register') }}" class="font-medium text-blue-600 hover:text-blue-500">
-                            Daftar sebagai santri
-                        </a>
-                    </p>
                 </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="login-btn w-full">
+                    <i class="fas fa-sign-in-alt mr-2"></i>
+                    Masuk
+                </button>
+            </form>
+
+            <!-- Register Link -->
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-600">
+                    Belum punya akun?
+                    <a href="{{ route('register') }}" class="register-link">
+                        Daftar sebagai santri
+                    </a>
+                </p>
             </div>
 
             <!-- Footer -->
             <div class="mt-8 text-center">
-                <p class="text-blue-100 text-sm">
-                    &copy; <span id="current-year"></span> Kantin PIT. All rights reserved.
+                <p class="text-sm text-gray-500">
+                    &copy; <span id="current-year"></span> Sistem Koperasi Digital. All rights reserved.
                 </p>
             </div>
         </div>
@@ -205,24 +308,38 @@
             const errorText = document.getElementById('error-text');
             const successText = document.getElementById('success-text');
 
-            // Reset animation by removing and re-adding the class
-            errorDiv.classList.remove('flash-message');
-            successDiv.classList.remove('flash-message');
-            void errorDiv.offsetWidth; // Trigger reflow
-            void successDiv.offsetWidth; // Trigger reflow
-            errorDiv.classList.add('flash-message');
-            successDiv.classList.add('flash-message');
-
-            errorDiv.classList.add('hidden');
-            successDiv.classList.add('hidden');
+            // Remove any existing classes
+            errorDiv.classList.remove('show', 'hide');
+            successDiv.classList.remove('show', 'hide');
 
             if (type === 'error') {
                 errorText.textContent = message;
-                errorDiv.classList.remove('hidden');
+                errorDiv.classList.add('show');
             } else if (type === 'success') {
                 successText.textContent = message;
-                successDiv.classList.remove('hidden');
+                successDiv.classList.add('show');
             }
+
+            // Auto-hide message after 5 seconds
+            setTimeout(() => {
+                if (type === 'error') {
+                    errorDiv.classList.remove('show');
+                    errorDiv.classList.add('hide');
+
+                    // Remove hide class after animation completes
+                    setTimeout(() => {
+                        errorDiv.classList.remove('hide');
+                    }, 300);
+                } else if (type === 'success') {
+                    successDiv.classList.remove('show');
+                    successDiv.classList.add('hide');
+
+                    // Remove hide class after animation completes
+                    setTimeout(() => {
+                        successDiv.classList.remove('hide');
+                    }, 300);
+                }
+            }, 5000);
         }
     </script>
     @if (session('success'))

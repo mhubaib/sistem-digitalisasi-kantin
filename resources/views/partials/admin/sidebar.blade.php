@@ -62,6 +62,13 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route('admin.transaction.index') }}"
+                    class="nav-link flex items-center px-4 py-3 rounded-lg {{ request()->routeIs('transaction.index') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">
+                    <i class="fas fa-history w-5 text-center"></i>
+                    <span class="ml-3 sidebar-text">Riwayat Transaksi</span>
+                </a>
+            </li>
+            <li>
                 <a href="{{ route('admin.santri.approvals') }}"
                     class="nav-link flex items-center px-4 py-3 rounded-lg {{ request()->routeIs('admin.santri.approvals') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">
                     <i class="fas fa-user-check w-5 text-center"></i>

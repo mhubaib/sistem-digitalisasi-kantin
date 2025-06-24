@@ -3,10 +3,10 @@
 @section('title', 'Dashboard Admin')
 
 @section('content')
-    <div class="max-w-screen px-auto bg-gray-50">
-        <div class="max-w-7xl mx-auto px-6 py-8">
+    <div class="max-w-screen lg:mx-10 xl:mx-10 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 py-8">
             <!-- Sophisticated Header -->
-            <div class="mb-12">
+            <div class="mb-18">
                 <div class="flex items-center justify-between">
                     <div>
                         <h1 class="text-3xl font-extralight text-gray-900 mb-2 tracking-tight">
