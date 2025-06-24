@@ -3,7 +3,7 @@
 @section('title', 'Daftar Produk')
 
 @section('content')
-    <div class="container mx-auto">
+    <div class="max-w-screen mx-auto px-4">
         <!-- Header Section -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
             <div>
