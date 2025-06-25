@@ -157,8 +157,7 @@
                 <table class="min-w-full">
                     <thead>
                         <tr class="bg-gray-50/50">
-                            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#
-                            </th>
+                            <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
                             <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Santri
                             </th>

@@ -55,6 +55,13 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route('admin.expenses.index') }}"
+                    class="nav-link flex items-center px-4 py-3 rounded-lg {{ request()->routeIs('admin.expenses.index') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">
+                    <i class="fas fa-money-bill-wave w-5 text-center"></i>
+                    <span class="ml-3 sidebar-text">Pengeluaran</span>
+                </a>
+            </li>
+            <li>
                 <a href="{{ route('admin.wallet_histories.index') }}"
                     class="nav-link flex items-center px-4 py-3 rounded-lg {{ request()->routeIs('admin.wallet_histories.index') ? 'bg-gray-700' : 'hover:bg-gray-700' }}">
                     <i class="fas fa-wallet w-5 text-center"></i>
