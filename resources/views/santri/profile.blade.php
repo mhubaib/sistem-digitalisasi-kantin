@@ -51,6 +51,84 @@
         </div>
     </div>
 
+    
+    <!-- Flash Messages -->
+    @if (session('success'))
+        <div class="mb-6 bg-green-50 border-l-4 border-green-400 p-4 rounded-r-lg shadow-sm animate-slide-in">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-check-circle text-green-400"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-green-700 font-medium">{{ session('success') }}</p>
+                </div>
+            </div>
+        </div>
+        <script>
+            setTimeout(function() {
+                var flash = document.querySelector('.bg-green-50');
+                if (flash) {
+                    flash.classList.add('animate-slide-out');
+                    setTimeout(function() {
+                        flash.style.display = 'none';
+                    }, 500); // waktu harus sama dengan durasi animasi slide-out
+                }
+            }, 3000);
+        </script>
+    @endif
+
+    @if (session('error'))
+        <div class="mb-6 bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg shadow-sm animate-slide-in">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-exclamation-circle text-red-400"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-red-700 font-medium">{{ session('error') }}</p>
+                </div>
+            </div>
+        </div>
+        <script>
+            setTimeout(function() {
+                var flash = document.querySelector('.bg-red-50');
+                if (flash) {
+                    flash.classList.add('animate-slide-out');
+                    setTimeout(function() {
+                        flash.style.display = 'none';
+                    }, 500); // waktu harus sama dengan durasi animasi slide-out
+                }
+            }, 3000);
+        </script>
+    @endif
+
+    @if ($errors->any())
+        <div class="mb-6 bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg shadow-sm animate-slide-in">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-exclamation-triangle text-red-400"></i>
+                </div>
+                <div class="ml-3">
+                    <ul class="text-red-700 space-y-1">
+                        @foreach ($errors->all() as $error)
+                            <li class="text-sm">• {{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <script>
+            setTimeout(function() {
+                var flash = document.querySelector('.bg-red-50');
+                if (flash) {
+                    flash.classList.add('animate-slide-out');
+                    setTimeout(function() {
+                        flash.style.display = 'none';
+                    }, 500); // waktu harus sama dengan durasi animasi slide-out
+                }
+            }, 3000);
+        </script>
+    @endif
+
     <!-- Breadcrumb Navigation -->
     <div class="mb-6">
         <nav class="flex" aria-label="Breadcrumb">
@@ -71,50 +149,6 @@
             </ol>
         </nav>
     </div>
-
-    <!-- Flash Messages -->
-    @if (session('success'))
-        <div class="mb-6 bg-green-50 border-l-4 border-green-400 p-4 rounded-r-lg shadow-sm animate-slide-in">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <i class="fas fa-check-circle text-green-400"></i>
-                </div>
-                <div class="ml-3">
-                    <p class="text-green-700 font-medium">{{ session('success') }}</p>
-                </div>
-            </div>
-        </div>
-    @endif
-
-    @if (session('error'))
-        <div class="mb-6 bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg shadow-sm animate-slide-in">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <i class="fas fa-exclamation-circle text-red-400"></i>
-                </div>
-                <div class="ml-3">
-                    <p class="text-red-700 font-medium">{{ session('error') }}</p>
-                </div>
-            </div>
-        </div>
-    @endif
-
-    @if ($errors->any())
-        <div class="mb-6 bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg shadow-sm animate-slide-in">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <i class="fas fa-exclamation-triangle text-red-400"></i>
-                </div>
-                <div class="ml-3">
-                    <ul class="text-red-700 space-y-1">
-                        @foreach ($errors->all() as $error)
-                            <li class="text-sm">• {{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            </div>
-        </div>
-    @endif
 
     <!-- Main Content Cards -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">

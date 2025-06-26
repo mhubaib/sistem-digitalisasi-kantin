@@ -38,6 +38,55 @@
         </div>
     </div>
 
+
+    @if (session('success'))
+        <div class="bg-green-50 border-l-4 border-green-400 p-4 rounded-r-lg shadow-sm animate-slide-in mb-4">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-check-circle text-green-400"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-green-700 font-medium">{{ session('success') }}</p>
+                </div>
+            </div>
+        </div>
+        <script>
+            setTimeout(function() {
+                var flash = document.querySelector('.bg-green-50');
+                if (flash) {
+                    flash.classList.add('animate-slide-out');
+                    setTimeout(function() {
+                        flash.style.display = 'none';
+                    }, 500); // waktu harus sama dengan durasi animasi slide-out
+                }
+            }, 3000);
+        </script>
+    @endif
+
+    @if (session('error'))
+        <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg shadow-sm animate-slide-in mb-4">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-exclamation-triangle text-red-400"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-red-700 font-medium">{{ session('error') }}</p>
+                </div>
+            </div>
+        </div>
+        <script>
+            setTimeout(function() {
+                var flash = document.querySelector('.bg-red-50');
+                if (flash) {
+                    flash.classList.add('animate-slide-out');
+                    setTimeout(function() {
+                        flash.style.display = 'none';
+                    }, 500); // waktu harus sama dengan durasi animasi slide-out
+                }
+            }, 3000);
+        </script>
+    @endif
+
     <!-- Breadcrumb Navigation -->
     <div class="mb-6">
         <nav class="flex" aria-label="Breadcrumb">
