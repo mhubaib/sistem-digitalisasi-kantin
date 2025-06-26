@@ -417,7 +417,7 @@
                     </svg>
                     Keamanan Akun
                 </h3>
-                <p><strong>Penting:</strong> Pastikan untuk menjaga kerahasiaan akun Anda dan jangan berbagi informasi login dengan orang lain. Segera ubah password anda setelah login. Jika mengalami kesulitan dalam mengakses akun, silakan hubungi tim support kami.</p>
+                <p><strong>Penting:</strong> Pastikan untuk menjaga kerahasiaan akun Anda dan jangan berbagi informasi login dengan orang lain. Segera ubah password dan username anda setelah login. Jika mengalami kesulitan dalam mengakses akun, silakan hubungi tim support kami.</p>
             </div>
             
             <div class="cta-container">

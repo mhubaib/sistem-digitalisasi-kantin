@@ -108,6 +108,12 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
 
+            // Khusus untuk santri, cek status approval
+            if ($user->role === 'santri' && !$user->active) {
+                Auth::logout();
+                return back()->with('error', 'Akun Anda belum disetujui admin.');
+            }
+            
             // Cek status aktif user
             if (!$user->active) {
                 Auth::logout();
@@ -123,11 +129,6 @@ class AuthController extends Controller
                 }
             }
 
-            // Khusus untuk santri, cek status approval
-            if ($user->role === 'santri' && !$user->active) {
-                Auth::logout();
-                return back()->with('error', 'Akun Anda belum disetujui admin.');
-            }
 
             // Arahkan ke dashboard sesuai role
             if ($user->role === 'admin') {
