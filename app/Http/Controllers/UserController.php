@@ -69,6 +69,7 @@ class UserController extends Controller
         $santri = Santri::with(['user', 'wali', 'transactions', 'topups', 'walletHistories'])
             ->where('user_id', $user->id)
             ->first();
+            
 
         return view('santri.profile', compact('user', 'santri'));
     }

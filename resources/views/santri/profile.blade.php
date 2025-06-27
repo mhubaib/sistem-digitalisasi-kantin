@@ -21,17 +21,17 @@
 
                 <!-- Profile Info -->
                 <div class="flex-1 text-center md:text-left">
-                    <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">{{ $santri->user->name }}</h1>
+                    <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">{{ $santri->user->name ?? 'Nama Santri' }}</h1>
                     <div
                         class="flex flex-col md:flex-row items-center md:items-start space-y-2 md:space-y-0 md:space-x-6 text-white/90">
                         <div class="flex items-center space-x-2">
                             <i class="fas fa-envelope text-sm"></i>
-                            <span class="text-sm">{{ $santri->user->email }}</span>
+                            <span class="text-sm">{{ $santri->user->email ?? 'Email Santri' }}</span>
                         </div>
                         <div class="flex items-center space-x-2">
                             <i class="fas fa-shield-alt text-sm"></i>
                             <span
-                                class="text-sm font-medium px-3 py-1 bg-white/20 rounded-full">{{ $santri->status }}</span>
+                                class="text-sm font-medium px-3 py-1 bg-white/20 rounded-full">{{ $santri->status ?? 'Status Santri' }}</span>
                         </div>
                     </div>
                 </div>
@@ -40,10 +40,10 @@
                 <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 min-w-[200px]">
                     <div class="text-center">
                         <p class="text-white/80 text-sm mb-1">Saldo Tersedia</p>
-                        <p class="text-2xl font-bold text-white">Rp {{ number_format($santri->saldo, 0, ',', '.') }}</p>
+                        <p class="text-2xl font-bold text-white">Rp {{ number_format($santri->saldo ?? 0, 0, ',', '.') }}</p>
                         <div class="flex items-center justify-center mt-2 text-green-300">
                             <i class="fas fa-wallet text-sm mr-1"></i>
-                            <span class="text-xs">Aktif</span>
+                            <span class="text-xs">{{ $santri->status ?? 'Status Santri' }}</span>
                         </div>
                     </div>
                 </div>
@@ -175,7 +175,7 @@
                                 <i class="fas fa-user text-indigo-500 mr-2"></i>Nama Santri
                             </label>
                             <div class="relative">
-                                <input type="text" id="name" name="name" value="{{ $santri->user->name }}"
+                                <input type="text" id="name" name="name" value="{{ $santri->user->name ?? 'Nama Santri' }}"
                                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 bg-white hover:border-indigo-300"
                                     required>
                                 <div class="absolute inset-y-0 right-0 flex items-center pr-3">
@@ -190,7 +190,7 @@
                                 <i class="fas fa-envelope text-gray-400 mr-2"></i>Email Santri
                             </label>
                             <div class="relative">
-                                <input type="email" id="email" value="{{ $santri->user->email }}"
+                                <input type="email" id="email" value="{{ $santri->user->email ?? 'Email Santri' }}"
                                     class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-500 cursor-not-allowed"
                                     readonly>
                                 <div class="absolute inset-y-0 right-0 flex items-center pr-3">
@@ -209,7 +209,7 @@
                                 <i class="fas fa-shield-alt text-green-500 mr-2"></i>Status
                             </label>
                             <div class="relative">
-                                <input type="text" id="status" value="{{ $santri->status }}"
+                                <input type="text" id="status" value="{{ $santri->status ?? 'Status Santri' }}"
                                     class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-green-50 text-green-700 font-medium cursor-not-allowed"
                                     readonly>
                                 <div class="absolute inset-y-0 right-0 flex items-center pr-3">
@@ -225,7 +225,7 @@
                             </label>
                             <div class="relative">
                                 <input type="text" id="saldo"
-                                    value="Rp {{ number_format($santri->saldo, 0, ',', '.') }}"
+                                    value="Rp {{ number_format($santri->saldo ?? 0, 0, ',', '.') }}"
                                     class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-blue-50 text-blue-700 font-bold cursor-not-allowed"
                                     readonly>
                                 <div class="absolute inset-y-0 right-0 flex items-center pr-3">
@@ -241,11 +241,11 @@
                             </label>
                             <div class="relative">
                                 <input type="text" id="kode_rfid"
-                                    value="{{ $santri->rfid_code ? $santri->rfid_code : 'Tidak ada kode RFID' }}"
+                                            value="{{ $santri->rfid_code ?? 'Tidak ada kode RFID' }}"
                                     class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-purple-50 text-purple-700 font-mono cursor-not-allowed focus:outline-none"
                                     readonly tabindex="-1">
                                 <div class="absolute inset-y-0 right-0 flex items-center pr-3">
-                                    @if ($santri->rfid_code)
+                                    @if ($santri->rfid_code ?? false)
                                         <div class="flex items-center space-x-2">
                                             <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
                                             <i class="fas fa-wifi text-purple-500"></i>
@@ -299,7 +299,7 @@
                             <i class="fas fa-user text-emerald-500 mr-2"></i>Nama Wali
                         </label>
                         <div class="relative">
-                            <input type="text" id="wali_name" value="{{ $santri->wali->name }}"
+                            <input type="text" id="wali_name" value="{{ $santri->wali->name ?? 'Nama Wali' }}"
                                 class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-emerald-50 text-emerald-700 font-medium cursor-not-allowed"
                                 readonly>
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3">
@@ -318,7 +318,7 @@
                             <i class="fas fa-envelope text-emerald-500 mr-2"></i>Email Wali
                         </label>
                         <div class="relative">
-                            <input type="email" id="wali_email" value="{{ $santri->wali->email }}"
+                            <input type="email" id="wali_email" value="{{ $santri->wali->email ?? 'Email Wali'  }}"
                                 class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-emerald-50 text-emerald-700 cursor-not-allowed"
                                 readonly>
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3">
@@ -333,7 +333,7 @@
 
                     <!-- Contact Button -->
                     <div class="pt-4 border-t border-gray-200">
-                        <a href="mailto:{{ $santri->wali->email }}"
+                        <a href="mailto:{{ $santri->wali->email ?? 'Email Wali' }}"
                             class="w-full inline-flex items-center justify-center px-4 py-3 bg-emerald-600 text-white font-medium rounded-xl hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all duration-200">
                             <i class="fas fa-envelope mr-2"></i>Hubungi Wali
                         </a>
